@@ -77,9 +77,4 @@
       <Private>False</Private>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Assets\" />
-    <Folder Include="Assets\character animations\" />
-    <Folder Include="Assets\character animations\owl\" />
-  </ItemGroup>
 </Project>

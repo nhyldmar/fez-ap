@@ -13,11 +13,7 @@ This is a [HAT](https://github.com/FEZModding/HAT) mod which adds archipelago mu
 ## Usage
 
 - Open a new save.
-- Press `\`` to open up the console.
-- Type `connect <server> <port> <slot_name> <password (optional)>` (e.g. `connect archipelago.gg 123456 Fez`).
-- Type `ready` to indicate readiness.
-- Type `say <text>` if you want to send something to the feed (e.g. `say Hello from FEZ`).
-- Check all the other functions with `help` in case you need to debug something and get around the AP system.
+- TODO: Fill in with new instructions.
 
 ## Thanks
 
