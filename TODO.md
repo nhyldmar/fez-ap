@@ -2,17 +2,6 @@
 
 ## 1.0 Features
 
-- Location handling
-  - Gomez.CollectedSplitUpCube
-  - Gomez.CollectedShard
-  - Gomez.CollectedAnti
-  - Gomez.CollectedGlobalAnti
-  - Gomez.CollectedPieceOfHeart
-  - Gomez.OpenedTreasure
-  - Owl.OwlCollected
-- Goal handling
-  - GameState.SaveData.Finished32
-  - GameState.SaveData.Finished64
 - Photosensitivity mode
   - quantum.fezlvl.json -> Quantum = false
   - big_owl.fezlvl.json -> Rainy = false (repeat for grave_cabin, grave_ghost, grave_lesser_gate, grave_treasure_a, graveyard_a, graveyard_gate, industrial_city, mausoleum, owl, skull_b, skull)
@@ -22,10 +11,6 @@
 
 - Hints
   - gametext.feztxt.json (only english)
-- Locations
-  - Make each collectible unique and add the corresponding logic
-  - <https://github.com/FEZModding/FezMultiplayerMod/blob/main/FezMultiplayerMod/MultiplayerMod/OpenTreasureListener.cs>
-  - <https://github.com/FEZModding/FezMultiplayerMod/blob/main/FezMultiplayerMod/MultiplayerMod/SaveDataObserver.cs>
 
 ## 3.0 Features
 
