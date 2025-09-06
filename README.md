@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a [HAT](https://github.com/FEZModding/HAT) mod which adds archipelago multiworld randomizer support to FEZ. It is heavily based on the wonderful [FEZUG](https://github.com/FEZModding/FEZUG).
+This is a [HAT](https://github.com/FEZModding/HAT) mod which adds archipelago multiworld randomizer support to FEZ. It is based on the wonderful [FEZUG](https://github.com/FEZModding/FEZUG).
 
 ## Installing
 
