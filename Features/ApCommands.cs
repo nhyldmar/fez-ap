@@ -60,4 +60,67 @@ namespace FEZAP.Features
             return true;
         }
     }
+
+    internal class Release : IFezapCommand
+    {
+        public string Name => "release";
+
+        public string HelpText => "release - release all remaining checks";
+
+        public List<string> Autocomplete(string[] args)
+        {
+            return null;
+        }
+
+        public bool Execute(string[] args)
+        {
+            // TODO: Fix Socket.Connected being true even before session has been connected.
+            if (Helpers.Archipelago.session.Socket.Connected)
+            {
+                var missingLocations = Helpers.Archipelago.session.Locations.AllMissingLocations;
+                Helpers.Archipelago.session.Locations.CompleteLocationChecks([.. missingLocations]);
+                // TODO: Figure out why it crashes here.
+            }
+            else
+            {
+                FezapConsole.Print("Unable to release. Not connected to a server. Use 'connect' command first.");
+            }
+
+            return true;
+        }
+    }
+
+    internal class Deathlink : IFezapCommand
+    {
+        public string Name => "deathlink";
+
+        public string HelpText => "deathlink <true/false> - enable or disable deathlink";
+
+        public List<string> Autocomplete(string[] args)
+        {
+            return null;
+        }
+
+        public bool Execute(string[] args)
+        {
+            // TODO: Fix Socket.Connected being true even before session has been connected.
+            if (Helpers.Archipelago.session.Socket.Connected)
+            {
+                if (bool.Parse(args[0]))
+                {
+                    Helpers.Archipelago.deathLinkService.EnableDeathLink();
+                }
+                else
+                {
+                    Helpers.Archipelago.deathLinkService.DisableDeathLink();
+                }
+            }
+            else
+            {
+                FezapConsole.Print("Unable to release. Not connected to a server. Use 'connect' command first.");
+            }
+
+            return true;
+        }
+    }
 }

@@ -1,8 +1,10 @@
 using Archipelago.MultiClient.Net;
+using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
 using Archipelago.MultiClient.Net.Enums;
 using Archipelago.MultiClient.Net.Helpers;
 using Archipelago.MultiClient.Net.MessageLog.Messages;
 using Archipelago.MultiClient.Net.Models;
+using FEZAP.Features;
 using FEZAP.Features.Console;
 
 namespace FEZAP.Helpers
@@ -11,6 +13,7 @@ namespace FEZAP.Helpers
     {
         private static readonly string gameName = "The Witness";  // TODO: Replace this with "Fez" once an apworld is available for testing
         public static ArchipelagoSession session;
+        public static DeathLinkService deathLinkService;
 
         public static void Connect(string server, int port, string user, string pass)
         {
@@ -22,11 +25,18 @@ namespace FEZAP.Helpers
             {
                 FezapConsole.Print("Successfully connected to AP server.", FezapConsole.OutputType.Info);
 
+                // if (session.Players.ActivePlayer.)
+
                 // Bind events
                 session.Items.ItemReceived += RecvItem;
                 session.Locations.CheckedLocationsUpdated += null;  // TODO
                 session.MessageLog.OnMessageReceived += HandleLogMsg;
                 // session.Socket.SocketClosed += ReattemptConnection;  // TODO: Add reconnection handler
+
+                // Handle deathlink
+                deathLinkService = session.CreateDeathLinkService();
+                deathLinkService.OnDeathLinkReceived += HandleDeathlink;
+                // TODO: Get if slot has deathlink, if yes deathLinkService.EnableDeathLink()
             }
             else
             {
@@ -66,13 +76,20 @@ namespace FEZAP.Helpers
             FezapConsole.Print($"Sent {item.ItemDisplayName} to {item.ItemGame}", FezapConsole.OutputType.Info);
         }
 
-        public static void RecvItem(ReceivedItemsHelper helper)
+        private static void RecvItem(ReceivedItemsHelper helper)
         {
             while (helper.PeekItem() != null)
             {
                 ItemInfo item = helper.DequeueItem();
                 FezapConsole.Print($"Received {item.ItemDisplayName} from {item.ItemGame}", FezapConsole.OutputType.Info);
             }
+        }
+
+        private static void HandleDeathlink(DeathLink deathLink)
+        {
+            FezapConsole.Print(deathLink.Cause, FezapConsole.OutputType.Info);
+            // TODO: Figure out a nicer way than creating an instance here.
+            new Kill().Execute(null);
         }
     }
 }

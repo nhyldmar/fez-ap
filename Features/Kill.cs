@@ -1,5 +1,4 @@
-﻿using System;
-using FezEngine.Components;
+﻿using FezEngine.Components;
 using FezEngine.Services;
 using FezEngine.Structure;
 using FezEngine.Structure.Input;
@@ -8,8 +7,6 @@ using FezGame.Services;
 using FEZAP.Features.Console;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
-using System.Collections.Generic;
-using System.Globalization;
 
 namespace FEZAP.Features
 {
@@ -39,11 +36,8 @@ namespace FEZAP.Features
         {
             if (PlayerManager.Grounded)
             {
-                if (thudSound == null)
-                {
-                    // This gives a NullReferenceException if we put this in a constructor so lazily load it here
-                    thudSound = ContentManagerProvider.Global.Load<SoundEffect>("Sounds/Gomez/CrashLand");
-                }
+                // This gives a NullReferenceException if we put this in a constructor so lazily load it here
+                thudSound ??= ContentManagerProvider.Global.Load<SoundEffect>("Sounds/Gomez/CrashLand");
                 thudSound.EmitAt(PlayerManager.Position).NoAttenuation = true;
                 InputManager.ActiveGamepad.Vibrate(VibrationMotor.RightHigh, 1.0, TimeSpan.FromSeconds(0.5), EasingType.Quadratic);
                 InputManager.ActiveGamepad.Vibrate(VibrationMotor.LeftLow, 1.0, TimeSpan.FromSeconds(0.35));
