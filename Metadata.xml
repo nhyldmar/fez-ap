@@ -1,0 +1,10 @@
+<Metadata>
+   <Name>FezAP</Name>
+   <Description>Archipelago multiworld randomizer client mod for Fez.</Description>
+   <Author>NoliH</Author>
+   <Version>0.1</Version>
+   <LibraryName>FezAP.dll</LibraryName>
+   <Dependencies>
+      <DependencyInfo Name="HAT" MinimumVersion="1.0"/>
+   </Dependencies>
+</Metadata>
