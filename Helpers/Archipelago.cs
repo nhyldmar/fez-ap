@@ -6,17 +6,20 @@ using Archipelago.MultiClient.Net.MessageLog.Messages;
 using Archipelago.MultiClient.Net.Models;
 using FEZAP.Features;
 using FEZAP.Features.Console;
+using FezEngine.Services.Scripting;
+using FezEngine.Tools;
+using FezGame.Services;
 
 namespace FEZAP.Helpers
 {
     public class Archipelago
     {
-        public static readonly string gameName = "The Witness";  // TODO: Replace this with "Fez" once an apworld is available for testing
+        public static readonly string gameName = "Fez";
         public static ArchipelagoSession session;
         public static DeathLinkService deathLinkService;
         public static Dictionary<string, object> slotData;
 
-        public static void Connect(string server, int port, string user, string pass)
+        public void Connect(string server, int port, string user, string pass)
         {
             session = ArchipelagoSessionFactory.CreateSession(server, port);
 
@@ -111,13 +114,94 @@ namespace FEZAP.Helpers
             FezapConsole.Print($"Sent {item.ItemDisplayName} to {item.ItemGame}", FezapConsole.OutputType.Info);
         }
 
-        private static void HandleRecvItem(ReceivedItemsHelper helper)
+        [ServiceDependency]
+        public IGameStateManager GameState { get; set; }
+
+        [ServiceDependency]
+        public ICameraService CameraService { private get; set; }
+
+        [ServiceDependency]
+        public IPlayerManager PlayerManager { private get; set; }
+
+        private void HandleRecvItem(ReceivedItemsHelper helper)
         {
             while (helper.Any())
             {
                 ItemInfo item = helper.DequeueItem();
                 FezapConsole.Print($"Received {item.ItemDisplayName} from {item.ItemGame}", FezapConsole.OutputType.Info);
-                // TODO: Handle item
+                switch (item.ItemName)
+                {
+                    case "Golden Cube":
+                        GameState.SaveData.CubeShards += 1;
+                        break;
+                    case "Anti-Cube":
+                        GameState.SaveData.SecretCubes += 1;
+                        break;
+                    case "Key":
+                        GameState.SaveData.Keys += 1;
+                        break;
+                    case "Owl":
+                        GameState.SaveData.CollectedOwls += 1;
+                        break;
+                    case "Red Map":
+                        GameState.SaveData.Maps.Add("Red Map");
+                        break;
+                    case "Purple Map":
+                        GameState.SaveData.Maps.Add("Purple Map");
+                        break;
+                    case "Tower Map":
+                        GameState.SaveData.Maps.Add("Tower Map");
+                        break;
+                    case "QR Code Map":
+                        GameState.SaveData.Maps.Add("QR Code Map");
+                        break;
+                    case "Burned Map":
+                        GameState.SaveData.Maps.Add("Burned Map");
+                        break;
+                    case "Cemetery Map 1":
+                        GameState.SaveData.Maps.Add("Cemetery Map 1");
+                        break;
+                    case "Cemetery Map 2":
+                        GameState.SaveData.Maps.Add("Cemetery Map 2");
+                        break;
+                    case "Cemetery Map 3":
+                        GameState.SaveData.Maps.Add("Cemetery Map 3");
+                        break;
+                    case "Cemetery Map 4":
+                        GameState.SaveData.Maps.Add("Cemetery Map 4");
+                        break;
+                    case "The Writing Cube":
+                        GameState.SaveData.Artifacts.Add(FezEngine.Structure.ActorType.LetterCube);
+                        break;
+                    case "The Counting Cube":
+                        GameState.SaveData.Artifacts.Add(FezEngine.Structure.ActorType.NumberCube);
+                        break;
+                    case "The Tome Artifact":
+                        GameState.SaveData.Artifacts.Add(FezEngine.Structure.ActorType.Tome);
+                        break;
+                    case "The Skull Artifact":
+                        GameState.SaveData.Artifacts.Add(FezEngine.Structure.ActorType.TriSkull);
+                        break;
+                    case "Heart Cube":
+                        GameState.SaveData.PiecesOfHeart += 1;
+                        break;
+                    case "Rotation Trap":
+                        // TODO: Move to some central random source
+                        Random random = new();
+                        CameraService.Rotate(random.Next(-2, 2));
+                        break;
+                    case "Sleep Trap":
+                        PlayerManager.NextAction = FezGame.Structure.ActionType.IdleSleep;
+                        PlayerManager.CanControl = false;
+                        // TODO: Wait a few seconds in a non-blocking way
+                        PlayerManager.CanControl = true;
+                        break;
+                    case "Emotional Support":
+                        break;
+                    default:
+                        FezapConsole.Print($"Unknown item: {item.ItemDisplayName}");
+                        break;
+                }
             }
         }
 

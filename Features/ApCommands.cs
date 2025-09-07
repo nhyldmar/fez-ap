@@ -1,4 +1,5 @@
-﻿using FEZAP.Features.Console;
+﻿using Archipelago.MultiClient.Net.Helpers;
+using FEZAP.Features.Console;
 
 namespace FEZAP.Features
 {
@@ -9,6 +10,8 @@ namespace FEZAP.Features
         public string HelpText => "connect <server> <port> <slot_name> <password> - connect to server";
 
         public List<string> Autocomplete(string[] args) { return null; }
+
+        private readonly Helpers.Archipelago archipelago;
 
         public bool Execute(string[] args)
         {
@@ -30,7 +33,7 @@ namespace FEZAP.Features
             }
 
             string pass = args.Length == 4 ? args[3] : null;
-            Helpers.Archipelago.Connect(args[0], port, args[2], pass);
+            archipelago.Connect(args[0], port, args[2], pass);
 
             return Helpers.Archipelago.IsConnected();
         }
