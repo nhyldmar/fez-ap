@@ -54,6 +54,18 @@ namespace FEZAP.Helpers
             }
         }
 
+        public static bool IsConnected()
+        {
+            if (session == null)
+            {
+                return false;
+            }
+            else
+            {
+                return session.Socket.Connected;
+            }
+        }
+
         private static void HandleLogMsg(LogMessage message)
         {
             switch (message)
@@ -78,7 +90,7 @@ namespace FEZAP.Helpers
 
         private static void RecvItem(ReceivedItemsHelper helper)
         {
-            while (helper.PeekItem() != null)
+            while (helper.Any())
             {
                 ItemInfo item = helper.DequeueItem();
                 FezapConsole.Print($"Received {item.ItemDisplayName} from {item.ItemGame}", FezapConsole.OutputType.Info);

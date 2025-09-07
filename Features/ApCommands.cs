@@ -8,10 +8,7 @@ namespace FEZAP.Features
 
         public string HelpText => "connect <server> <port> <slot_name> <password> - connect to server";
 
-        public List<string> Autocomplete(string[] args)
-        {
-            return null;
-        }
+        public List<string> Autocomplete(string[] args) { return null; }
 
         public bool Execute(string[] args)
         {
@@ -34,21 +31,99 @@ namespace FEZAP.Features
         }
     }
 
+    internal class Disconnect : IFezapCommand
+    {
+        public string Name => "disconnect";
+
+        public string HelpText => "disconnect - disconnect from the server";
+
+        public List<string> Autocomplete(string[] args) { return null; }
+
+        public bool Execute(string[] args)
+        {
+            // TODO: Figure out a nicer way
+            Helpers.Archipelago.session = null;
+            return true;
+        }
+    }
+
+    internal class Received : IFezapCommand
+    {
+        public string Name => "received";
+
+        public string HelpText => "received - list all received items";
+
+        public List<string> Autocomplete(string[] args) { return null; }
+
+        public bool Execute(string[] args)
+        {
+            if (Helpers.Archipelago.session.Socket.Connected)
+            {
+                FezapConsole.Print(Helpers.Archipelago.session.Items.AllItemsReceived.ToString());
+            }
+            else
+            {
+                FezapConsole.Print("Unable to check received items. Not connected to a server. Use 'connect' command first.");
+            }
+            return true;
+        }
+    }
+
+    internal class Missing : IFezapCommand
+    {
+        public string Name => "missing";
+
+        public string HelpText => "missing - list all missing locations";
+
+        public List<string> Autocomplete(string[] args) { return null; }
+
+        public bool Execute(string[] args)
+        {
+            if (Helpers.Archipelago.IsConnected())
+            {
+                FezapConsole.Print(Helpers.Archipelago.session.Locations.AllMissingLocations.ToString());
+            }
+            else
+            {
+                FezapConsole.Print("Unable to check missing locations. Not connected to a server. Use 'connect' command first.");
+            }
+            return true;
+        }
+    }
+
+    internal class Ready : IFezapCommand
+    {
+        public string Name => "ready";
+
+        public string HelpText => "ready - send ready status to server";
+
+        public List<string> Autocomplete(string[] args) { return null; }
+
+        public bool Execute(string[] args)
+        {
+            if (Helpers.Archipelago.IsConnected())
+            {
+                Helpers.Archipelago.session.SetClientState(Archipelago.MultiClient.Net.Enums.ArchipelagoClientState.ClientReady);
+            }
+            else
+            {
+                FezapConsole.Print("Unable set ready status. Not connected to a server. Use 'connect' command first.");
+            }
+            return true;
+        }
+    }
+
     internal class Say : IFezapCommand
     {
         public string Name => "say";
 
         public string HelpText => "say <message> - send message to server";
 
-        public List<string> Autocomplete(string[] args)
-        {
-            return null;
-        }
+        public List<string> Autocomplete(string[] args) { return null; }
 
         public bool Execute(string[] args)
         {
-            // TODO: Fix Socket.Connected being true even before session has been connected.
-            if (Helpers.Archipelago.session.Socket.Connected)
+            if (Helpers.Archipelago.IsConnected())
             {
                 Helpers.Archipelago.session.Say(string.Join(" ", args));
             }
@@ -67,15 +142,11 @@ namespace FEZAP.Features
 
         public string HelpText => "release - release all remaining checks";
 
-        public List<string> Autocomplete(string[] args)
-        {
-            return null;
-        }
+        public List<string> Autocomplete(string[] args) { return null; }
 
         public bool Execute(string[] args)
         {
-            // TODO: Fix Socket.Connected being true even before session has been connected.
-            if (Helpers.Archipelago.session.Socket.Connected)
+            if (Helpers.Archipelago.IsConnected())
             {
                 var missingLocations = Helpers.Archipelago.session.Locations.AllMissingLocations;
                 Helpers.Archipelago.session.Locations.CompleteLocationChecks([.. missingLocations]);
@@ -96,15 +167,11 @@ namespace FEZAP.Features
 
         public string HelpText => "deathlink <true/false> - enable or disable deathlink";
 
-        public List<string> Autocomplete(string[] args)
-        {
-            return null;
-        }
+        public List<string> Autocomplete(string[] args) { return null; }
 
         public bool Execute(string[] args)
         {
-            // TODO: Fix Socket.Connected being true even before session has been connected.
-            if (Helpers.Archipelago.session.Socket.Connected)
+            if (Helpers.Archipelago.IsConnected())
             {
                 if (bool.Parse(args[0]))
                 {
