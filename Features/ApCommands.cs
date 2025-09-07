@@ -41,8 +41,14 @@ namespace FEZAP.Features
 
         public bool Execute(string[] args)
         {
-            // TODO: Figure out a nicer way
-            Helpers.Archipelago.session = null;
+            if (Helpers.Archipelago.IsConnected())
+            {
+                Helpers.Archipelago.session.Socket.DisconnectAsync();
+            }
+            else
+            {
+                FezapConsole.Print("Unable to disconnect. Not connected to a server.", FezapConsole.OutputType.Warning);
+            }
             return true;
         }
     }
@@ -57,13 +63,13 @@ namespace FEZAP.Features
 
         public bool Execute(string[] args)
         {
-            if (Helpers.Archipelago.session.Socket.Connected)
+            if (Helpers.Archipelago.IsConnected())
             {
                 FezapConsole.Print(Helpers.Archipelago.session.Items.AllItemsReceived.ToString());
             }
             else
             {
-                FezapConsole.Print("Unable to check received items. Not connected to a server. Use 'connect' command first.");
+                FezapConsole.Print("Unable to check received items. Not connected to a server. Use 'connect' command first.", FezapConsole.OutputType.Warning);
             }
             return true;
         }
@@ -85,7 +91,7 @@ namespace FEZAP.Features
             }
             else
             {
-                FezapConsole.Print("Unable to check missing locations. Not connected to a server. Use 'connect' command first.");
+                FezapConsole.Print("Unable to check missing locations. Not connected to a server. Use 'connect' command first.", FezapConsole.OutputType.Warning);
             }
             return true;
         }
@@ -129,7 +135,7 @@ namespace FEZAP.Features
             }
             else
             {
-                FezapConsole.Print("Unable to send. Not connected to a server. Use 'connect' command first.");
+                FezapConsole.Print("Unable to send. Not connected to a server. Use 'connect' command first.", FezapConsole.OutputType.Warning);
             }
 
             return true;
@@ -161,7 +167,7 @@ namespace FEZAP.Features
             }
             else
             {
-                FezapConsole.Print("Unable to release. Not connected to a server. Use 'connect' command first.");
+                FezapConsole.Print("Unable to send location. Not connected to a server. Use 'connect' command first.", FezapConsole.OutputType.Warning);
             }
 
             return true;
@@ -186,7 +192,7 @@ namespace FEZAP.Features
             }
             else
             {
-                FezapConsole.Print("Unable to release. Not connected to a server. Use 'connect' command first.");
+                FezapConsole.Print("Unable to release. Not connected to a server. Use 'connect' command first.", FezapConsole.OutputType.Warning);
             }
 
             return true;
@@ -216,7 +222,7 @@ namespace FEZAP.Features
             }
             else
             {
-                FezapConsole.Print("Unable to release. Not connected to a server. Use 'connect' command first.");
+                FezapConsole.Print("Unable to update deathlink flag. Not connected to a server. Use 'connect' command first.", FezapConsole.OutputType.Warning);
             }
 
             return true;

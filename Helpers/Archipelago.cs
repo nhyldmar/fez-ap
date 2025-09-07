@@ -15,6 +15,8 @@ namespace FEZAP.Helpers
         public static ArchipelagoSession session;
         public static DeathLinkService deathLinkService;
 
+        public static Dictionary<string, object> slotData;
+
         public static void Connect(string server, int port, string user, string pass)
         {
             session = ArchipelagoSessionFactory.CreateSession(server, port);
@@ -25,18 +27,22 @@ namespace FEZAP.Helpers
             {
                 FezapConsole.Print("Successfully connected to AP server.", FezapConsole.OutputType.Info);
 
-                // if (session.Players.ActivePlayer.)
+                // Get slot data
+                slotData = session.DataStorage.GetSlotData(session.ConnectionInfo.Slot);
 
                 // Bind events
-                session.Items.ItemReceived += RecvItem;
-                session.Locations.CheckedLocationsUpdated += null;  // TODO
                 session.MessageLog.OnMessageReceived += HandleLogMsg;
-                // session.Socket.SocketClosed += ReattemptConnection;  // TODO: Add reconnection handler
+                session.Socket.ErrorReceived += HandleErrorRecv;
+                session.Socket.SocketClosed += HandleSocketClosed;
+                session.Items.ItemReceived += HandleRecvItem;
 
                 // Handle deathlink
                 deathLinkService = session.CreateDeathLinkService();
                 deathLinkService.OnDeathLinkReceived += HandleDeathlink;
-                // TODO: Get if slot has deathlink, if yes deathLinkService.EnableDeathLink()
+                if ((bool)slotData["death_link"])
+                {
+                    deathLinkService.EnableDeathLink();
+                }
             }
             else
             {
@@ -79,6 +85,17 @@ namespace FEZAP.Helpers
             }
         }
 
+        private static void HandleErrorRecv(Exception e, string message)
+        {
+            FezapConsole.Print($"Error: {message}\n{e}");
+        }
+
+        private static void HandleSocketClosed(string reason)
+        {
+            FezapConsole.Print($"Socket closed: {reason}");
+            // TODO: Reattempt connection logic with retry count
+        }
+
         public static async Task SendLocation(string name)
         {
             var id = session.Locations.GetLocationIdFromName(gameName, name);
@@ -88,12 +105,13 @@ namespace FEZAP.Helpers
             FezapConsole.Print($"Sent {item.ItemDisplayName} to {item.ItemGame}", FezapConsole.OutputType.Info);
         }
 
-        private static void RecvItem(ReceivedItemsHelper helper)
+        private static void HandleRecvItem(ReceivedItemsHelper helper)
         {
             while (helper.Any())
             {
                 ItemInfo item = helper.DequeueItem();
                 FezapConsole.Print($"Received {item.ItemDisplayName} from {item.ItemGame}", FezapConsole.OutputType.Info);
+                // TODO: Handle item
             }
         }
 

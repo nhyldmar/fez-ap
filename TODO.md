@@ -75,15 +75,15 @@ return true;
 
 ## Hints
 
-- (.fezlvl) TrileInstanceActorSettings.SignText
-- (.feznpc) NpcMetadata.SoundAction = NpcAction.Talk
+- gametext.feztxt.json (only do english for now)
 
 ## Quality of Life
 
 Photosensitivity mode:
 
-- (.fezlvl) Level.Quantum = false
-- (.fezlvl) Level.Rainy = false
+- quantum.fezlvl.json -> Quantum = false
+- big_owl.fezlvl.json -> Rainy = false (repeat for grave_cabin, grave_ghost, grave_lesser_gate, grave_treasure_a, graveyard_a, graveyard_gate, industrial_city, mausoleum, owl, skull_b, skull)
+- figure out if you can just change the lightning flashes instead of disabling Rainy value
 
 ## Entrance randomiser
 
