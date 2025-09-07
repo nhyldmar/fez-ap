@@ -1,0 +1,4 @@
+[submodule "Archipelago"]
+	path = Archipelago
+	url = https://github.com/nhyldmar/Archipelago/
+	branch = fez
