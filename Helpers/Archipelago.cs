@@ -14,7 +14,6 @@ namespace FEZAP.Helpers
         public static readonly string gameName = "The Witness";  // TODO: Replace this with "Fez" once an apworld is available for testing
         public static ArchipelagoSession session;
         public static DeathLinkService deathLinkService;
-
         public static Dictionary<string, object> slotData;
 
         public static void Connect(string server, int port, string user, string pass)
@@ -47,16 +46,20 @@ namespace FEZAP.Helpers
             else
             {
                 LoginFailure failure = (LoginFailure)result;
-                string errorMessage = $"Failed to Connect to {server} as {user}:";
-                foreach (string error in failure.Errors)
+                string errorMessage = $"Failed to Connect to {server}:{port} as {user}";
+                if (pass != null)
                 {
-                    errorMessage += $"\n    {error}";
+                    errorMessage += $"with password: {pass}";
                 }
+                foreach (string error in failure.Errors)
+                    {
+                        errorMessage += $"\n    {error}";
+                    }
                 foreach (ConnectionRefusedError error in failure.ErrorCodes)
                 {
                     errorMessage += $"\n    {error}";
                 }
-                FezapConsole.Print(errorMessage);
+                FezapConsole.Print(errorMessage, FezapConsole.OutputType.Error);
             }
         }
 
@@ -78,7 +81,7 @@ namespace FEZAP.Helpers
             {
                 case CountdownLogMessage:
                 case ServerChatLogMessage:
-                    FezapConsole.Print(message.ToString(), FezapConsole.OutputType.Info);
+                    FezapConsole.Print(message.ToString());
                     break;
                 default:
                     break;
@@ -87,13 +90,16 @@ namespace FEZAP.Helpers
 
         private static void HandleErrorRecv(Exception e, string message)
         {
-            FezapConsole.Print($"Error: {message}\n{e}");
+            FezapConsole.Print($"Error: {message}\n{e}", FezapConsole.OutputType.Error);
         }
 
         private static void HandleSocketClosed(string reason)
         {
-            FezapConsole.Print($"Socket closed: {reason}");
-            // TODO: Reattempt connection logic with retry count
+            if (reason != "")
+            {
+                FezapConsole.Print($"Socket closed: {reason}");
+                // TODO: Reattempt connection logic with retry count
+            }
         }
 
         public static async Task SendLocation(string name)

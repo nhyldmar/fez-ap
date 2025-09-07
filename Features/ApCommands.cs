@@ -12,22 +12,27 @@ namespace FEZAP.Features
 
         public bool Execute(string[] args)
         {
-            // TODO: Make robust to int parsing and also avoid need for switch
-
-            switch (args.Length)
+            if (args.Length != 3 && args.Length != 4)
             {
-                case 3:
-                    Helpers.Archipelago.Connect(args[0], int.Parse(args[1]), args[2], null);
-                    break;
-                case 4:
-                    Helpers.Archipelago.Connect(args[0], int.Parse(args[1]), args[2], args[3]);
-                    break;
-                default:
-                    FezapConsole.Print("Incorrect number of arguments", FezapConsole.OutputType.Warning);
-                    break;
+                FezapConsole.Print("Incorrect number of arguments", FezapConsole.OutputType.Warning);
+                return false;
             }
 
-            return true;
+            int port;
+            try
+            {
+                port = int.Parse(args[1]);
+            }
+            catch
+            {
+                FezapConsole.Print($"{args[1]} is not a valid port number", FezapConsole.OutputType.Warning);
+                return false;
+            }
+
+            string pass = args.Length == 4 ? args[3] : null;
+            Helpers.Archipelago.Connect(args[0], port, args[2], pass);
+
+            return Helpers.Archipelago.IsConnected();
         }
     }
 
