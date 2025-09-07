@@ -136,6 +136,38 @@ namespace FEZAP.Features
         }
     }
 
+    internal class Send : IFezapCommand
+    {
+        public string Name => "send";
+
+        public string HelpText => "send <name> - send location";
+
+        public List<string> Autocomplete(string[] args) { return null; }
+
+        public bool Execute(string[] args)
+        {
+            if (Helpers.Archipelago.IsConnected())
+            {
+                string locationName = string.Join(" ", args);
+                long locationId = Helpers.Archipelago.session.Locations.GetLocationIdFromName(Helpers.Archipelago.gameName, locationName);
+                if (locationId == -1)
+                {
+                    FezapConsole.Print($"Unknown location {locationName}");
+                }
+                else
+                {
+                    Helpers.Archipelago.session.Locations.CompleteLocationChecks([locationId]);
+                }
+            }
+            else
+            {
+                FezapConsole.Print("Unable to release. Not connected to a server. Use 'connect' command first.");
+            }
+
+            return true;
+        }
+    }
+
     internal class Release : IFezapCommand
     {
         public string Name => "release";

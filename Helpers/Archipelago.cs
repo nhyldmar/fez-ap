@@ -11,7 +11,7 @@ namespace FEZAP.Helpers
 {
     public class Archipelago
     {
-        private static readonly string gameName = "The Witness";  // TODO: Replace this with "Fez" once an apworld is available for testing
+        public static readonly string gameName = "The Witness";  // TODO: Replace this with "Fez" once an apworld is available for testing
         public static ArchipelagoSession session;
         public static DeathLinkService deathLinkService;
 
