@@ -24,6 +24,8 @@
   - gametext.feztxt.json (only english)
 - Locations
   - Make each collectible unique and add the corresponding logic
+  - <https://github.com/FEZModding/FezMultiplayerMod/blob/main/FezMultiplayerMod/MultiplayerMod/OpenTreasureListener.cs>
+  - <https://github.com/FEZModding/FezMultiplayerMod/blob/main/FezMultiplayerMod/MultiplayerMod/SaveDataObserver.cs>
 
 ## 3.0 Features
 

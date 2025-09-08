@@ -19,6 +19,27 @@ namespace FEZAP.Helpers
         public static DeathLinkService deathLinkService;
         public static Dictionary<string, object> slotData;
 
+        [ServiceDependency]
+        public IGameStateManager GameState { get; set; }
+
+        [ServiceDependency]
+        public IPlayerManager PlayerManager { private get; set; }
+
+        [ServiceDependency]
+        public IGameService GameService { private get; set; }
+
+        [ServiceDependency]
+        public ICameraService CameraService { private get; set; }
+
+        [ServiceDependency]
+        public IDotService DotService { private get; set; }
+
+        [ServiceDependency]
+        public IGomezService GomezService { private get; set; }
+
+        [ServiceDependency]
+        public IOwlService OwlService { private get; set; }
+
         public void Connect(string server, int port, string user, string pass)
         {
             session = ArchipelagoSessionFactory.CreateSession(server, port);
@@ -38,9 +59,20 @@ namespace FEZAP.Helpers
                 session.Socket.SocketClosed += HandleSocketClosed;
                 session.Items.ItemReceived += HandleRecvItem;
 
+                // Bind locations
+                // TODO: Figure out why these don't trigger
+                GomezService.CollectedSplitUpCube += HandleCollectBit;
+                GomezService.CollectedShard += HandleCollectCube;
+                GomezService.CollectedAnti += HandleCollectAnti;
+                GomezService.CollectedGlobalAnti += HandleCollectAnti;
+                GomezService.CollectedPieceOfHeart += HandleCollectHeart;
+                GomezService.OpenedTreasure += HandleCollectTreasure;
+                OwlService.OwlCollected += HandleCollectOwl;
+
                 // Handle deathlink
                 deathLinkService = session.CreateDeathLinkService();
                 deathLinkService.OnDeathLinkReceived += HandleDeathlink;
+                // TODO: Find an event to bind to Gomez death
                 if ((bool)slotData["death_link"])
                 {
                     deathLinkService.EnableDeathLink();
@@ -114,18 +146,6 @@ namespace FEZAP.Helpers
             FezapConsole.Print($"Sent {item.ItemDisplayName} to {item.ItemGame}", FezapConsole.OutputType.Info);
         }
 
-        [ServiceDependency]
-        public IGameStateManager GameState { get; set; }
-
-        [ServiceDependency]
-        public ICameraService CameraService { private get; set; }
-
-        [ServiceDependency]
-        public IPlayerManager PlayerManager { private get; set; }
-
-        [ServiceDependency]
-        public IDotService DotService { private get; set; }
-
         private void HandleRecvItem(ReceivedItemsHelper helper)
         {
             while (helper.Any())
@@ -194,7 +214,7 @@ namespace FEZAP.Helpers
                     case "Sleep Trap":
                         PlayerManager.NextAction = FezGame.Structure.ActionType.IdleSleep;
                         PlayerManager.CanControl = false;
-                        Thread.Sleep(5000);
+                        GameService.Wait(5);
                         PlayerManager.CanControl = true;
                         break;
                     case "Emotional Support":
@@ -227,6 +247,37 @@ namespace FEZAP.Helpers
         {
             FezapConsole.Print($"Death received: {deathLink.Cause}", FezapConsole.OutputType.Info);
             new Kill().Execute(null);
+        }
+
+        private void HandleCollectBit()
+        {
+            FezapConsole.Print("Collected cube bit");
+        }
+
+        private void HandleCollectCube()
+        {
+            FezapConsole.Print("Collected golden cube");
+        }
+
+        private void HandleCollectAnti()
+        {
+            FezapConsole.Print("Collected anti cube");
+        }
+
+        private void HandleCollectHeart()
+        {
+            FezapConsole.Print("Collected heart cube");
+        }
+
+        private void HandleCollectTreasure()
+        {
+            // TODO: Identify treasure
+            FezapConsole.Print("Collected treasure");
+        }
+
+        private void HandleCollectOwl()
+        {
+            FezapConsole.Print("Collected owl");
         }
     }
 }
