@@ -55,9 +55,9 @@ namespace FEZAP.Helpers
                     errorMessage += $"with password: {pass}";
                 }
                 foreach (string error in failure.Errors)
-                    {
-                        errorMessage += $"\n    {error}";
-                    }
+                {
+                    errorMessage += $"\n    {error}";
+                }
                 foreach (ConnectionRefusedError error in failure.ErrorCodes)
                 {
                     errorMessage += $"\n    {error}";
@@ -123,6 +123,9 @@ namespace FEZAP.Helpers
         [ServiceDependency]
         public IPlayerManager PlayerManager { private get; set; }
 
+        [ServiceDependency]
+        public IDotService DotService { private get; set; }
+
         private void HandleRecvItem(ReceivedItemsHelper helper)
         {
             while (helper.Any())
@@ -186,17 +189,32 @@ namespace FEZAP.Helpers
                         GameState.SaveData.PiecesOfHeart += 1;
                         break;
                     case "Rotation Trap":
-                        // TODO: Move to some central random source
-                        Random random = new();
-                        CameraService.Rotate(random.Next(-2, 2));
+                        CameraService.Rotate(RandomHelper.Random.Next(-2, 2));
                         break;
                     case "Sleep Trap":
                         PlayerManager.NextAction = FezGame.Structure.ActionType.IdleSleep;
                         PlayerManager.CanControl = false;
-                        // TODO: Wait a few seconds in a non-blocking way
+                        Thread.Sleep(5000);
                         PlayerManager.CanControl = true;
                         break;
                     case "Emotional Support":
+                        string msg = "";
+                        switch (RandomHelper.Random.Next(0, 3))
+                        {
+                            case 0:
+                                msg = $"{item.Player.Name} wants you to know you got this";
+                                break;
+                            case 1:
+                                msg = $"{item.Player.Name} believes in you";
+                                break;
+                            case 2:
+                                msg = $"{item.Player.Name} is cheering you on";
+                                break;
+                            case 3:
+                                msg = $"{item.Player.Name} is rooting for you";
+                                break;
+                        }
+                        DotService.Say(msg, true, true);
                         break;
                     default:
                         FezapConsole.Print($"Unknown item: {item.ItemDisplayName}");
@@ -207,8 +225,7 @@ namespace FEZAP.Helpers
 
         private static void HandleDeathlink(DeathLink deathLink)
         {
-            FezapConsole.Print(deathLink.Cause, FezapConsole.OutputType.Info);
-            // TODO: Figure out a nicer way than creating an instance here.
+            FezapConsole.Print($"Death received: {deathLink.Cause}", FezapConsole.OutputType.Info);
             new Kill().Execute(null);
         }
     }
