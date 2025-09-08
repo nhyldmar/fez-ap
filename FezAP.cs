@@ -19,7 +19,7 @@ namespace FEZAP
 {
     public class Fezap : DrawableGameComponent
     {
-        public static string Version = "v0.0.1";
+        public static string Version = "v0.1.0";
 
         public List<IFezapFeature> Features { get; private set; }
 

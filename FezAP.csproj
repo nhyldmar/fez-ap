@@ -14,9 +14,13 @@
       <!-- Replace with your fez Mod directory path -->
       <FezModDirectory>D:\Games\Steam\steamapps\common\FEZ\Mods\</FezModDirectory>
     </PropertyGroup>
+    <ItemGroup>
+        <ModdedAssets Include="$(ProjectDir)\Assets\**\*.*" />
+    </ItemGroup>
 
     <Copy SourceFiles="$(TargetDir)$(TargetName).dll;$(TargetDir)$(TargetName).pdb" DestinationFolder="$(FezModDirectory)\FezAP\" Retries="0" />
     <Copy SourceFiles="$(ProjectDir)Metadata.xml" DestinationFolder="$(FezModDirectory)\FezAP\" Retries="0" />
+    <Copy SourceFiles="@(ModdedAssets)" DestinationFolder="$(FezModDirectory)\FezAP\Assets\%(RecursiveDir)" Retries="0" />
     <Copy SourceFiles="$(ProjectDir)\dependencies\Archipelago.MultiClient.Net.dll" DestinationFolder="$(FezModDirectory)\FezAP\" Retries="0" />
     <Copy SourceFiles="$(ProjectDir)\dependencies\Newtonsoft.Json.dll" DestinationFolder="$(FezModDirectory)\FezAP\" Retries="0" />
   </Target>

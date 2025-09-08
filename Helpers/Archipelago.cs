@@ -52,7 +52,7 @@ namespace FEZAP.Helpers
                 string errorMessage = $"Failed to Connect to {server}:{port} as {user}";
                 if (pass != null)
                 {
-                    errorMessage += $"with password: {pass}";
+                    errorMessage += $" with password: {pass}";
                 }
                 foreach (string error in failure.Errors)
                 {
