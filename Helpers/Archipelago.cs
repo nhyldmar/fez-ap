@@ -8,25 +8,42 @@ using FEZAP.Features;
 using FEZAP.Features.Console;
 using FezEngine.Services;
 using FezEngine.Services.Scripting;
+using FezEngine.Structure;
 using FezEngine.Tools;
 using FezGame.Services;
+using FezGame.Structure;
 using FezGame.Tools;
 using Microsoft.Xna.Framework;
 
 namespace FEZAP.Helpers
 {
+    public struct ItemSaveData
+    {
+        public int bits;
+        public int cubes;
+        public int antis;
+        public int hearts;
+        public int keys;
+        public int owls;
+        public List<string> maps;
+        public List<ActorType> artifacts;
+    }
+
     public class Archipelago : IFezapFeature
     {
         public static readonly string gameName = "Fez";
         public static ArchipelagoSession session;
         public static DeathLinkService deathLinkService;
-        public static Dictionary<string, object> slotData;
-        private static List<string> EmotionalSupportMsgs = [
+        private static Dictionary<string, object> slotData;
+        private static readonly List<string> EmotionalSupportMsgs = [
             " wants you to know you got this",
             " believes in you",
             " is cheering you on",
             " is rooting for you"
         ];
+        private static bool sentDeath;
+        private static ItemSaveData receivedItems = new();
+        private static ItemSaveData collectedItems = new();
         private static Dictionary<string, Dictionary<string, string>> gameText = ServiceHelper.Get<IContentManagerProvider>().Global.Load<Dictionary<string, Dictionary<string, string>>>("Resources/GameText");
 
         [ServiceDependency]
@@ -62,6 +79,7 @@ namespace FEZAP.Helpers
 
                 // Get slot data
                 slotData = session.DataStorage.GetSlotData(session.ConnectionInfo.Slot);
+                // TODO: Parse slot data and opulate receivedItems and collectedItems
 
                 // Bind events
                 session.MessageLog.OnMessageReceived += HandleLogMsg;
@@ -139,11 +157,19 @@ namespace FEZAP.Helpers
 
         public static async Task SendLocation(string name)
         {
-            var id = session.Locations.GetLocationIdFromName(gameName, name);
-            var result = await session.Locations.ScoutLocationsAsync(id);
-            ScoutedItemInfo item = result[0];
-            await session.Locations.CompleteLocationChecksAsync(id);
-            FezapConsole.Print($"Sent {item.ItemDisplayName} to {item.ItemGame}", FezapConsole.OutputType.Info);
+            FezapConsole.Print($"Collected {name}");
+            if (IsConnected())
+            {
+                var id = session.Locations.GetLocationIdFromName(gameName, name);
+                var result = await session.Locations.ScoutLocationsAsync(id);
+                ScoutedItemInfo item = result[0];
+                await session.Locations.CompleteLocationChecksAsync(id);
+                FezapConsole.Print($"Sent {item.ItemDisplayName} to {item.ItemGame}", FezapConsole.OutputType.Info);
+            }
+            else
+            {
+                // TODO: Store items to be released in next Connect() call
+            }
         }
 
         public void DotSay(string msg, bool nearGomez = true, bool hideAfter = true)
@@ -162,54 +188,71 @@ namespace FEZAP.Helpers
                 {
                     case "Golden Cube":
                         GameState.SaveData.CubeShards += 1;
+                        receivedItems.bits += 1;
                         break;
                     case "Anti-Cube":
                         GameState.SaveData.SecretCubes += 1;
+                        receivedItems.antis += 1;
                         break;
                     case "Key":
                         GameState.SaveData.Keys += 1;
+                        receivedItems.keys += 1;
                         break;
                     case "Owl":
                         GameState.SaveData.CollectedOwls += 1;
+                        receivedItems.owls += 1;
                         break;
                     case "Red Map":
                         GameState.SaveData.Maps.Add("Red Map");
+                        receivedItems.maps.Add("Red Map");
                         break;
                     case "Purple Map":
                         GameState.SaveData.Maps.Add("Purple Map");
+                        receivedItems.maps.Add("Purple Map");
                         break;
                     case "Tower Map":
                         GameState.SaveData.Maps.Add("Tower Map");
+                        receivedItems.maps.Add("Tower Map");
                         break;
                     case "QR Code Map":
                         GameState.SaveData.Maps.Add("QR Code Map");
+                        receivedItems.maps.Add("QR Code Map");
                         break;
                     case "Burned Map":
                         GameState.SaveData.Maps.Add("Burned Map");
+                        receivedItems.maps.Add("Burned Map");
                         break;
                     case "Cemetery Map 1":
                         GameState.SaveData.Maps.Add("Cemetery Map 1");
+                        receivedItems.maps.Add("Cemetery Map 1");
                         break;
                     case "Cemetery Map 2":
                         GameState.SaveData.Maps.Add("Cemetery Map 2");
+                        receivedItems.maps.Add("Cemetery Map 2");
                         break;
                     case "Cemetery Map 3":
                         GameState.SaveData.Maps.Add("Cemetery Map 3");
+                        receivedItems.maps.Add("Cemetery Map 3");
                         break;
                     case "Cemetery Map 4":
                         GameState.SaveData.Maps.Add("Cemetery Map 4");
+                        receivedItems.maps.Add("Cemetery Map 4");
                         break;
                     case "The Writing Cube":
-                        GameState.SaveData.Artifacts.Add(FezEngine.Structure.ActorType.LetterCube);
+                        GameState.SaveData.Artifacts.Add(ActorType.LetterCube);
+                        receivedItems.artifacts.Add(ActorType.LetterCube);
                         break;
                     case "The Counting Cube":
-                        GameState.SaveData.Artifacts.Add(FezEngine.Structure.ActorType.NumberCube);
+                        GameState.SaveData.Artifacts.Add(ActorType.NumberCube);
+                        receivedItems.artifacts.Add(ActorType.NumberCube);
                         break;
                     case "The Tome Artifact":
-                        GameState.SaveData.Artifacts.Add(FezEngine.Structure.ActorType.Tome);
+                        GameState.SaveData.Artifacts.Add(ActorType.Tome);
+                        receivedItems.artifacts.Add(ActorType.Tome);
                         break;
                     case "The Skull Artifact":
-                        GameState.SaveData.Artifacts.Add(FezEngine.Structure.ActorType.TriSkull);
+                        GameState.SaveData.Artifacts.Add(ActorType.TriSkull);
+                        receivedItems.artifacts.Add(ActorType.TriSkull);
                         break;
                     case "Heart Cube":
                         GameState.SaveData.PiecesOfHeart += 1;
@@ -241,8 +284,7 @@ namespace FEZAP.Helpers
 
         public void Initialize()
         {
-            // TODO: Figure out how to get the events to trigger the handlers
-            // GomezService.Jumped += Test;
+            // TODO: Figure out how to get the events to trigger when we expect them to
             // GomezService.CollectedSplitUpCube += HandleCollectBit;
             // GomezService.CollectedShard += HandleCollectCube;
             // GomezService.CollectedAnti += HandleCollectAnti;
@@ -254,8 +296,20 @@ namespace FEZAP.Helpers
 
         public void Update(GameTime gameTime)
         {
-            if (!GomezService.Alive)
+            MonitorDeath();
+            MonitorCollectibles();
+        }
+
+        private void MonitorDeath()
+        {
+            // sentDeath is used to avoid continuously sending deathlinks
+            if (GomezService.Alive)
             {
+                sentDeath = false;
+            }
+            else if (!GomezService.Alive && !sentDeath)
+            {
+                FezapConsole.Print("Death");
                 DotSay("Skill issue");
                 if (IsConnected())
                 {
@@ -263,65 +317,128 @@ namespace FEZAP.Helpers
                     var deathlink = new DeathLink(session.Players.ActivePlayer.Name);
                     deathLinkService.SendDeathLink(deathlink);
                 }
+                sentDeath = true;
             }
         }
 
+        private void MonitorCollectibles()
+        {
+            int bitDiff = GameState.SaveData.CollectedParts - receivedItems.bits;
+            int cubeDiff = GameState.SaveData.CubeShards - receivedItems.cubes;
+            int antiDiff = GameState.SaveData.SecretCubes - receivedItems.antis;
+            int heartDiff = GameState.SaveData.PiecesOfHeart - receivedItems.hearts;
+            int keyDiff = GameState.SaveData.Keys - receivedItems.keys;
+            int owlDiff = GameState.SaveData.CollectedOwls - receivedItems.owls;
+            // TODO: Fix null problem here from the Excepts
+            // List<string> mapDiff = [.. GameState.SaveData.Maps.Except(receivedItems.maps)];
+            // List<ActorType> artifactDiff = [.. GameState.SaveData.Artifacts.Except(receivedItems.artifacts)];
+            List<string> mapDiff = [];
+            List<ActorType> artifactDiff = [];
+
+            if (bitDiff > 0)
+            {
+                GameState.SaveData.CollectedParts -= bitDiff;
+                for (int i = 1; i <= bitDiff; i++)
+                {
+                    int count = collectedItems.bits + i;
+                    _ = SendLocation($"Cube Bit {count}");
+                }
+                collectedItems.bits += bitDiff;
+            }
+
+            if (cubeDiff > 0)
+            {
+                GameState.SaveData.CubeShards -= cubeDiff;
+                for (int i = 1; i <= cubeDiff; i++)
+                {
+                    int count = collectedItems.cubes + i;
+                    _ = SendLocation($"Golden Cube {count}");
+                }
+                collectedItems.cubes += cubeDiff;
+            }
+
+            if (antiDiff > 0)
+            {
+                GameState.SaveData.SecretCubes -= antiDiff;
+                for (int i = 1; i <= antiDiff; i++)
+                {
+                    int count = collectedItems.antis + i;
+                    _ = SendLocation($"Anti-Cube {count}");
+                }
+                collectedItems.antis += antiDiff;
+            }
+
+            if (heartDiff > 0)
+            {
+                GameState.SaveData.PiecesOfHeart -= heartDiff;
+                for (int i = 1; i <= heartDiff; i++)
+                {
+                    int count = collectedItems.hearts + i;
+                    _ = SendLocation($"Heart Cube {count}");
+                }
+                collectedItems.hearts += heartDiff;
+            }
+
+            if (keyDiff > 0)
+            {
+                GameState.SaveData.Keys -= keyDiff;
+                for (int i = 1; i <= keyDiff; i++)
+                {
+                    int count = collectedItems.keys + i;
+                    _ = SendLocation($"Key {count}");
+                }
+                collectedItems.keys += keyDiff;
+            }
+
+            if (owlDiff > 0)
+            {
+                GameState.SaveData.CollectedOwls -= owlDiff;
+                for (int i = 1; i <= owlDiff; i++)
+                {
+                    int count = collectedItems.owls + i;
+                    _ = SendLocation($"Owl {count}");
+                }
+                collectedItems.owls += owlDiff;
+            }
+
+            // if (mapDiff.Count > 0)
+            // {
+            //     foreach (string map in mapDiff)
+            //     {
+            //         GameState.SaveData.Maps.Remove(map);
+            //         collectedItems.maps.Add(map);
+            //         _ = SendLocation(map);
+            //     }
+            // }
+
+            // if (artifactDiff.Count > 0)
+            // {
+            //     foreach (ActorType artifact in artifactDiff)
+            //     {
+            //         GameState.SaveData.Artifacts.Remove(artifact);
+            //         collectedItems.artifacts.Add(artifact);
+            //         string artifactName = "";
+            //         switch (artifact)
+            //         {
+            //             case ActorType.LetterCube:
+            //                 artifactName = "The Writing Cube";
+            //                 break;
+            //             case ActorType.NumberCube:
+            //                 artifactName = "The Counting Cube";
+            //                 break;
+            //             case ActorType.Tome:
+            //                 artifactName = "The Tome Artifact";
+            //                 break;
+            //             case ActorType.TriSkull:
+            //                 artifactName = "The Skull Artifact";
+            //                 break;
+            //         }
+            //         _ = SendLocation(artifactName);
+            //     }
+            // }
+        }
+
         public void DrawHUD(GameTime gameTime) { }
-
         public void DrawLevel(GameTime gameTime) { }
-
-        private void Test()
-        {
-            DotSay("Yippee");
-        }
-
-        private async Task HandleCollectBit()
-        {
-            FezapConsole.Print("Collected cube bit");
-            int bitCount = GameState.SaveData.CollectedParts;
-            GameState.SaveData.CollectedParts -= 1;
-            await SendLocation($"Cube Bit {bitCount}");
-        }
-
-        private async void HandleCollectCube()
-        {
-            FezapConsole.Print("Collected golden cube");
-            int goldenCubeCount = GameState.SaveData.CubeShards;
-            GameState.SaveData.CubeShards -= 1;
-            await SendLocation($"Golden Cube {goldenCubeCount}");
-        }
-
-        private async void HandleCollectAnti()
-        {
-            FezapConsole.Print("Collected anti cube");
-            int antiCubeCount = GameState.SaveData.SecretCubes;
-            GameState.SaveData.SecretCubes -= 1;
-            await SendLocation($"Anti-Cube {antiCubeCount}");
-        }
-
-        private async void HandleCollectHeart()
-        {
-            FezapConsole.Print("Collected heart cube");
-            int heartCubeCount = GameState.SaveData.PiecesOfHeart;
-            GameState.SaveData.PiecesOfHeart -= 1;
-            await SendLocation($"Heart Cube {heartCubeCount}");
-        }
-
-        private void HandleCollectTreasure()
-        {
-            // TODO: Identify treasure
-            FezapConsole.Print("Collected treasure");
-            var keysCollected = GameState.SaveData.Keys;
-            var mapsCollected = GameState.SaveData.Maps;
-            var artifactsCollected = GameState.SaveData.Artifacts;
-        }
-
-        private async void HandleCollectOwl()
-        {
-            FezapConsole.Print("Collected owl");
-            int owlCount = GameState.SaveData.CollectedOwls;
-            GameState.SaveData.CollectedOwls -= 1;
-            await SendLocation($"Owl {owlCount}");
-        }
     }
 }
