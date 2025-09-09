@@ -6,6 +6,7 @@ using Archipelago.MultiClient.Net.MessageLog.Messages;
 using Archipelago.MultiClient.Net.Models;
 using FEZAP.Features;
 using FEZAP.Features.Console;
+using FezEngine.Services;
 using FezEngine.Services.Scripting;
 using FezEngine.Tools;
 using FezGame.Services;
@@ -19,6 +20,12 @@ namespace FEZAP.Helpers
         public static ArchipelagoSession session;
         public static DeathLinkService deathLinkService;
         public static Dictionary<string, object> slotData;
+        private static List<string> EmotionalSupportMsgs = [
+            " wants you to know you got this",
+            " believes in you",
+            " is cheering you on",
+            " is rooting for you"
+        ];
 
         [ServiceDependency]
         public IGameStateManager GameState { get; set; }
@@ -134,6 +141,14 @@ namespace FEZAP.Helpers
             FezapConsole.Print($"Sent {item.ItemDisplayName} to {item.ItemGame}", FezapConsole.OutputType.Info);
         }
 
+        /// Make Dot say a custom message
+        public void DotSay(string msg, bool nearGomez, bool hideAfter)
+        {
+            var game_text = ServiceHelper.Get<IContentManagerProvider>().Global.Load<Dictionary<string, Dictionary<string, string>>>("Resources/GameText");
+            game_text[""].Add("FEZAP_CUSTOM", msg);
+            _ = DotService.Say("FEZAP_CUSTOM", nearGomez, hideAfter);
+        }
+
         private void HandleRecvItem(ReceivedItemsHelper helper)
         {
             while (helper.Any())
@@ -206,23 +221,8 @@ namespace FEZAP.Helpers
                         PlayerManager.CanControl = true;
                         break;
                     case "Emotional Support":
-                        string msg = "";
-                        switch (RandomHelper.Random.Next(0, 3))
-                        {
-                            case 0:
-                                msg = $"{item.Player.Name} wants you to know you got this";
-                                break;
-                            case 1:
-                                msg = $"{item.Player.Name} believes in you";
-                                break;
-                            case 2:
-                                msg = $"{item.Player.Name} is cheering you on";
-                                break;
-                            case 3:
-                                msg = $"{item.Player.Name} is rooting for you";
-                                break;
-                        }
-                        DotService.Say(msg, true, true);
+                        string msg = item.Player.Name + RandomHelper.InList(EmotionalSupportMsgs);
+                        DotSay(msg, true, true);
                         break;
                     default:
                         FezapConsole.Print($"Unknown item: {item.ItemDisplayName}");

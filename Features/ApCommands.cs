@@ -17,7 +17,7 @@ namespace FEZAP.Features
 
         public bool Execute(string[] args)
         {
-            DotService.Say("Hello Gomez", true, true);
+            DotService.Say("DOT_CUBES_GET_C", true, true);
             return true;
         }
     }
