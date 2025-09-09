@@ -1,7 +1,27 @@
 ﻿using FEZAP.Features.Console;
+using FezEngine.Services.Scripting;
+using FezEngine.Tools;
 
 namespace FEZAP.Features
 {
+    internal class Debug : IFezapCommand
+    {
+        [ServiceDependency]
+        public IDotService DotService { private get; set; }
+
+        public string Name => "debug";
+
+        public string HelpText => "debug";
+
+        public List<string> Autocomplete(string[] args) { return null; }
+
+        public bool Execute(string[] args)
+        {
+            DotService.Say("Hello Gomez", true, true);
+            return true;
+        }
+    }
+
     internal class Connect : IFezapCommand
     {
         public string Name => "connect";
