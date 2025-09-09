@@ -6,7 +6,6 @@ using Archipelago.MultiClient.Net.MessageLog.Messages;
 using Archipelago.MultiClient.Net.Models;
 using FEZAP.Features;
 using FEZAP.Features.Console;
-using FezEngine.Components;
 using FezEngine.Services.Scripting;
 using FezEngine.Tools;
 using FezGame.Services;
@@ -239,40 +238,42 @@ namespace FEZAP.Helpers
         }
     }
 
-    internal sealed class LocationHandler : GameComponent
+    internal sealed class LocationHandler : IFezapFeature
     {
         private IGomezService GomezService { get; set; }
         private IOwlService OwlService { get; set; }
         private IDotService DotService { get; set; }
 
-        public LocationHandler(Game game) : base(game)
+        public LocationHandler()
         {
-            _ = Waiters.Wait(() =>
-            {
-                return ServiceHelper.FirstLoadDone;
-            },
-            () =>
-            {
-                GomezService = ServiceHelper.Get<IGomezService>();
-                OwlService = ServiceHelper.Get<IOwlService>();
-                DotService = ServiceHelper.Get<IDotService>();
-
-                GomezService.Jumped += Test;
-                GomezService.CollectedSplitUpCube += HandleCollectBit;
-                GomezService.CollectedShard += HandleCollectCube;
-                GomezService.CollectedAnti += HandleCollectAnti;
-                GomezService.CollectedGlobalAnti += HandleCollectAnti;
-                GomezService.CollectedPieceOfHeart += HandleCollectHeart;
-                GomezService.OpenedTreasure += HandleCollectTreasure;
-                OwlService.OwlCollected += HandleCollectOwl;
-            });
+            ServiceHelper.InjectServices(this);
+            // TODO: Figure out the crash from here
+            // GomezService.Jumped += Test;
+            // GomezService.CollectedSplitUpCube += HandleCollectBit;
+            // GomezService.CollectedShard += HandleCollectCube;
+            // GomezService.CollectedAnti += HandleCollectAnti;
+            // GomezService.CollectedGlobalAnti += HandleCollectAnti;
+            // GomezService.CollectedPieceOfHeart += HandleCollectHeart;
+            // GomezService.OpenedTreasure += HandleCollectTreasure;
+            // OwlService.OwlCollected += HandleCollectOwl;
         }
 
-        private static bool isVisible;
+        public void Update(GameTime gameTime)
+        {
+            // TODO: Figure out the crash from here
+            // if (!GomezService.Alive)
+            // {
+            //     // TODO: Customise Cause with PlayerManager.Action and checking ActionType
+            //     var deathlink = new DeathLink(Archipelago.session.Players.ActivePlayer.Name);
+            //     Archipelago.deathLinkService.SendDeathLink(deathlink);
+            // }
+        }
+        public void Initialize() { }
+        public void DrawHUD(GameTime gameTime) { }
+        public void DrawLevel(GameTime gameTime) { }
+
         private void Test()
         {
-            isVisible = !isVisible;
-            GomezService.SetFezVisible(isVisible);
             DotService.Say("Hello", true, true);
         }
 

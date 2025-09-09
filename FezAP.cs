@@ -23,9 +23,6 @@ namespace FEZAP
             Enabled = true;
             Visible = true;
             DrawOrder = 99999;
-
-            LocationHandler locationHandler;
-            ServiceHelper.AddComponent(locationHandler = new LocationHandler(game));
         }
 
         public override void Initialize()
