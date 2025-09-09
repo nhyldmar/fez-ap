@@ -1,12 +1,7 @@
 ﻿using FezEngine.Tools;
 using FezGame.Services;
 using FEZAP.Features.Console;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace FEZAP.Features
 {

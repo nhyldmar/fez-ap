@@ -1,9 +1,4 @@
-﻿using Common;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using FezGame.Services;
+﻿using FezGame.Services;
 using FezEngine.Tools;
 using FEZAP.Features.Console;
 

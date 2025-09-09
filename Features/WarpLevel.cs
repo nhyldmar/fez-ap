@@ -1,19 +1,12 @@
-﻿using Common;
-using FezEngine.Components;
+﻿using FezEngine.Components;
 using FezEngine.Services;
-using FezEngine.Services.Scripting;
 using FezEngine.Tools;
 using FezGame;
 using FezGame.Services;
 using FezGame.Structure;
 using FEZAP.Features.Console;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FEZAP.Features
 {

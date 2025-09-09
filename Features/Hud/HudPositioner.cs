@@ -1,9 +1,6 @@
 ﻿using FEZAP.Features.Console;
 using FEZAP.Helpers;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FEZAP.Features.Hud
 {

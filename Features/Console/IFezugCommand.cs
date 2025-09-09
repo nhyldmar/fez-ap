@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace FEZAP.Features.Console
+﻿namespace FEZAP.Features.Console
 {
     public interface IFezapCommand
     {

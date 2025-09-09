@@ -3,16 +3,9 @@ using FezEngine.Tools;
 using FezGame;
 using FEZAP.Features.Console;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using MonoMod.RuntimeDetour;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FEZAP.Features
 {

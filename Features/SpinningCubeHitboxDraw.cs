@@ -1,9 +1,6 @@
-﻿using FezEngine;
-using FezEngine.Components;
+﻿using FezEngine.Components;
 using FezEngine.Effects;
-using FezEngine.Services;
 using FezEngine.Structure;
-using FezEngine.Structure.Geometry;
 using FezEngine.Tools;
 using FezGame.Components;
 using FezGame.Services;
@@ -11,11 +8,6 @@ using FEZAP.Features.Console;
 using FEZAP.Helpers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FEZAP.Features
 {
