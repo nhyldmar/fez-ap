@@ -6,9 +6,11 @@ using Archipelago.MultiClient.Net.MessageLog.Messages;
 using Archipelago.MultiClient.Net.Models;
 using FEZAP.Features;
 using FEZAP.Features.Console;
+using FezEngine.Components;
 using FezEngine.Services.Scripting;
 using FezEngine.Tools;
 using FezGame.Services;
+using Microsoft.Xna.Framework;
 
 namespace FEZAP.Helpers
 {
@@ -35,9 +37,6 @@ namespace FEZAP.Helpers
         public IDotService DotService { private get; set; }
 
         [ServiceDependency]
-        public IGomezService GomezService { private get; set; }
-
-        [ServiceDependency]
         public IOwlService OwlService { private get; set; }
 
         public void Connect(string server, int port, string user, string pass)
@@ -58,16 +57,6 @@ namespace FEZAP.Helpers
                 session.Socket.ErrorReceived += HandleErrorRecv;
                 session.Socket.SocketClosed += HandleSocketClosed;
                 session.Items.ItemReceived += HandleRecvItem;
-
-                // Bind locations
-                // TODO: Figure out why these don't trigger
-                GomezService.CollectedSplitUpCube += HandleCollectBit;
-                GomezService.CollectedShard += HandleCollectCube;
-                GomezService.CollectedAnti += HandleCollectAnti;
-                GomezService.CollectedGlobalAnti += HandleCollectAnti;
-                GomezService.CollectedPieceOfHeart += HandleCollectHeart;
-                GomezService.OpenedTreasure += HandleCollectTreasure;
-                OwlService.OwlCollected += HandleCollectOwl;
 
                 // Handle deathlink
                 deathLinkService = session.CreateDeathLinkService();
@@ -247,6 +236,44 @@ namespace FEZAP.Helpers
         {
             FezapConsole.Print($"Death received: {deathLink.Cause}", FezapConsole.OutputType.Info);
             new Kill().Execute(null);
+        }
+    }
+
+    internal sealed class LocationHandler : GameComponent
+    {
+        private IGomezService GomezService { get; set; }
+        private IOwlService OwlService { get; set; }
+        private IDotService DotService { get; set; }
+
+        public LocationHandler(Game game) : base(game)
+        {
+            _ = Waiters.Wait(() =>
+            {
+                return ServiceHelper.FirstLoadDone;
+            },
+            () =>
+            {
+                GomezService = ServiceHelper.Get<IGomezService>();
+                OwlService = ServiceHelper.Get<IOwlService>();
+                DotService = ServiceHelper.Get<IDotService>();
+
+                GomezService.Jumped += Test;
+                GomezService.CollectedSplitUpCube += HandleCollectBit;
+                GomezService.CollectedShard += HandleCollectCube;
+                GomezService.CollectedAnti += HandleCollectAnti;
+                GomezService.CollectedGlobalAnti += HandleCollectAnti;
+                GomezService.CollectedPieceOfHeart += HandleCollectHeart;
+                GomezService.OpenedTreasure += HandleCollectTreasure;
+                OwlService.OwlCollected += HandleCollectOwl;
+            });
+        }
+
+        private static bool isVisible;
+        private void Test()
+        {
+            isVisible = !isVisible;
+            GomezService.SetFezVisible(isVisible);
+            DotService.Say("Hello", true, true);
         }
 
         private void HandleCollectBit()

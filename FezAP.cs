@@ -1,19 +1,9 @@
-using Common;
-using FezEngine.Components;
 using FezEngine.Tools;
 using FezGame;
-using FezGame.Components;
-using FezGame.Services;
 using FEZAP.Features;
-using FEZAP.Features.Console;
 using FEZAP.Helpers;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FEZAP
 {
@@ -33,6 +23,9 @@ namespace FEZAP
             Enabled = true;
             Visible = true;
             DrawOrder = 99999;
+
+            LocationHandler locationHandler;
+            ServiceHelper.AddComponent(locationHandler = new LocationHandler(game));
         }
 
         public override void Initialize()
@@ -41,7 +34,7 @@ namespace FEZAP
 
             DrawingTools.Init();
 
-            Features = new List<IFezapFeature>();
+            Features = [];
             foreach (Type type in Assembly.GetExecutingAssembly().GetTypes()
             .Where(t => t.IsClass && typeof(IFezapFeature).IsAssignableFrom(t)))
             {
