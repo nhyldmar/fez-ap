@@ -10,11 +10,12 @@ using FezEngine.Services;
 using FezEngine.Services.Scripting;
 using FezEngine.Tools;
 using FezGame.Services;
+using FezGame.Tools;
 using Microsoft.Xna.Framework;
 
 namespace FEZAP.Helpers
 {
-    public class Archipelago
+    public class Archipelago : IFezapFeature
     {
         public static readonly string gameName = "Fez";
         public static ArchipelagoSession session;
@@ -26,12 +27,16 @@ namespace FEZAP.Helpers
             " is cheering you on",
             " is rooting for you"
         ];
+        private static Dictionary<string, Dictionary<string, string>> gameText = ServiceHelper.Get<IContentManagerProvider>().Global.Load<Dictionary<string, Dictionary<string, string>>>("Resources/GameText");
 
         [ServiceDependency]
         public IGameStateManager GameState { get; set; }
 
         [ServiceDependency]
         public IPlayerManager PlayerManager { private get; set; }
+
+        [ServiceDependency]
+        private IGomezService GomezService { get; set; }
 
         [ServiceDependency]
         public IGameService GameService { private get; set; }
@@ -141,11 +146,9 @@ namespace FEZAP.Helpers
             FezapConsole.Print($"Sent {item.ItemDisplayName} to {item.ItemGame}", FezapConsole.OutputType.Info);
         }
 
-        /// Make Dot say a custom message
-        public void DotSay(string msg, bool nearGomez, bool hideAfter)
+        public void DotSay(string msg, bool nearGomez = true, bool hideAfter = true)
         {
-            var game_text = ServiceHelper.Get<IContentManagerProvider>().Global.Load<Dictionary<string, Dictionary<string, string>>>("Resources/GameText");
-            game_text[""].Add("FEZAP_CUSTOM", msg);
+            gameText[""]["FEZAP_CUSTOM"] = msg;
             _ = DotService.Say("FEZAP_CUSTOM", nearGomez, hideAfter);
         }
 
@@ -221,8 +224,7 @@ namespace FEZAP.Helpers
                         PlayerManager.CanControl = true;
                         break;
                     case "Emotional Support":
-                        string msg = item.Player.Name + RandomHelper.InList(EmotionalSupportMsgs);
-                        DotSay(msg, true, true);
+                        DotSay(item.Player.Name + RandomHelper.InList(EmotionalSupportMsgs));
                         break;
                     default:
                         FezapConsole.Print($"Unknown item: {item.ItemDisplayName}");
@@ -236,18 +238,10 @@ namespace FEZAP.Helpers
             FezapConsole.Print($"Death received: {deathLink.Cause}", FezapConsole.OutputType.Info);
             new Kill().Execute(null);
         }
-    }
 
-    internal sealed class LocationHandler : IFezapFeature
-    {
-        private IGomezService GomezService { get; set; }
-        private IOwlService OwlService { get; set; }
-        private IDotService DotService { get; set; }
-
-        public LocationHandler()
+        public void Initialize()
         {
-            ServiceHelper.InjectServices(this);
-            // TODO: Figure out the crash from here
+            // TODO: Figure out how to get the events to trigger the handlers
             // GomezService.Jumped += Test;
             // GomezService.CollectedSplitUpCube += HandleCollectBit;
             // GomezService.CollectedShard += HandleCollectCube;
@@ -260,52 +254,74 @@ namespace FEZAP.Helpers
 
         public void Update(GameTime gameTime)
         {
-            // TODO: Figure out the crash from here
-            // if (!GomezService.Alive)
-            // {
-            //     // TODO: Customise Cause with PlayerManager.Action and checking ActionType
-            //     var deathlink = new DeathLink(Archipelago.session.Players.ActivePlayer.Name);
-            //     Archipelago.deathLinkService.SendDeathLink(deathlink);
-            // }
+            if (!GomezService.Alive)
+            {
+                DotSay("Skill issue");
+                if (IsConnected())
+                {
+                    // TODO: Customise Cause with PlayerManager.Action and checking ActionType
+                    var deathlink = new DeathLink(session.Players.ActivePlayer.Name);
+                    deathLinkService.SendDeathLink(deathlink);
+                }
+            }
         }
-        public void Initialize() { }
+
         public void DrawHUD(GameTime gameTime) { }
+
         public void DrawLevel(GameTime gameTime) { }
 
         private void Test()
         {
-            DotService.Say("Hello", true, true);
+            DotSay("Yippee");
         }
 
-        private void HandleCollectBit()
+        private async Task HandleCollectBit()
         {
             FezapConsole.Print("Collected cube bit");
+            int bitCount = GameState.SaveData.CollectedParts;
+            GameState.SaveData.CollectedParts -= 1;
+            await SendLocation($"Cube Bit {bitCount}");
         }
 
-        private void HandleCollectCube()
+        private async void HandleCollectCube()
         {
             FezapConsole.Print("Collected golden cube");
+            int goldenCubeCount = GameState.SaveData.CubeShards;
+            GameState.SaveData.CubeShards -= 1;
+            await SendLocation($"Golden Cube {goldenCubeCount}");
         }
 
-        private void HandleCollectAnti()
+        private async void HandleCollectAnti()
         {
             FezapConsole.Print("Collected anti cube");
+            int antiCubeCount = GameState.SaveData.SecretCubes;
+            GameState.SaveData.SecretCubes -= 1;
+            await SendLocation($"Anti-Cube {antiCubeCount}");
         }
 
-        private void HandleCollectHeart()
+        private async void HandleCollectHeart()
         {
             FezapConsole.Print("Collected heart cube");
+            int heartCubeCount = GameState.SaveData.PiecesOfHeart;
+            GameState.SaveData.PiecesOfHeart -= 1;
+            await SendLocation($"Heart Cube {heartCubeCount}");
         }
 
         private void HandleCollectTreasure()
         {
             // TODO: Identify treasure
             FezapConsole.Print("Collected treasure");
+            var keysCollected = GameState.SaveData.Keys;
+            var mapsCollected = GameState.SaveData.Maps;
+            var artifactsCollected = GameState.SaveData.Artifacts;
         }
 
-        private void HandleCollectOwl()
+        private async void HandleCollectOwl()
         {
             FezapConsole.Print("Collected owl");
+            int owlCount = GameState.SaveData.CollectedOwls;
+            GameState.SaveData.CollectedOwls -= 1;
+            await SendLocation($"Owl {owlCount}");
         }
     }
 }

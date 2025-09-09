@@ -4,24 +4,6 @@ using FezEngine.Tools;
 
 namespace FEZAP.Features
 {
-    internal class Debug : IFezapCommand
-    {
-        [ServiceDependency]
-        public IDotService DotService { private get; set; }
-
-        public string Name => "debug";
-
-        public string HelpText => "debug";
-
-        public List<string> Autocomplete(string[] args) { return null; }
-
-        public bool Execute(string[] args)
-        {
-            DotService.Say("DOT_CUBES_GET_C", true, true);
-            return true;
-        }
-    }
-
     internal class Connect : IFezapCommand
     {
         public string Name => "connect";
@@ -138,7 +120,7 @@ namespace FEZAP.Features
             }
             else
             {
-                FezapConsole.Print("Unable set ready status. Not connected to a server. Use 'connect' command first.");
+                FezapConsole.Print("Unable set ready status. Not connected to a server. Use 'connect' command first.", FezapConsole.OutputType.Warning);
             }
             return true;
         }
