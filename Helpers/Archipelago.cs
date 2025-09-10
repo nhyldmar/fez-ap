@@ -79,7 +79,8 @@ namespace FEZAP.Helpers
 
                 // Get slot data
                 slotData = session.DataStorage.GetSlotData(session.ConnectionInfo.Slot);
-                // TODO: Parse slot data and opulate receivedItems and collectedItems
+
+                RestoreItemInfo();
 
                 // Bind events
                 session.MessageLog.OnMessageReceived += HandleLogMsg;
@@ -90,7 +91,6 @@ namespace FEZAP.Helpers
                 // Handle deathlink
                 deathLinkService = session.CreateDeathLinkService();
                 deathLinkService.OnDeathLinkReceived += HandleDeathlink;
-                // TODO: Find an event to bind to Gomez death
                 if ((bool)slotData["death_link"])
                 {
                     deathLinkService.EnableDeathLink();
@@ -282,22 +282,112 @@ namespace FEZAP.Helpers
             new Kill().Execute(null);
         }
 
-        public void Initialize()
+        private void RestoreItemInfo()
         {
-            // TODO: Figure out how to get the events to trigger when we expect them to
-            // GomezService.CollectedSplitUpCube += HandleCollectBit;
-            // GomezService.CollectedShard += HandleCollectCube;
-            // GomezService.CollectedAnti += HandleCollectAnti;
-            // GomezService.CollectedGlobalAnti += HandleCollectAnti;
-            // GomezService.CollectedPieceOfHeart += HandleCollectHeart;
-            // GomezService.OpenedTreasure += HandleCollectTreasure;
-            // OwlService.OwlCollected += HandleCollectOwl;
+            if (IsConnected())
+            {
+                receivedItems = new();
+                collectedItems = new();
+
+                foreach (var item in session.Items.AllItemsReceived)
+                {
+                    if (item.ItemName == "Golden Cube")
+                    {
+                        receivedItems.cubes += 1;
+                    }
+                    else if (item.ItemName == "Anti-Cube")
+                    {
+                        receivedItems.antis += 1;
+                    }
+                    else if (item.ItemName == "Heart Cube")
+                    {
+                        receivedItems.hearts += 1;
+                    }
+                    else if (item.ItemName == "Key")
+                    {
+                        receivedItems.keys += 1;
+                    }
+                    else if (item.ItemName == "Owl")
+                    {
+                        receivedItems.owls += 1;
+                    }
+                    else if (item.ItemName.Contains("Map"))
+                    {
+                        receivedItems.maps.Add(item.ItemName);
+                    }
+                    else if (item.ItemName == "The Writing Cube")
+                    {
+                        receivedItems.artifacts.Add(ActorType.LetterCube);
+                    }
+                    else if (item.ItemName == "The Counting Cube")
+                    {
+                        receivedItems.artifacts.Add(ActorType.NumberCube);
+                    }
+                    else if (item.ItemName == "The Tome Artifact")
+                    {
+                        receivedItems.artifacts.Add(ActorType.Tome);
+                    }
+                    else if (item.ItemName == "The Skull Artifact")
+                    {
+                        receivedItems.artifacts.Add(ActorType.TriSkull);
+                    }
+                }
+
+                foreach (var locationId in session.Locations.AllLocationsChecked)
+                {
+                    string locationName = session.Locations.GetLocationNameFromId(locationId);
+                    if (locationName.Contains("Golden Cube"))
+                    {
+                        collectedItems.cubes += 1;
+                    }
+                    else if (locationName.Contains("Anti-Cube"))
+                    {
+                        collectedItems.antis += 1;
+                    }
+                    else if (locationName.Contains("Heart Cube"))
+                    {
+                        collectedItems.hearts += 1;
+                    }
+                    else if (locationName.Contains("Key"))
+                    {
+                        collectedItems.keys += 1;
+                    }
+                    else if (locationName.Contains("Owl"))
+                    {
+                        collectedItems.owls += 1;
+                    }
+                    else if (locationName.Contains("Map"))
+                    {
+                        collectedItems.maps.Add(locationName);
+                    }
+                    else if (locationName == "The Writing Cube")
+                    {
+                        collectedItems.artifacts.Add(ActorType.LetterCube);
+                    }
+                    else if (locationName == "The Counting Cube")
+                    {
+                        collectedItems.artifacts.Add(ActorType.NumberCube);
+                    }
+                    else if (locationName == "The Tome Artifact")
+                    {
+                        collectedItems.artifacts.Add(ActorType.Tome);
+                    }
+                    else if (locationName == "The Skull Artifact")
+                    {
+                        collectedItems.artifacts.Add(ActorType.TriSkull);
+                    }
+                }
+            }
         }
 
         public void Update(GameTime gameTime)
         {
-            MonitorDeath();
-            MonitorCollectibles();
+            if (IsConnected())
+            {
+                MonitorDeath();
+                MonitorCollectibles();
+                MonitorGoal();
+            }
         }
 
         private void MonitorDeath()
@@ -309,14 +399,10 @@ namespace FEZAP.Helpers
             }
             else if (!GomezService.Alive && !sentDeath)
             {
-                FezapConsole.Print("Death");
-                DotSay("Skill issue");
-                if (IsConnected())
-                {
-                    // TODO: Customise Cause with PlayerManager.Action and checking ActionType
-                    var deathlink = new DeathLink(session.Players.ActivePlayer.Name);
-                    deathLinkService.SendDeathLink(deathlink);
-                }
+                // TODO: Customise Cause with PlayerManager.Action and checking ActionType
+                var deathlink = new DeathLink(session.Players.ActivePlayer.Name);
+                deathLinkService.SendDeathLink(deathlink);
+                FezapConsole.Print("Death sent");
                 sentDeath = true;
             }
         }
@@ -329,11 +415,9 @@ namespace FEZAP.Helpers
             int heartDiff = GameState.SaveData.PiecesOfHeart - receivedItems.hearts;
             int keyDiff = GameState.SaveData.Keys - receivedItems.keys;
             int owlDiff = GameState.SaveData.CollectedOwls - receivedItems.owls;
-            // TODO: Fix null problem here from the Excepts
+            // TODO: Fix null problem
             // List<string> mapDiff = [.. GameState.SaveData.Maps.Except(receivedItems.maps)];
             // List<ActorType> artifactDiff = [.. GameState.SaveData.Artifacts.Except(receivedItems.artifacts)];
-            List<string> mapDiff = [];
-            List<ActorType> artifactDiff = [];
 
             if (bitDiff > 0)
             {
@@ -438,6 +522,27 @@ namespace FEZAP.Helpers
             // }
         }
 
+        private void MonitorGoal()
+        {
+            if ((string)slotData["goal"] == "32 Cubes")
+            {
+                if (GameState.SaveData.Finished32)
+                {
+                    FezapConsole.Print("Goal achieved");
+                    session.SetGoalAchieved();
+                }
+            }
+            else if ((string)slotData["goal"] == "64 Cubes")
+            {
+                if (GameState.SaveData.Finished64)
+                {
+                    FezapConsole.Print("Goal achieved");
+                    session.SetGoalAchieved();
+                }
+            }
+        }
+
+        public void Initialize() { }
         public void DrawHUD(GameTime gameTime) { }
         public void DrawLevel(GameTime gameTime) { }
     }
