@@ -1,4 +1,5 @@
-﻿using FEZAP.Features.Console;
+﻿using Archipelago.MultiClient.Net.Models;
+using FEZAP.Features.Console;
 using FezEngine.Services.Scripting;
 using FezEngine.Tools;
 
@@ -72,7 +73,10 @@ namespace FEZAP.Features
         {
             if (Helpers.Archipelago.IsConnected())
             {
-                FezapConsole.Print(Helpers.Archipelago.session.Items.AllItemsReceived.ToString());
+                foreach (ItemInfo item in Helpers.Archipelago.session.Items.AllItemsReceived)
+                {
+                    FezapConsole.Print(item.ItemName);
+                }
             }
             else
             {
@@ -94,7 +98,11 @@ namespace FEZAP.Features
         {
             if (Helpers.Archipelago.IsConnected())
             {
-                FezapConsole.Print(Helpers.Archipelago.session.Locations.AllMissingLocations.ToString());
+                foreach (long locationId in Helpers.Archipelago.session.Locations.AllMissingLocations)
+                {
+                    string locationName = Helpers.Archipelago.session.Locations.GetLocationNameFromId(locationId);
+                    FezapConsole.Print(locationName);
+                }
             }
             else
             {
