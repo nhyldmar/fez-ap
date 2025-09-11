@@ -44,7 +44,7 @@ namespace FEZAP.Helpers
         private static bool sentDeath;
         private static ItemSaveData receivedItems = new();
         private static ItemSaveData collectedItems = new();
-        private static Dictionary<string, Dictionary<string, string>> gameText = ServiceHelper.Get<IContentManagerProvider>().Global.Load<Dictionary<string, Dictionary<string, string>>>("Resources/GameText");
+        private static readonly Dictionary<string, Dictionary<string, string>> gameText = ServiceHelper.Get<IContentManagerProvider>().Global.Load<Dictionary<string, Dictionary<string, string>>>("Resources/GameText");
 
         [ServiceDependency]
         public IGameStateManager GameState { get; set; }
@@ -67,7 +67,7 @@ namespace FEZAP.Helpers
         [ServiceDependency]
         public IOwlService OwlService { private get; set; }
 
-        public void Connect(string server, int port, string user, string pass)
+        public void Connect(string server, int port, string user, string pass = null)
         {
             session = ArchipelagoSessionFactory.CreateSession(server, port);
 
@@ -75,11 +75,11 @@ namespace FEZAP.Helpers
 
             if (result.Successful)
             {
-                FezapConsole.Print("Successfully connected to AP server.", FezapConsole.OutputType.Info);
+                // TODO: Uncomment this when removing the connect in Initialize
+                // FezapConsole.Print("Successfully connected to AP server.", FezapConsole.OutputType.Info);
 
-                // Get slot data
+                // Get slot data and restore item info
                 slotData = session.DataStorage.GetSlotData(session.ConnectionInfo.Slot);
-
                 RestoreItemInfo();
 
                 // Bind events
@@ -91,10 +91,11 @@ namespace FEZAP.Helpers
                 // Handle deathlink
                 deathLinkService = session.CreateDeathLinkService();
                 deathLinkService.OnDeathLinkReceived += HandleDeathlink;
-                if ((bool)slotData["death_link"])
-                {
-                    deathLinkService.EnableDeathLink();
-                }
+                // TODO: Figure out slotData casting problem
+                // if ((bool)slotData["death_link"])
+                // {
+                //     deathLinkService.EnableDeathLink();
+                // }
             }
             else
             {
@@ -524,25 +525,30 @@ namespace FEZAP.Helpers
 
         private void MonitorGoal()
         {
-            if ((string)slotData["goal"] == "32 Cubes")
-            {
-                if (GameState.SaveData.Finished32)
-                {
-                    FezapConsole.Print("Goal achieved");
-                    session.SetGoalAchieved();
-                }
-            }
-            else if ((string)slotData["goal"] == "64 Cubes")
-            {
-                if (GameState.SaveData.Finished64)
-                {
-                    FezapConsole.Print("Goal achieved");
-                    session.SetGoalAchieved();
-                }
-            }
+            // TODO: Figure out slotData casting problem
+            // if ((string)slotData["goal"] == "32 Cubes")
+            // {
+            //     if (GameState.SaveData.Finished32)
+            //     {
+            //         FezapConsole.Print("Goal achieved");
+            //         session.SetGoalAchieved();
+            //     }
+            // }
+            // else if ((string)slotData["goal"] == "64 Cubes")
+            // {
+            //     if (GameState.SaveData.Finished64)
+            //     {
+            //         FezapConsole.Print("Goal achieved");
+            //         session.SetGoalAchieved();
+            //     }
+            // }
         }
 
-        public void Initialize() { }
+        public void Initialize()
+        {
+            // TODO: Remove after debugging
+            Connect("localhost", 38281, "Fez_Test");
+        }
         public void DrawHUD(GameTime gameTime) { }
         public void DrawLevel(GameTime gameTime) { }
     }
