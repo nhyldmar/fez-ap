@@ -1,18 +1,12 @@
 using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
-using FEZAP.Features;
-using FEZAP.Features.Console;
-using FezEngine.Components;
-using FezEngine.Services;
 using FezEngine.Services.Scripting;
 using FezEngine.Tools;
 using FezGame.Services;
 using FezGame.Structure;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 
 namespace FEZAP.Helpers
 {
-    public class DeathManager : IFezapFeature
+    public class DeathManager
     {
         [ServiceDependency]
         public IGomezService GomezService { get; set; }
@@ -20,12 +14,13 @@ namespace FEZAP.Helpers
         [ServiceDependency]
         public IPlayerManager PlayerManager { get; set; }
 
-        private bool handlingDeath;  // Used to avoid sending more deathlinks than intended
+        public static bool isDeathlink;
+        private static bool handlingDeath;  // Used to avoid sending more deathlinks than intended
 
         public void HandleDeathlink(DeathLink deathLink)
         {
             handlingDeath = true;
-            FezapConsole.Print($"Death received: {deathLink.Cause}", FezapConsole.OutputType.Info);
+            HudManager.Print($"Death received: {deathLink.Cause}");
             PlayerManager.Action = PlayerManager.Grounded ? ActionType.Dying : ActionType.FreeFalling;
         }
 
@@ -42,7 +37,7 @@ namespace FEZAP.Helpers
                 string cause = GetCause(PlayerManager.Action);
                 DeathLink deathlink = new(playerName, cause);
                 ArchipelagoManager.deathLinkService.SendDeathLink(deathlink);
-                FezapConsole.Print("Death sent");
+                HudManager.Print("Death sent");
             }
         }
 
@@ -60,10 +55,5 @@ namespace FEZAP.Helpers
                 _ => "Died of death",
             };
         }
-
-        public void Initialize() { }
-        public void Update(GameTime gameTime) { }
-        public void DrawHUD(GameTime gameTime) { }
-        public void DrawLevel(GameTime gameTime) { }
     }
 }

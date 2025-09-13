@@ -4,21 +4,18 @@ using Archipelago.MultiClient.Net.Enums;
 using Archipelago.MultiClient.Net.Helpers;
 using Archipelago.MultiClient.Net.MessageLog.Messages;
 using Archipelago.MultiClient.Net.Models;
-using FEZAP.Features;
-using FEZAP.Features.Console;
 using FezEngine.Services.Scripting;
 using FezEngine.Tools;
 using FezGame.Services;
-using Microsoft.Xna.Framework;
+using Color = Microsoft.Xna.Framework.Color;
 
 namespace FEZAP.Helpers
 {
-    public class ArchipelagoManager : IFezapFeature
+    public class ArchipelagoManager
     {
         public static readonly string gameName = "Fez";
         public static ArchipelagoSession session;
         public static DeathLinkService deathLinkService;
-        private static Dictionary<string, object> slotData;
         private static readonly DeathManager deathManager = new();
         private static readonly ItemManager itemManager = new();
         private static readonly LocationManager locationManager = new();
@@ -67,20 +64,15 @@ namespace FEZAP.Helpers
                 {
                     errorMessage += $"\n    {error}";
                 }
-                FezapConsole.Print(errorMessage, FezapConsole.OutputType.Error);
+                HudManager.Print(errorMessage, Color.Red);
             }
         }
 
         private static void OnConnectSuccess()
         {
-            FezapConsole.Print("Successfully connected to AP server.", FezapConsole.OutputType.Info);
-
             // Restore internal information
             itemManager.RestoreReceivedItems();
             locationManager.RestoreCollectedLocations();
-
-            // Get slot data and restore item info
-            slotData = session.DataStorage.GetSlotData(session.ConnectionInfo.Slot);
 
             // Bind events
             session.MessageLog.OnMessageReceived += HandleLogMsg;
@@ -88,13 +80,21 @@ namespace FEZAP.Helpers
             session.Socket.SocketClosed += HandleSocketClosed;
             session.Items.ItemReceived += HandleRecvItem;
 
-            // Bind deathlink
+            // Get slot data and restore item info
+            var slotData = session.DataStorage.GetSlotData(session.ConnectionInfo.Slot);
+            LocationManager.goal = (string)slotData["Goal"];
+            DeathManager.isDeathlink = (bool)slotData["Goal"];
+
+            // Setup deathlink
             deathLinkService = session.CreateDeathLinkService();
-            deathLinkService.OnDeathLinkReceived += deathManager.HandleDeathlink;
-            if ((bool)slotData["death_link"])
+            if (DeathManager.isDeathlink)
             {
                 deathLinkService.EnableDeathLink();
+                deathLinkService.OnDeathLinkReceived += deathManager.HandleDeathlink;
             }
+
+            // Display in UI that session is connected
+            HudManager.isConnected = true;
         }
 
         public static bool IsConnected()
@@ -115,7 +115,7 @@ namespace FEZAP.Helpers
             {
                 case CountdownLogMessage:
                 case ServerChatLogMessage:
-                    FezapConsole.Print(message.ToString());
+                    HudManager.Print(message.ToString());
                     break;
                 default:
                     break;
@@ -124,28 +124,28 @@ namespace FEZAP.Helpers
 
         private static void HandleErrorRecv(Exception e, string message)
         {
-            FezapConsole.Print($"Error: {message}\n{e}", FezapConsole.OutputType.Error);
+            HudManager.Print($"Error: {message}\n{e}", Color.Red);
         }
 
         private static void HandleSocketClosed(string reason)
         {
             if (reason != "")
             {
-                FezapConsole.Print($"Socket closed: {reason}");
+                HudManager.Print($"Socket closed: {reason}", Color.Red);
                 // TODO: Reattempt connection logic with retry count
+                HudManager.isConnected = false;
             }
         }
 
         public static async Task SendLocation(string name)
         {
-            FezapConsole.Print($"Collected {name}");
             if (IsConnected())
             {
                 var id = session.Locations.GetLocationIdFromName(gameName, name);
                 var result = await session.Locations.ScoutLocationsAsync(id);
                 ScoutedItemInfo item = result[0];
                 await session.Locations.CompleteLocationChecksAsync(id);
-                FezapConsole.Print($"Sent {item.ItemDisplayName} to {item.ItemGame}", FezapConsole.OutputType.Info);
+                HudManager.Print($"Sent {item.ItemDisplayName} to {item.ItemGame}");
             }
         }
 
@@ -154,43 +154,22 @@ namespace FEZAP.Helpers
             while (helper.Any())
             {
                 ItemInfo item = helper.DequeueItem();
-                FezapConsole.Print($"Received {item.ItemDisplayName} from {item.ItemGame}", FezapConsole.OutputType.Info);
+                HudManager.Print($"Received {item.ItemDisplayName} from {item.ItemGame}");
                 itemManager.HandleReceivedItem(item);
             }
         }
 
-        public void Update(GameTime gameTime)
+        public static void Update()
         {
             if (IsConnected())
             {
-                deathManager.MonitorDeath();
-                locationManager.HandleLocationChecking();
-                MonitorGoal();
-            }
-        }
-
-        private void MonitorGoal()
-        {
-            if ((string)slotData["goal"] == "32 Cubes")
-            {
-                if (GameState.SaveData.Finished32)
+                locationManager.MonitorLocations();
+                locationManager.MonitorGoal();
+                if (DeathManager.isDeathlink)
                 {
-                    FezapConsole.Print("Goal achieved");
-                    session.SetGoalAchieved();
-                }
-            }
-            else if ((string)slotData["goal"] == "64 Cubes")
-            {
-                if (GameState.SaveData.Finished64)
-                {
-                    FezapConsole.Print("Goal achieved");
-                    session.SetGoalAchieved();
+                    deathManager.MonitorDeath();
                 }
             }
         }
-
-        public void Initialize() { }
-        public void DrawHUD(GameTime gameTime) { }
-        public void DrawLevel(GameTime gameTime) { }
     }
 }

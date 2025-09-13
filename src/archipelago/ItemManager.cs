@@ -1,16 +1,13 @@
 using Archipelago.MultiClient.Net.Models;
-using FEZAP.Features;
-using FEZAP.Features.Console;
 using FezEngine.Services;
 using FezEngine.Services.Scripting;
 using FezEngine.Structure;
 using FezEngine.Tools;
 using FezGame.Services;
-using Microsoft.Xna.Framework;
 
 namespace FEZAP.Helpers
 {
-    public class ItemManager : IFezapFeature
+    public class ItemManager
     {
         [ServiceDependency]
         public IGameStateManager GameState { get; set; }
@@ -124,7 +121,7 @@ namespace FEZAP.Helpers
                     DoEmotionalSupport(item);
                     break;
                 default:
-                    FezapConsole.Print($"Unknown item: {item.ItemDisplayName}");
+                    HudManager.Print($"Unknown item: {item.ItemDisplayName}");
                     break;
             }
         }
@@ -148,10 +145,5 @@ namespace FEZAP.Helpers
             gameText[""]["FEZAP_CUSTOM"] = item.Player.Name + RandomHelper.InList(EmotionalSupportMsgs);
             _ = DotService.Say("FEZAP_CUSTOM", true, true);
         }
-
-        public void Initialize() { }
-        public void Update(GameTime gameTime) { }
-        public void DrawHUD(GameTime gameTime) { }
-        public void DrawLevel(GameTime gameTime) { }
     }
 }
