@@ -56,6 +56,7 @@ namespace FEZAP.Helpers
                 ActionType.CrushHorizontal => "Squashed horizontally",
                 ActionType.CrushVertical => "Squashed vertically",
                 ActionType.SuckedIn => "Sucked into a black hole",
+                ActionType.Suffering => "Got too close to danger",
                 _ => "Died of death",
             };
         }
