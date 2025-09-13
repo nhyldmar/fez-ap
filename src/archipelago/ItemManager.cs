@@ -5,7 +5,7 @@ using FezEngine.Structure;
 using FezEngine.Tools;
 using FezGame.Services;
 
-namespace FEZAP.Helpers
+namespace FEZAP.Archipelago
 {
     public class ItemManager
     {

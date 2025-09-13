@@ -9,7 +9,7 @@ using FezEngine.Tools;
 using FezGame.Services;
 using Color = Microsoft.Xna.Framework.Color;
 
-namespace FEZAP.Helpers
+namespace FEZAP.Archipelago
 {
     public class ArchipelagoManager
     {

@@ -4,7 +4,7 @@ using FezEngine.Tools;
 using FezGame.Services;
 using FezGame.Structure;
 
-namespace FEZAP.Helpers
+namespace FEZAP.Archipelago
 {
     public class DeathManager
     {

@@ -4,7 +4,7 @@ using FezGame.Services;
 using FezGame.Structure;
 using Color = Microsoft.Xna.Framework.Color;
 
-namespace FEZAP.Helpers
+namespace FEZAP.Archipelago
 {
     public class LocationManager
     {

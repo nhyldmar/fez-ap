@@ -2,6 +2,7 @@ using FezEngine.Tools;
 using FezGame;
 using FEZAP.Helpers;
 using Microsoft.Xna.Framework;
+using FEZAP.Archipelago;
 
 namespace FEZAP
 {

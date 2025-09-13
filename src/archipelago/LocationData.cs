@@ -1,6 +1,6 @@
 using FezEngine.Structure;
 
-namespace FEZAP.Helpers
+namespace FEZAP.Archipelago
 {
     /// Location information container
     public readonly struct Location(string name, string levelName, List<int> emplacement)

@@ -1,6 +1,7 @@
+using FEZAP.Helpers;
 using Microsoft.Xna.Framework;
 
-namespace FEZAP.Helpers
+namespace FEZAP.Archipelago
 {
     class HudManager()
     {
