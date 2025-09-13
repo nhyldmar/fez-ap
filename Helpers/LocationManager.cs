@@ -17,12 +17,12 @@ namespace FEZAP.Helpers
 
         public static List<Location> allCollectedLocations = [];
 
-        public static void RestoreCollectedLocations()
+        public void RestoreCollectedLocations()
         {
-            var serverCheckedIds = Archipelago.session.Locations.AllLocationsChecked;
+            var serverCheckedIds = ArchipelagoManager.session.Locations.AllLocationsChecked;
             foreach (long id in serverCheckedIds)
             {
-                string name = Archipelago.session.Locations.GetLocationNameFromId(id);
+                string name = ArchipelagoManager.session.Locations.GetLocationNameFromId(id);
                 Location location = LocationData.allLocations.Find(location => location.name == name);
                 allCollectedLocations.Add(location);
             }
@@ -52,7 +52,7 @@ namespace FEZAP.Helpers
             var diff = GetAllCollected().Except(allCollectedLocations);
             foreach (Location location in diff)
             {
-                _ = Archipelago.SendLocation(location.name);
+                _ = ArchipelagoManager.SendLocation(location.name);
                 allCollectedLocations.Add(location);
             }
         }

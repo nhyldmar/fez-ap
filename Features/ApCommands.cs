@@ -1,7 +1,5 @@
 ﻿using Archipelago.MultiClient.Net.Models;
 using FEZAP.Features.Console;
-using FezEngine.Services.Scripting;
-using FezEngine.Tools;
 
 namespace FEZAP.Features
 {
@@ -33,9 +31,9 @@ namespace FEZAP.Features
             }
 
             string pass = args.Length == 4 ? args[3] : null;
-            new Helpers.Archipelago().Connect(args[0], port, args[2], pass);
+            Helpers.ArchipelagoManager.Connect(args[0], port, args[2], pass);
 
-            return Helpers.Archipelago.IsConnected();
+            return Helpers.ArchipelagoManager.IsConnected();
         }
     }
 
@@ -49,9 +47,9 @@ namespace FEZAP.Features
 
         public bool Execute(string[] args)
         {
-            if (Helpers.Archipelago.IsConnected())
+            if (Helpers.ArchipelagoManager.IsConnected())
             {
-                Helpers.Archipelago.session.Socket.DisconnectAsync();
+                Helpers.ArchipelagoManager.session.Socket.DisconnectAsync();
             }
             else
             {
@@ -71,9 +69,9 @@ namespace FEZAP.Features
 
         public bool Execute(string[] args)
         {
-            if (Helpers.Archipelago.IsConnected())
+            if (Helpers.ArchipelagoManager.IsConnected())
             {
-                foreach (ItemInfo item in Helpers.Archipelago.session.Items.AllItemsReceived)
+                foreach (ItemInfo item in Helpers.ArchipelagoManager.session.Items.AllItemsReceived)
                 {
                     FezapConsole.Print(item.ItemName);
                 }
@@ -96,11 +94,11 @@ namespace FEZAP.Features
 
         public bool Execute(string[] args)
         {
-            if (Helpers.Archipelago.IsConnected())
+            if (Helpers.ArchipelagoManager.IsConnected())
             {
-                foreach (long locationId in Helpers.Archipelago.session.Locations.AllMissingLocations)
+                foreach (long locationId in Helpers.ArchipelagoManager.session.Locations.AllMissingLocations)
                 {
-                    string locationName = Helpers.Archipelago.session.Locations.GetLocationNameFromId(locationId);
+                    string locationName = Helpers.ArchipelagoManager.session.Locations.GetLocationNameFromId(locationId);
                     FezapConsole.Print(locationName);
                 }
             }
@@ -122,9 +120,9 @@ namespace FEZAP.Features
 
         public bool Execute(string[] args)
         {
-            if (Helpers.Archipelago.IsConnected())
+            if (Helpers.ArchipelagoManager.IsConnected())
             {
-                Helpers.Archipelago.session.SetClientState(Archipelago.MultiClient.Net.Enums.ArchipelagoClientState.ClientReady);
+                Helpers.ArchipelagoManager.session.SetClientState(Archipelago.MultiClient.Net.Enums.ArchipelagoClientState.ClientReady);
             }
             else
             {
@@ -144,9 +142,9 @@ namespace FEZAP.Features
 
         public bool Execute(string[] args)
         {
-            if (Helpers.Archipelago.IsConnected())
+            if (Helpers.ArchipelagoManager.IsConnected())
             {
-                Helpers.Archipelago.session.Say(string.Join(" ", args));
+                Helpers.ArchipelagoManager.session.Say(string.Join(" ", args));
             }
             else
             {
@@ -167,17 +165,17 @@ namespace FEZAP.Features
 
         public bool Execute(string[] args)
         {
-            if (Helpers.Archipelago.IsConnected())
+            if (Helpers.ArchipelagoManager.IsConnected())
             {
                 string locationName = string.Join(" ", args);
-                long locationId = Helpers.Archipelago.session.Locations.GetLocationIdFromName(Helpers.Archipelago.gameName, locationName);
+                long locationId = Helpers.ArchipelagoManager.session.Locations.GetLocationIdFromName(Helpers.ArchipelagoManager.gameName, locationName);
                 if (locationId == -1)
                 {
                     FezapConsole.Print($"Unknown location {locationName}");
                 }
                 else
                 {
-                    Helpers.Archipelago.session.Locations.CompleteLocationChecks([locationId]);
+                    Helpers.ArchipelagoManager.session.Locations.CompleteLocationChecks([locationId]);
                 }
             }
             else
@@ -199,10 +197,10 @@ namespace FEZAP.Features
 
         public bool Execute(string[] args)
         {
-            if (Helpers.Archipelago.IsConnected())
+            if (Helpers.ArchipelagoManager.IsConnected())
             {
-                var missingLocations = Helpers.Archipelago.session.Locations.AllMissingLocations;
-                Helpers.Archipelago.session.Locations.CompleteLocationChecks([.. missingLocations]);
+                var missingLocations = Helpers.ArchipelagoManager.session.Locations.AllMissingLocations;
+                Helpers.ArchipelagoManager.session.Locations.CompleteLocationChecks([.. missingLocations]);
                 // TODO: Figure out why it crashes here.
             }
             else
@@ -224,15 +222,15 @@ namespace FEZAP.Features
 
         public bool Execute(string[] args)
         {
-            if (Helpers.Archipelago.IsConnected())
+            if (Helpers.ArchipelagoManager.IsConnected())
             {
                 if (bool.Parse(args[0]))
                 {
-                    Helpers.Archipelago.deathLinkService.EnableDeathLink();
+                    Helpers.ArchipelagoManager.deathLinkService.EnableDeathLink();
                 }
                 else
                 {
-                    Helpers.Archipelago.deathLinkService.DisableDeathLink();
+                    Helpers.ArchipelagoManager.deathLinkService.DisableDeathLink();
                 }
             }
             else
