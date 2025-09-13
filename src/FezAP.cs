@@ -26,7 +26,7 @@ namespace FEZAP
             base.Initialize();
             DrawingTools.Init();
 
-            // Inject all our services
+            // Inject all our code
             ServiceHelper.InjectServices(new ArchipelagoManager());
             ServiceHelper.InjectServices(new DeathManager());
             ServiceHelper.InjectServices(new HudManager());
@@ -45,16 +45,6 @@ namespace FEZAP
             DrawingTools.BeginBatch();
             HudManager.DrawHUD();
             DrawingTools.EndBatch();
-        }
-    }
-
-    public class FezapInGameRendering : DrawableGameComponent
-    {
-        public FezapInGameRendering(Game game) : base(game)
-        {
-            Enabled = true;
-            Visible = true;
-            DrawOrder = 101;
         }
     }
 }
