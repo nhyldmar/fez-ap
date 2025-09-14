@@ -73,6 +73,5 @@ namespace FEZAP.Helpers
                 rotation, origin, scale, SpriteEffects.None, 0f
             );
         }
-
     }
 }
