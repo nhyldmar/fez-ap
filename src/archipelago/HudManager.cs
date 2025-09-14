@@ -12,10 +12,11 @@ namespace FEZAP.Archipelago
     class HudManager()
     {
         public static bool isConnected = false;
-        private static readonly List<DisplayText> messageLog = [new("Test text", Color.Red), new("More text here", Color.Green)];
+        private static readonly List<DisplayText> messageLog = [];
+        private static readonly int messageLogMaxCount = 10;
         private static readonly int paddingSize = 10;
         private static readonly int charHeight = 27;
-        private static readonly int charWidth = 17;
+        private static readonly int charWidth = 17;  // Font is not monospaced, but this is good enough
         private static readonly Color boxColor = new(0, 0, 0, 0.8f);
         private static readonly Rectangle infoBoxRect = new(5, 5, 230, 70);
         private static Rectangle messageLogRect = new(5, 900, 0, 0);
@@ -23,7 +24,10 @@ namespace FEZAP.Archipelago
         public static void DrawHUD()
         {
             DrawInfoBox();
-            DrawMessageLog();
+            if (messageLog.Count > 0)
+            {
+                DrawMessageLog();
+            }
         }
 
         private static void DrawInfoBox()
@@ -43,19 +47,22 @@ namespace FEZAP.Archipelago
             messageLogRect.Width = maxCharCount * charWidth + paddingSize * 2;
             messageLogRect.Height = messageLog.Count * charHeight + paddingSize * 2;
             DrawingTools.DrawRect(messageLogRect, boxColor);
-            int messageLogRectLowerY = messageLogRect.Y - messageLogRect.Height;
 
             for (int i = 0; i < messageLog.Count; i++)
             {
-                int yCoord = messageLogRectLowerY - paddingSize - i * charHeight;
-                DrawingTools.DrawText(messageLog[i].text, new(5 + paddingSize, yCoord), messageLog[i].color);
+                // I don't know why, but it seems that DrawString has a different y-coord start to regular Draw
+                int yCoord = 880 - paddingSize - i * charHeight;
+                DrawingTools.DrawText(messageLog[i].text, new(paddingSize * 2, yCoord), messageLog[i].color);
             }
         }
 
         public static void Print(string text, Color color)
         {
             messageLog.Insert(0, new(text, color));
-            messageLog.RemoveAt(5);
+            if (messageLog.Count > messageLogMaxCount)
+            {
+                messageLog.RemoveAt(messageLogMaxCount);
+            }
         }
 
         public static void Print(string text)
