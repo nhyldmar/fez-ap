@@ -28,6 +28,7 @@ namespace FEZAP
 
             // Inject all our code
             ServiceHelper.InjectServices(new ArchipelagoManager());
+            ServiceHelper.InjectServices(new MenuManager());
             ServiceHelper.InjectServices(new DeathManager());
             ServiceHelper.InjectServices(new HudManager());
             ServiceHelper.InjectServices(new ItemManager());
