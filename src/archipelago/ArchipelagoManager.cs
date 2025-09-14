@@ -82,8 +82,8 @@ namespace FEZAP.Archipelago
 
             // Get slot data and restore item info
             var slotData = session.DataStorage.GetSlotData(session.ConnectionInfo.Slot);
-            LocationManager.goal = (string)slotData["Goal"];
-            DeathManager.isDeathlink = (bool)slotData["Goal"];
+            LocationManager.goal = Convert.ToInt16(slotData["goal"]);
+            DeathManager.isDeathlink = Convert.ToBoolean(slotData["death_link"]);
 
             // Setup deathlink
             deathLinkService = session.CreateDeathLinkService();
@@ -169,6 +169,11 @@ namespace FEZAP.Archipelago
                 {
                     deathManager.MonitorDeath();
                 }
+            }
+            else
+            {
+                // TODO: Remove this once MenuManager works as intended.
+                Connect("localhost", 38281, "Fez_Test");
             }
         }
     }

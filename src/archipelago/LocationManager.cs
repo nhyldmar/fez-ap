@@ -15,7 +15,7 @@ namespace FEZAP.Archipelago
         public ILevelManager Level { get; set; }
 
         public static List<Location> allCollectedLocations = [];
-        public static string goal;
+        public static int goal;  // 0 is 32 Cubes and 1 is 64 Cubes
 
         public void RestoreCollectedLocations()
         {
@@ -62,10 +62,10 @@ namespace FEZAP.Archipelago
             bool goalAchieved = false;
             switch (goal)
             {
-                case "32 Cubes":
+                case 0:
                     goalAchieved = GameState.SaveData.Finished32;
                     break;
-                case "64 Cubes":
+                case 1:
                     goalAchieved = GameState.SaveData.Finished64;
                     break;
                 default:
