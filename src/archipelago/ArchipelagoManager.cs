@@ -6,6 +6,7 @@ using Archipelago.MultiClient.Net.MessageLog.Messages;
 using Archipelago.MultiClient.Net.Models;
 using FezEngine.Services.Scripting;
 using FezEngine.Tools;
+using FezGame;
 using FezGame.Services;
 using Color = Microsoft.Xna.Framework.Color;
 
@@ -16,9 +17,6 @@ namespace FEZAP.Archipelago
         public static readonly string gameName = "Fez";
         public static ArchipelagoSession session;
         public static DeathLinkService deathLinkService;
-        private static readonly DeathManager deathManager = new();
-        private static readonly ItemManager itemManager = new();
-        private static readonly LocationManager locationManager = new();
 
         [ServiceDependency]
         public IGameStateManager GameState { get; set; }
@@ -70,10 +68,11 @@ namespace FEZAP.Archipelago
 
         private static void OnConnectSuccess()
         {
+            HudManager.Print("Connected successfully");
+
             // Restore internal information
-            // TODO: Uncomment once no issues created
-            // itemManager.RestoreReceivedItems();
-            // locationManager.RestoreCollectedLocations();
+            Fezap.itemManager.RestoreReceivedItems();
+            Fezap.locationManager.RestoreCollectedLocations();
 
             // Bind events
             session.MessageLog.OnMessageReceived += HandleLogMsg;
@@ -91,7 +90,8 @@ namespace FEZAP.Archipelago
             if (DeathManager.deathlinkOn)
             {
                 deathLinkService.EnableDeathLink();
-                deathLinkService.OnDeathLinkReceived += deathManager.HandleDeathlink;
+                deathLinkService.OnDeathLinkReceived += Fezap.deathManager.HandleDeathlink;
+                HudManager.Print("Deathlink enabled");
             }
 
             // Display in UI that session is connected
@@ -156,7 +156,7 @@ namespace FEZAP.Archipelago
             {
                 ItemInfo item = helper.DequeueItem();
                 HudManager.Print($"Received {item.ItemDisplayName} from {item.ItemGame}");
-                itemManager.HandleReceivedItem(item);
+                Fezap.itemManager.HandleReceivedItem(item);
             }
         }
 
@@ -164,10 +164,9 @@ namespace FEZAP.Archipelago
         {
             if (IsConnected())
             {
-                // TODO: Uncomment once no issues created
-                // locationManager.MonitorLocations();
-                // locationManager.MonitorGoal();
-                // deathManager.MonitorDeath();
+                Fezap.locationManager.MonitorLocations();
+                Fezap.locationManager.MonitorGoal();
+                Fezap.deathManager.MonitorDeath();
             }
             else
             {

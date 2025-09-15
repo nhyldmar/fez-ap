@@ -9,7 +9,11 @@ namespace FEZAP
     public class Fezap : DrawableGameComponent
     {
         public static string Version = "v0.1.0";
+        public static readonly DeathManager deathManager = new();
+        public static readonly ItemManager itemManager = new();
+        public static readonly LocationManager locationManager = new();
         public static Fez Fez { get; private set; }
+        public static GameTime GameTime { get; private set; }
 
         public Fezap(Game game) : base(game)
         {
@@ -29,10 +33,10 @@ namespace FEZAP
             ServiceHelper.InjectServices(annoyanceRemoval);
             ServiceHelper.InjectServices(new ArchipelagoManager());
             ServiceHelper.InjectServices(new MenuManager());
-            ServiceHelper.InjectServices(new DeathManager());
+            ServiceHelper.InjectServices(deathManager);
             ServiceHelper.InjectServices(new HudManager());
-            ServiceHelper.InjectServices(new ItemManager());
-            ServiceHelper.InjectServices(new LocationManager());
+            ServiceHelper.InjectServices(itemManager);
+            ServiceHelper.InjectServices(locationManager);
 
             // Run post-injection inits
             annoyanceRemoval.Initialize();
@@ -40,6 +44,7 @@ namespace FEZAP
 
         public override void Update(GameTime gameTime)
         {
+            GameTime = gameTime;
             InputHelper.Update(gameTime);
             AnnoyanceRemoval.Update();
             ArchipelagoManager.Update();
