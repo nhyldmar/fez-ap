@@ -9,13 +9,11 @@ namespace FEZAP
     public class Fezap : DrawableGameComponent
     {
         public static string Version = "v0.1.0";
-        public static Fezap Instance { get; private set; }
         public static Fez Fez { get; private set; }
 
         public Fezap(Game game) : base(game)
         {
             Fez = (Fez)game;
-            Instance = this;
             Enabled = true;
             Visible = true;
             DrawOrder = 99999;
@@ -27,17 +25,23 @@ namespace FEZAP
             DrawingTools.Init();
 
             // Inject all our code
+            AnnoyanceRemoval annoyanceRemoval = new();
+            ServiceHelper.InjectServices(annoyanceRemoval);
             ServiceHelper.InjectServices(new ArchipelagoManager());
             ServiceHelper.InjectServices(new MenuManager());
             ServiceHelper.InjectServices(new DeathManager());
             ServiceHelper.InjectServices(new HudManager());
             ServiceHelper.InjectServices(new ItemManager());
             ServiceHelper.InjectServices(new LocationManager());
+
+            // Run post-injection inits
+            annoyanceRemoval.Initialize();
         }
 
         public override void Update(GameTime gameTime)
         {
             InputHelper.Update(gameTime);
+            AnnoyanceRemoval.Update();
             ArchipelagoManager.Update();
         }
 

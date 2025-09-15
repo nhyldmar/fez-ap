@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿/// Based on FEZUG/Helpers/InputHelper.cs
+
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
 namespace FEZAP.Helpers

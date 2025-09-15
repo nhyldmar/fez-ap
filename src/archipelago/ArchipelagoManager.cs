@@ -71,8 +71,9 @@ namespace FEZAP.Archipelago
         private static void OnConnectSuccess()
         {
             // Restore internal information
-            itemManager.RestoreReceivedItems();
-            locationManager.RestoreCollectedLocations();
+            // TODO: Uncomment once no issues created
+            // itemManager.RestoreReceivedItems();
+            // locationManager.RestoreCollectedLocations();
 
             // Bind events
             session.MessageLog.OnMessageReceived += HandleLogMsg;
@@ -83,11 +84,11 @@ namespace FEZAP.Archipelago
             // Get slot data and restore item info
             var slotData = session.DataStorage.GetSlotData(session.ConnectionInfo.Slot);
             LocationManager.goal = Convert.ToInt16(slotData["goal"]);
-            DeathManager.isDeathlink = Convert.ToBoolean(slotData["death_link"]);
+            DeathManager.deathlinkOn = Convert.ToBoolean(slotData["death_link"]);
 
             // Setup deathlink
             deathLinkService = session.CreateDeathLinkService();
-            if (DeathManager.isDeathlink)
+            if (DeathManager.deathlinkOn)
             {
                 deathLinkService.EnableDeathLink();
                 deathLinkService.OnDeathLinkReceived += deathManager.HandleDeathlink;
@@ -163,12 +164,10 @@ namespace FEZAP.Archipelago
         {
             if (IsConnected())
             {
-                locationManager.MonitorLocations();
-                locationManager.MonitorGoal();
-                if (DeathManager.isDeathlink)
-                {
-                    deathManager.MonitorDeath();
-                }
+                // TODO: Uncomment once no issues created
+                // locationManager.MonitorLocations();
+                // locationManager.MonitorGoal();
+                // deathManager.MonitorDeath();
             }
             else
             {

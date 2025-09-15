@@ -14,7 +14,7 @@ namespace FEZAP.Archipelago
         [ServiceDependency]
         public IPlayerManager PlayerManager { get; set; }
 
-        public static bool isDeathlink;
+        public static bool deathlinkOn;
         private static bool handlingDeath;  // Used to avoid sending more deathlinks than intended
 
         public void HandleDeathlink(DeathLink deathLink)
@@ -30,7 +30,7 @@ namespace FEZAP.Archipelago
             {
                 handlingDeath = false;
             }
-            else if (!GomezService.Alive && !handlingDeath)
+            else if (!GomezService.Alive && !handlingDeath && deathlinkOn)
             {
                 handlingDeath = true;
                 string playerName = ArchipelagoManager.session.Players.ActivePlayer.Name;

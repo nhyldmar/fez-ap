@@ -1,4 +1,5 @@
-﻿
+﻿/// Based on FEZUG/Helpers/DrawingTools.cs
+
 using FezEngine.Components;
 using FezEngine.Tools;
 using Microsoft.Xna.Framework;
