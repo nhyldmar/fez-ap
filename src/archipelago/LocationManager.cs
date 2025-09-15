@@ -26,12 +26,15 @@ namespace FEZAP.Archipelago
                 Location location = LocationData.allLocations.Find(location => location.name == name);
                 allCollectedLocations.Add(location);
             }
+            HudManager.Print("Location data restored");
         }
 
         public bool IsCollected(Location location)
         {
-            LevelSaveData currentLevel = GameState.SaveData.World[location.levelName];
-            return currentLevel.DestroyedTriles.Contains(location.emplacement);
+            // TODO: Fix LocationData so that levelName is correct for the locations
+            return false;
+            // LevelSaveData level = GameState.SaveData.World[location.levelName];
+            // return level.DestroyedTriles.Contains(location.emplacement);
         }
 
         public List<Location> GetAllCollected()
