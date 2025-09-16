@@ -1,14 +1,16 @@
 using FezEngine.Tools;
 using FezGame;
-using FEZAP.Helpers;
+using FEZUG.Helpers;
 using Microsoft.Xna.Framework;
 using FEZAP.Archipelago;
+using FEZUG;
 
 namespace FEZAP
 {
     public class Fezap : DrawableGameComponent
     {
         public static string Version = "v0.1.0";
+        public static readonly Fezug fezug = new();
         public static readonly DeathManager deathManager = new();
         public static readonly ItemManager itemManager = new();
         public static readonly LocationManager locationManager = new();
@@ -26,35 +28,25 @@ namespace FEZAP
         public override void Initialize()
         {
             base.Initialize();
-            DrawingTools.Init();
+            fezug.Initialize();
 
             // Inject all our code
-            AnnoyanceRemoval annoyanceRemoval = new();
-            ServiceHelper.InjectServices(annoyanceRemoval);
             ServiceHelper.InjectServices(new ArchipelagoManager());
-            ServiceHelper.InjectServices(new MenuManager());
             ServiceHelper.InjectServices(deathManager);
-            ServiceHelper.InjectServices(new HudManager());
             ServiceHelper.InjectServices(itemManager);
             ServiceHelper.InjectServices(locationManager);
-
-            // Run post-injection inits
-            annoyanceRemoval.Initialize();
         }
 
         public override void Update(GameTime gameTime)
         {
             GameTime = gameTime;
-            InputHelper.Update(gameTime);
-            AnnoyanceRemoval.Update();
+            fezug.Update(gameTime);
             ArchipelagoManager.Update();
         }
 
         public override void Draw(GameTime gameTime)
         {
-            DrawingTools.BeginBatch();
-            HudManager.DrawHUD();
-            DrawingTools.EndBatch();
+            fezug.Draw(gameTime);
         }
     }
 }

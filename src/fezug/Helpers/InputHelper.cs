@@ -1,14 +1,19 @@
-﻿/// Based on FEZUG/Helpers/InputHelper.cs
-
+using FezEngine.Services;
+using FezEngine.Tools;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace FEZAP.Helpers
+namespace FEZUG.Helpers
 {
     internal static class InputHelper
     {
-        private static readonly Dictionary<Keys, double> KeyboardRepeatHeldTimers = [];
-        private static readonly List<Keys> KeyboardRepeatedPresses = [];
+        private static Dictionary<Keys, double> KeyboardRepeatHeldTimers = new Dictionary<Keys, double>();
+        private static List<Keys> KeyboardRepeatedPresses = new List<Keys>();
 
         public static KeyboardState CurrentKeyboardState { get; private set; }
         public static KeyboardState PreviousKeyboardState { get; private set; }

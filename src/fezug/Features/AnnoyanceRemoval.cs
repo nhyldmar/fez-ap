@@ -1,18 +1,29 @@
-/// Based on FEZUG/features/AnnoyanceRemoval.cs
-
-using FezEngine.Components;
+﻿using FezEngine.Components;
 using FezEngine.Tools;
 using FezGame;
 using FezGame.Components;
 using FezGame.Services;
 using FezGame.Structure;
+using FEZUG.Features.Console;
+using Microsoft.Xna.Framework;
 using MonoMod.RuntimeDetour;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace FEZAP.Helpers
+namespace FEZUG.Features
 {
-    internal class AnnoyanceRemoval
+    internal class AnnoyanceRemoval : IFezugFeature
     {
+        private Type IntroPanDownType;
+        private List<string> DotLoadLevelsReference;
+        private List<string> OriginalDotLoadLevels;
+        private IDetour LevelManagerChangeLevelDetour;
+
+        private FezugVariable SkipDotLoadingVariable;
 
         [ServiceDependency]
         public IPlayerManager PlayerManager { private get; set; }
@@ -26,17 +37,30 @@ namespace FEZAP.Helpers
         public void Initialize()
         {
             // removing dot loading screens
-            IDetour LevelManagerChangeLevelDetour = new Hook(typeof(GameLevelManager).GetMethod("ChangeLevel"), ChangeLevelHooked);
+            LevelManagerChangeLevelDetour = new Hook(
+                typeof(GameLevelManager).GetMethod("ChangeLevel"),
+                (Action<Action<GameLevelManager, string>, GameLevelManager, string>)ChangeLevelHooked);
+            var DotLoadLevelsField = typeof(GameLevelManager).GetField("DotLoadLevels", BindingFlags.NonPublic | BindingFlags.Instance);
+            DotLoadLevelsReference = (List<string>)DotLoadLevelsField.GetValue(LevelManager);
+            OriginalDotLoadLevels = new List<string>(DotLoadLevelsReference);
+
+            SkipDotLoadingVariable = new FezugVariable("skip_dot_loading", "If set, skip the long Dot loading screens", "true")
+            {
+                SaveOnChange = true,
+                Min = 0,
+                Max = 1
+            };
+            SkipDotLoadingVariable.OnChanged += OnDotLoadingSkipVariableChanged;
+            if (SkipDotLoadingVariable.ValueBool)
+                DotLoadLevelsReference.Clear();
 
             var screenField = typeof(Intro).GetField("screen", BindingFlags.NonPublic | BindingFlags.Instance);
             var phaseField = typeof(Intro).GetField("phase", BindingFlags.NonPublic | BindingFlags.Instance);
 
             // skip to FEZ logo whenever possible
-            Waiters.Wait(delegate
-            {
+            Waiters.Wait(delegate {
                 return (bool)typeof(Intro).GetField("PreloadComplete", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
-            }, delegate
-            {
+            }, delegate {
                 screenField.SetValue(Intro.Instance, 8);
                 phaseField.SetValue(Intro.Instance, 0);
 
@@ -46,11 +70,9 @@ namespace FEZAP.Helpers
 
             // make fez logo faster
             var FezLogo = (FezLogo)typeof(Intro).GetField("FezLogo", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(Intro.Instance);
-            Waiters.Wait(delegate
-            {
+            Waiters.Wait(delegate {
                 return FezLogo.SinceStarted > 0;
-            }, delegate
-            {
+            }, delegate {
                 screenField.SetValue(Intro.Instance, 10);
                 phaseField.SetValue(Intro.Instance, 0);
 
@@ -62,13 +84,14 @@ namespace FEZAP.Helpers
                     FezLogo.SinceStarted += delta * 6.0f;
                 });
             });
+
+            IntroPanDownType = Assembly.GetAssembly(typeof(Fez)).GetType("FezGame.Components.IntroPanDown");
         }
 
-        public static void Update()
+        public void Update(GameTime gameTime)
         {
             // get rid of IntroPanDown whenever it appears
-            Type IntroPanDownType = Assembly.GetAssembly(typeof(Fez)).GetType("FezGame.Components.IntroPanDown");
-            if (Intro.Instance != null)
+            if(Intro.Instance != null)
             {
                 var IntroPanDownField = typeof(Intro).GetField("IntroPanDown", BindingFlags.NonPublic | BindingFlags.Instance);
                 var IntroPanDown = IntroPanDownField.GetValue(Intro.Instance);
@@ -83,13 +106,34 @@ namespace FEZAP.Helpers
 
         }
 
+        public void DrawHUD(GameTime gameTime)
+        {
+        }
+
+        public void DrawLevel(GameTime gameTime)
+        {
+        }
+
         public void ChangeLevelHooked(Action<GameLevelManager, string> original, GameLevelManager self, string levelName)
         {
-            if (PlayerManager.Action == ActionType.LesserWarp || PlayerManager.Action == ActionType.GateWarp)
-            {
-                PlayerManager.Action = ActionType.EnteringDoor;
+            if (SkipDotLoadingVariable.ValueBool) {
+                if (PlayerManager.Action == ActionType.LesserWarp || PlayerManager.Action == ActionType.GateWarp)
+                    PlayerManager.Action = ActionType.EnteringDoor;
             }
             original(self, levelName);
+        }
+
+        public void OnDotLoadingSkipVariableChanged()
+        {
+            if (SkipDotLoadingVariable.ValueBool)
+            {
+                DotLoadLevelsReference.Clear();
+            }
+            else
+            {
+                if (DotLoadLevelsReference.Count() == 0)
+                    DotLoadLevelsReference.AddRange(OriginalDotLoadLevels);
+            }
         }
     }
 }

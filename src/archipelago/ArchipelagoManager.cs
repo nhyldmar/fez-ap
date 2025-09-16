@@ -8,6 +8,7 @@ using FezEngine.Services.Scripting;
 using FezEngine.Tools;
 using FezGame;
 using FezGame.Services;
+using FEZUG.Features.Console;
 using Color = Microsoft.Xna.Framework.Color;
 
 namespace FEZAP.Archipelago
@@ -62,13 +63,13 @@ namespace FEZAP.Archipelago
                 {
                     errorMessage += $"\n    {error}";
                 }
-                HudManager.Print(errorMessage, Color.Red);
+                FezugConsole.Print(errorMessage, FezugConsole.OutputType.Error);
             }
         }
 
         private static void OnConnectSuccess()
         {
-            HudManager.Print("Connected successfully");
+            FezugConsole.Print("Connected successfully");
 
             // Restore internal information
             Fezap.itemManager.RestoreReceivedItems();
@@ -91,11 +92,8 @@ namespace FEZAP.Archipelago
             {
                 deathLinkService.EnableDeathLink();
                 deathLinkService.OnDeathLinkReceived += Fezap.deathManager.HandleDeathlink;
-                HudManager.Print("Deathlink enabled");
+                FezugConsole.Print("Deathlink enabled");
             }
-
-            // Display in UI that session is connected
-            HudManager.isConnected = true;
         }
 
         public static bool IsConnected()
@@ -116,7 +114,7 @@ namespace FEZAP.Archipelago
             {
                 case CountdownLogMessage:
                 case ServerChatLogMessage:
-                    HudManager.Print(message.ToString());
+                    FezugConsole.Print(message.ToString());
                     break;
                 default:
                     break;
@@ -125,16 +123,15 @@ namespace FEZAP.Archipelago
 
         private static void HandleErrorRecv(Exception e, string message)
         {
-            HudManager.Print($"Error: {message}\n{e}", Color.Red);
+            FezugConsole.Print($"Error: {message}\n{e}", FezugConsole.OutputType.Error);
         }
 
         private static void HandleSocketClosed(string reason)
         {
             if (reason != "")
             {
-                HudManager.Print($"Socket closed: {reason}", Color.Red);
+                FezugConsole.Print($"Socket closed: {reason}", FezugConsole.OutputType.Error);
                 // TODO: Reattempt connection logic with retry count
-                HudManager.isConnected = false;
             }
         }
 
@@ -146,7 +143,7 @@ namespace FEZAP.Archipelago
                 var result = await session.Locations.ScoutLocationsAsync(id);
                 ScoutedItemInfo item = result[0];
                 await session.Locations.CompleteLocationChecksAsync(id);
-                HudManager.Print($"Sent {item.ItemDisplayName} to {item.ItemGame}");
+                FezugConsole.Print($"Sent {item.ItemDisplayName} to {item.ItemGame}");
             }
         }
 
@@ -155,7 +152,7 @@ namespace FEZAP.Archipelago
             while (helper.Any())
             {
                 ItemInfo item = helper.DequeueItem();
-                HudManager.Print($"Received {item.ItemDisplayName} from {item.ItemGame}");
+                FezugConsole.Print($"Received {item.ItemDisplayName} from {item.ItemGame}");
                 Fezap.itemManager.HandleReceivedItem(item);
             }
         }

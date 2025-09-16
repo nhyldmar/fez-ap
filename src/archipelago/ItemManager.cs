@@ -4,6 +4,7 @@ using FezEngine.Services.Scripting;
 using FezEngine.Structure;
 using FezEngine.Tools;
 using FezGame.Services;
+using FEZUG.Features.Console;
 
 namespace FEZAP.Archipelago
 {
@@ -51,7 +52,7 @@ namespace FEZAP.Archipelago
             {
                 HandleReceivedItem(item);
             }
-            HudManager.Print("Item data restored");
+            FezugConsole.Print("Item data restored");
         }
 
         public void HandleReceivedItem(ItemInfo item)
@@ -122,7 +123,7 @@ namespace FEZAP.Archipelago
                     DoEmotionalSupport(item);
                     break;
                 default:
-                    HudManager.Print($"Unknown item: {item.ItemDisplayName}");
+                    FezugConsole.Print($"Unknown item: {item.ItemDisplayName}", FezugConsole.OutputType.Error);
                     break;
             }
         }

@@ -2,6 +2,7 @@ using FezEngine.Services;
 using FezEngine.Tools;
 using FezGame.Services;
 using FezGame.Structure;
+using FEZUG.Features.Console;
 using Color = Microsoft.Xna.Framework.Color;
 
 namespace FEZAP.Archipelago
@@ -26,7 +27,7 @@ namespace FEZAP.Archipelago
                 Location location = LocationData.allLocations.Find(location => location.name == name);
                 allCollectedLocations.Add(location);
             }
-            HudManager.Print("Location data restored");
+            FezugConsole.Print("Location data restored");
         }
 
         public bool IsCollected(Location location)
@@ -72,7 +73,7 @@ namespace FEZAP.Archipelago
                     goalAchieved = GameState.SaveData.Finished64;
                     break;
                 default:
-                    HudManager.Print("Incorrect slot data for goal", Color.Red);
+                    FezugConsole.Print("Incorrect slot data for goal", FezugConsole.OutputType.Error);
                     break;
             }
 

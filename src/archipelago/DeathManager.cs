@@ -3,6 +3,7 @@ using FezEngine.Services.Scripting;
 using FezEngine.Tools;
 using FezGame.Services;
 using FezGame.Structure;
+using FEZUG.Features.Console;
 
 namespace FEZAP.Archipelago
 {
@@ -20,7 +21,7 @@ namespace FEZAP.Archipelago
         public void HandleDeathlink(DeathLink deathLink)
         {
             handlingDeath = true;
-            HudManager.Print($"Death received: {deathLink.Cause}");
+            FezugConsole.Print($"Death received: {deathLink.Cause}");
             PlayerManager.Action = PlayerManager.Grounded ? ActionType.Dying : ActionType.FreeFalling;
         }
 
@@ -37,7 +38,7 @@ namespace FEZAP.Archipelago
                 string cause = GetCause(PlayerManager.Action);
                 DeathLink deathlink = new(playerName, cause);
                 ArchipelagoManager.deathLinkService.SendDeathLink(deathlink);
-                HudManager.Print("Death sent");
+                FezugConsole.Print("Death sent");
             }
         }
 

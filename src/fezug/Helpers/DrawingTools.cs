@@ -1,11 +1,10 @@
-﻿/// Based on FEZUG/Helpers/DrawingTools.cs
 
 using FezEngine.Components;
 using FezEngine.Tools;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace FEZAP.Helpers
+namespace FEZUG.Helpers
 {
     internal static class DrawingTools
     {
@@ -29,7 +28,7 @@ namespace FEZAP.Helpers
                 DefaultFontSize = FontManager.BigFactor;
 
                 fillTexture = new Texture2D(GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
-                fillTexture.SetData([new Color(255, 255, 255)]);
+                fillTexture.SetData(new[] { new Color(255, 255, 255) });
             });
         }
 
@@ -74,5 +73,6 @@ namespace FEZAP.Helpers
                 rotation, origin, scale, SpriteEffects.None, 0f
             );
         }
+
     }
 }
