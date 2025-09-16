@@ -1,4 +1,4 @@
-dotnet build ./FezAP.csproj
+dotnet build --configuration Release
 
 mkdir release
 
