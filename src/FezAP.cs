@@ -11,6 +11,7 @@ namespace FEZAP
     {
         public static string Version = "v0.1.0";
         public static readonly Fezug fezug = new();
+        public static readonly ArchipelagoManager archipelagoManager = new();
         public static readonly DeathManager deathManager = new();
         public static readonly ItemManager itemManager = new();
         public static readonly LocationManager locationManager = new();
@@ -31,7 +32,7 @@ namespace FEZAP
             fezug.Initialize();
 
             // Inject all our code
-            ServiceHelper.InjectServices(new ArchipelagoManager());
+            ServiceHelper.InjectServices(archipelagoManager);
             ServiceHelper.InjectServices(deathManager);
             ServiceHelper.InjectServices(itemManager);
             ServiceHelper.InjectServices(locationManager);
@@ -41,7 +42,7 @@ namespace FEZAP
         {
             GameTime = gameTime;
             fezug.Update(gameTime);
-            ArchipelagoManager.Update();
+            archipelagoManager.Update();
         }
 
         public override void Draw(GameTime gameTime)

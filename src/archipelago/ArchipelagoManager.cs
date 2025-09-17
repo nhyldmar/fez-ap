@@ -4,12 +4,11 @@ using Archipelago.MultiClient.Net.Enums;
 using Archipelago.MultiClient.Net.Helpers;
 using Archipelago.MultiClient.Net.MessageLog.Messages;
 using Archipelago.MultiClient.Net.Models;
+using FezEngine.Services;
 using FezEngine.Services.Scripting;
 using FezEngine.Tools;
-using FezGame;
 using FezGame.Services;
 using FEZUG.Features.Console;
-using Color = Microsoft.Xna.Framework.Color;
 
 namespace FEZAP.Archipelago
 {
@@ -37,7 +36,10 @@ namespace FEZAP.Archipelago
         [ServiceDependency]
         public IOwlService OwlService { private get; set; }
 
-        public static void Connect(string server, int port, string user, string pass = null)
+        [ServiceDependency]
+        public ILevelManager levelManager;
+
+        public void Connect(string server, int port, string user, string pass = null)
         {
             session = ArchipelagoSessionFactory.CreateSession(server, port);
 
@@ -67,9 +69,10 @@ namespace FEZAP.Archipelago
             }
         }
 
-        private static void OnConnectSuccess()
+        private void OnConnectSuccess()
         {
             FezugConsole.Print("Connected successfully");
+            var slotData = session.DataStorage.GetSlotData(session.ConnectionInfo.Slot);
 
             // Restore internal information
             Fezap.itemManager.RestoreReceivedItems();
@@ -81,12 +84,17 @@ namespace FEZAP.Archipelago
             session.Socket.SocketClosed += HandleSocketClosed;
             session.Items.ItemReceived += HandleRecvItem;
 
-            // Get slot data and restore item info
-            var slotData = session.DataStorage.GetSlotData(session.ConnectionInfo.Slot);
+            // Set goal from slot data
             LocationManager.goal = Convert.ToInt16(slotData["goal"]);
-            DeathManager.deathlinkOn = Convert.ToBoolean(slotData["death_link"]);
 
-            // Setup deathlink
+            // Disable visual pain if in slot data
+            if (Convert.ToBoolean(slotData["disable_visual_pain"]))
+            {
+                levelManager.LevelChanged += HandleVisualPainRemoval;
+            }
+
+            // Setup deathlink if enabled
+            DeathManager.deathlinkOn = Convert.ToBoolean(slotData["death_link"]);
             deathLinkService = session.CreateDeathLinkService();
             if (DeathManager.deathlinkOn)
             {
@@ -157,7 +165,17 @@ namespace FEZAP.Archipelago
             }
         }
 
-        public static void Update()
+        private void HandleVisualPainRemoval()
+        {
+            // TODO: Figure out how to keep rain, but remove lightning
+            // TODO: Remove other sources of visual pain
+            levelManager.Quantum = false;
+            levelManager.Rainy = false;
+            // TODO: Check if this is necessary
+            // levelManager.Rebuild();
+        }
+
+        public void Update()
         {
             if (IsConnected())
             {
