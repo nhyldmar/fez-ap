@@ -12,9 +12,18 @@ using FEZUG.Features.Console;
 
 namespace FEZAP.Archipelago
 {
+    public readonly struct ConnectionInfo(string server, int port, string user, string pass = null)
+    {
+        public readonly string server = server;
+        public readonly int port = port;
+        public readonly string user = user;
+        public readonly string pass = pass;
+    };
+
     public class ArchipelagoManager
     {
         public static readonly string gameName = "Fez";
+        private static ConnectionInfo connectionInfo;
         public static ArchipelagoSession session;
         public static DeathLinkService deathLinkService;
 
@@ -41,6 +50,8 @@ namespace FEZAP.Archipelago
 
         public void Connect(string server, int port, string user, string pass = null)
         {
+            connectionInfo = new(server, port, user, pass);
+
             session = ArchipelagoSessionFactory.CreateSession(server, port);
 
             LoginResult result = session.TryConnectAndLogin(gameName, user, ItemsHandlingFlags.AllItems, password: pass, requestSlotData: true);
@@ -134,12 +145,13 @@ namespace FEZAP.Archipelago
             FezugConsole.Print($"Error: {message}\n{e}", FezugConsole.OutputType.Error);
         }
 
-        private static void HandleSocketClosed(string reason)
+        private void HandleSocketClosed(string reason)
         {
             if (reason != "")
             {
                 FezugConsole.Print($"Socket closed: {reason}", FezugConsole.OutputType.Error);
-                // TODO: Reattempt connection logic with retry count
+                FezugConsole.Print("Attempting reconnection");
+                Connect(connectionInfo.server, connectionInfo.port, connectionInfo.user, connectionInfo.pass);
             }
         }
 
@@ -182,11 +194,6 @@ namespace FEZAP.Archipelago
                 Fezap.locationManager.MonitorLocations();
                 Fezap.locationManager.MonitorGoal();
                 Fezap.deathManager.MonitorDeath();
-            }
-            else
-            {
-                // TODO: Remove this once MenuManager works as intended.
-                Connect("localhost", 38281, "Fez_Test");
             }
         }
     }

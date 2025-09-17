@@ -41,7 +41,7 @@ namespace FEZAP.Archipelago
             }
 
             string pass = args.Length == 4 ? args[3] : null;
-            ArchipelagoManager.Connect(args[0], port, args[2], pass);
+            Fezap.archipelagoManager.Connect(args[0], port, args[2], pass);
 
             return ArchipelagoManager.IsConnected();
         }
