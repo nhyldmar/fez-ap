@@ -111,28 +111,6 @@ namespace FEZUG.Features.Hud
                 }
             }
 
-            {
-                string Viewpoint = "";
-                switch (CameraManager.Viewpoint)
-                {
-                    case FezEngine.Viewpoint.Back:
-                        Viewpoint = "Back";
-                        break;
-                    case FezEngine.Viewpoint.Left:
-                        Viewpoint = "Left";
-                        break;
-                    case FezEngine.Viewpoint.Right:
-                        Viewpoint = "Right";
-                        break;
-                    case FezEngine.Viewpoint.Front:
-                        Viewpoint = "Front";
-                        break;
-                    default:
-                        Viewpoint = "Other";
-                        break;
-                }
-            }
-
             float maxWidth = linesToDraw.Select(str => DrawingTools.DefaultFont.MeasureString(str).X * 2).Max();
             if(maxWidth > lastWidth || (gameTime.TotalGameTime - lastWidthUpdateTime).TotalSeconds > 5.0f)
             {
