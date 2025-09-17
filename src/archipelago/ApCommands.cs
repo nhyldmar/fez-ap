@@ -10,7 +10,16 @@ namespace FEZAP.Archipelago
 
         public string HelpText => "connect <server> <port> <slot_name> <password> - connect to server";
 
-        public List<string> Autocomplete(string[] args) { return null; }
+        public List<string> Autocomplete(string[] args)
+        {
+            if (args.Length == 1)
+            {
+                return new string[] { "archipelago.gg", "localhost" }
+                .Where(s => s.StartsWith(args[0], StringComparison.OrdinalIgnoreCase))
+                .ToList();
+            }
+            return null;
+        }
 
         public bool Execute(string[] args)
         {
@@ -162,7 +171,19 @@ namespace FEZAP.Archipelago
 
         public string HelpText => "send <name> - send location";
 
-        public List<string> Autocomplete(string[] args) { return null; }
+        public List<string> Autocomplete(string[] args)
+        {
+            // TODO: Figure out if it needs to be >= 1 or if this is fine
+            if (args.Length == 1)
+            {
+                // TODO: Figure out if this works
+                return LocationData.allLocations
+                    .Select(loc => loc.name.ToString())
+                    .Where(s => s.StartsWith(args[0], StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+            return null;
+        }
 
         public bool Execute(string[] args)
         {
@@ -219,7 +240,16 @@ namespace FEZAP.Archipelago
 
         public string HelpText => "deathlink <true/false> - enable or disable deathlink";
 
-        public List<string> Autocomplete(string[] args) { return null; }
+        public List<string> Autocomplete(string[] args)
+        {
+            if (args.Length == 1)
+            {
+                return new string[] { "true", "false" }
+                .Where(s => s.StartsWith(args[0], StringComparison.OrdinalIgnoreCase))
+                .ToList();
+            }
+            return null;
+        }
 
         public bool Execute(string[] args)
         {
