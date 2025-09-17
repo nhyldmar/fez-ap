@@ -113,6 +113,9 @@ namespace FEZAP.Archipelago
                 case "Heart Cube":
                     GameState.SaveData.PiecesOfHeart += 1;
                     break;
+                case "Sunglasses":
+                    GameState.SaveData.HasFPView = true;
+                    break;
                 case "Rotation Trap":
                     DoRotationTrap();
                     break;

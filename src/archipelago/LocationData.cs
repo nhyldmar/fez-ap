@@ -1,4 +1,3 @@
-// TODO: Fix levelName not found in GameState.SaveData.World's keys
 // TODO: Verify the location list contains everything without duplicates
 // TODO: Add treasure chest data and handling
 // TODO: Improve the names for some of the anti-cubes

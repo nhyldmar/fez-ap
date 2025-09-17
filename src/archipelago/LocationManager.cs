@@ -32,7 +32,7 @@ namespace FEZAP.Archipelago
 
         public bool IsCollected(Location location)
         {
-            // TODO: Fix LocationData so that levelName is correct for the locations
+            // TODO: Figure out a way to have GameState.SaveData.World already contain all levels
             return false;
             // LevelSaveData level = GameState.SaveData.World[location.levelName];
             // return level.DestroyedTriles.Contains(location.emplacement);
