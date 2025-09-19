@@ -30,7 +30,7 @@ namespace FEZUG.Features.Console
             public ParsedCommandSequence(string raw)
             {
                 Original = raw;
-                Parse(raw.ToLower());
+                Parse(raw);
             }
 
             private void Parse(string commandString)
