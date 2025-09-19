@@ -192,7 +192,7 @@ namespace FEZUG.Features
             return true;
         }
 
-        private void SetEveryLevelState(bool unlocked)
+        public void SetEveryLevelState(bool unlocked)
         {
             if (!unlocked)
             {

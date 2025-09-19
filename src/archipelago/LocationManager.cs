@@ -2,8 +2,9 @@ using FezEngine.Services;
 using FezEngine.Tools;
 using FezGame.Services;
 using FezGame.Structure;
+using FEZUG;
+using FEZUG.Features;
 using FEZUG.Features.Console;
-using Color = Microsoft.Xna.Framework.Color;
 
 namespace FEZAP.Archipelago
 {
@@ -32,15 +33,14 @@ namespace FEZAP.Archipelago
 
         public bool IsCollected(Location location)
         {
-            // TODO: Figure out a way to have GameState.SaveData.World already contain all levels
-            return false;
-            // LevelSaveData level = GameState.SaveData.World[location.levelName];
-            // return level.DestroyedTriles.Contains(location.emplacement);
+            LevelSaveData level = GameState.SaveData.World[location.levelName];
+            return level.DestroyedTriles.Contains(location.emplacement);
         }
 
         public List<Location> GetAllCollected()
         {
             List<Location> collectedLocations = [];
+            Fezug.GetFeature<ProgressSet>().SetEveryLevelState(true);
             foreach (Location location in LocationData.allLocations)
             {
                 if (IsCollected(location))
