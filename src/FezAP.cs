@@ -10,7 +10,7 @@ namespace FEZAP
     public class Fezap : DrawableGameComponent
     {
         public static string Version = "v0.1.0";
-        public readonly Fezug Fezug;
+        public readonly Fezug Fezug = new();
         public static readonly ArchipelagoManager archipelagoManager = new();
         public static readonly DeathManager deathManager = new();
         public static readonly ItemManager itemManager = new();
@@ -21,7 +21,6 @@ namespace FEZAP
         public Fezap(Game game) : base(game)
         {
             Fez = (Fez)game;
-            Fezug = new(game);
             Enabled = true;
             Visible = true;
             DrawOrder = 99999;

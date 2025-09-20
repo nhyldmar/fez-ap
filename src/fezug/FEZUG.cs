@@ -26,9 +26,8 @@ namespace FEZUG
         public static Fezug Instance { get; private set; }
         public static Fez Fez { get; private set; }
 
-        public Fezug(Game game)
+        public Fezug()
         {
-            Fez = (Fez)game;
             Instance = this;
         }
 
