@@ -26,6 +26,12 @@ namespace FEZUG
         public static Fezug Instance { get; private set; }
         public static Fez Fez { get; private set; }
 
+        public Fezug(Game game)
+        {
+            Fez = (Fez)game;
+            Instance = this;
+        }
+
         public void Initialize()
         {
             DrawingTools.Init();
@@ -82,16 +88,9 @@ namespace FEZUG
         }
     }
 
-    public class FezugInGameRendering : DrawableGameComponent
+    public class FezugInGameRendering
     {
-        public FezugInGameRendering(Game game) : base(game)
-        {
-            Enabled = true;
-            Visible = true;
-            DrawOrder = 101;
-        }
-
-        public override void Draw(GameTime gameTime)
+        public static void Draw(GameTime gameTime)
         {
             foreach (var feature in Fezug.Instance.Features)
             {

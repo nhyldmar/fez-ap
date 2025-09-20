@@ -10,7 +10,7 @@ namespace FEZAP
     public class Fezap : DrawableGameComponent
     {
         public static string Version = "v0.1.0";
-        public static readonly Fezug fezug = new();
+        public readonly Fezug Fezug;
         public static readonly ArchipelagoManager archipelagoManager = new();
         public static readonly DeathManager deathManager = new();
         public static readonly ItemManager itemManager = new();
@@ -21,6 +21,7 @@ namespace FEZAP
         public Fezap(Game game) : base(game)
         {
             Fez = (Fez)game;
+            Fezug = new(game);
             Enabled = true;
             Visible = true;
             DrawOrder = 99999;
@@ -29,7 +30,7 @@ namespace FEZAP
         public override void Initialize()
         {
             base.Initialize();
-            fezug.Initialize();
+            Fezug.Initialize();
 
             // Inject all our code
             ServiceHelper.InjectServices(archipelagoManager);
@@ -41,13 +42,14 @@ namespace FEZAP
         public override void Update(GameTime gameTime)
         {
             GameTime = gameTime;
-            fezug.Update(gameTime);
+            Fezug.Update(gameTime);
             archipelagoManager.Update();
         }
 
         public override void Draw(GameTime gameTime)
         {
-            fezug.Draw(gameTime);
+            Fezug.Draw(gameTime);
+            FezugInGameRendering.Draw(gameTime);
         }
     }
 }
