@@ -15,6 +15,12 @@ using System.Threading.Tasks;
 
 namespace FEZUG.Features.Hud
 {
+    public readonly struct HudLine(string text, Color color)
+    {
+        public readonly string text = text;
+        public readonly Color color = color;
+    };
+
     public class TextHud : IFezugFeature
     {
         private List<(FezugVariable var, Func<string> provider)> hudVars = [];
@@ -74,11 +80,6 @@ namespace FEZUG.Features.Hud
             Positioner = new HudPositioner("text", "global text", 0.0f, 0.0f);
         }
 
-        private void DrawText(string text, Vector2 pos)
-        {
-            DrawingTools.DrawText(text, pos, Color.White);
-        }
-
         public void Update(GameTime gameTime)
         {
 
@@ -95,23 +96,24 @@ namespace FEZUG.Features.Hud
             }
 
 
-            var linesToDraw = new List<string>()
+            var linesToDraw = new List<HudLine>()
             {
-                $"FEZAP {Fezap.Version}",
+                new($"FEZAP {Fezap.Version}", Color.White),
             };
 
-            string connectionInfo = ArchipelagoManager.IsConnected() ? "Connected" : "Disconnected";
-            linesToDraw.Add(connectionInfo);
+            string connectionText = ArchipelagoManager.IsConnected() ? "Connected" : "Disconnected";
+            Color connectionColor = ArchipelagoManager.IsConnected() ? Color.Green : Color.Red;
+            linesToDraw.Add(new(connectionText, connectionColor));
 
             foreach (var hudVar in hudVars)
             {
                 if(hudVar.var.ValueBool)
                 {
-                    linesToDraw.Add(hudVar.provider());
+                    linesToDraw.Add(new(hudVar.provider(), Color.White));
                 }
             }
 
-            float maxWidth = linesToDraw.Select(str => DrawingTools.DefaultFont.MeasureString(str).X * 2).Max();
+            float maxWidth = linesToDraw.Select(line => DrawingTools.DefaultFont.MeasureString(line.text).X * 2).Max();
             if(maxWidth > lastWidth || (gameTime.TotalGameTime - lastWidthUpdateTime).TotalSeconds > 5.0f)
             {
                 lastWidthUpdateTime = gameTime.TotalGameTime;
@@ -130,8 +132,8 @@ namespace FEZUG.Features.Hud
             for (int i = 0; i < linesToDraw.Count; i++)
             {
                 var line = linesToDraw[i];
-                DrawText(line, position + new Vector2(padX, i * 30.0f));
-                if (i == 0) DrawText(line, position + new Vector2(padX, (i*30.0f)-1.0f));
+                DrawingTools.DrawText(line.text, position + new Vector2(padX, i * 30.0f), line.color);
+                if (i == 0) DrawingTools.DrawText(line.text, position + new Vector2(padX, (i*30.0f)-1.0f), line.color);
             }
 
         }
