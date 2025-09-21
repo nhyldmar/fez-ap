@@ -20,7 +20,15 @@ mv release/fez-apworld.zip release/fez.apworld
 rm -rf release/apworld
 
 # Copy YAML template
-# TODO: Regenerate the templates before copying
+cd Archipelago
+py -c '
+from Options import generate_yaml_templates
+import Utils
+
+target = Utils.user_path("Players", "Templates")
+generate_yaml_templates(target, False)
+'
+cd -
 cp Archipelago/Players/Templates/Fez.yaml release/Fez.yaml
 
 echo "Tag your commit and double check your zips before uploading them."
