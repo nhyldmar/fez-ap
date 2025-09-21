@@ -3,6 +3,8 @@ using FezEngine.Services.Scripting;
 using FezEngine.Tools;
 using FezGame.Services;
 using FezGame.Structure;
+using FEZUG;
+using FEZUG.Features;
 using FEZUG.Features.Console;
 
 namespace FEZAP.Archipelago
@@ -22,7 +24,7 @@ namespace FEZAP.Archipelago
         {
             handlingDeath = true;
             FezugConsole.Print($"Death received: {deathLink.Cause}");
-            PlayerManager.Action = PlayerManager.Grounded ? ActionType.Dying : ActionType.FreeFalling;
+            Fezug.GetFeature<Kill>().Execute(null);
         }
 
         public void MonitorDeath()
