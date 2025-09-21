@@ -1,6 +1,5 @@
 using FezEngine.Tools;
 using FezGame;
-using FEZUG.Helpers;
 using Microsoft.Xna.Framework;
 using FEZAP.Archipelago;
 using FEZUG;

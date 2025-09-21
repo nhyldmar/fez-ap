@@ -1,4 +1,5 @@
 ﻿using Common;
+using FEZAP;
 using FezEngine.Components;
 using FezEngine.Services;
 using FezEngine.Structure.Input;
@@ -514,10 +515,12 @@ namespace FEZUG.Features.Console
             Warning,
             Error,
         }
-        private struct ConsoleOutput
+
+        private struct ConsoleOutput(string Text, Color Color, TimeSpan Time)
         {
-            public string Text;
-            public Color Color;
+            public string Text = Text;
+            public Color Color = Color;
+            public TimeSpan Time = Time;
         }
 
         private static readonly Dictionary<OutputType, Color> ConsoleOutputTypeColors = new Dictionary<OutputType, Color>()
@@ -528,6 +531,8 @@ namespace FEZUG.Features.Console
         };
 
         private List<ConsoleOutput> outputBuffer;
+        private List<ConsoleOutput> fadingTextBuffer = [];
+        private readonly TimeSpan fadingTimeLimit = new(0, 0, 5);
         private float blinkingTime;
         private int previousCursor = 0;
 
@@ -585,7 +590,8 @@ namespace FEZUG.Features.Console
                 Instance.Print(new ConsoleOutput
                 {
                     Text = splitText,
-                    Color = color
+                    Color = color,
+                    Time = Fezap.GameTime.TotalGameTime
                 });
             }
         }
@@ -602,20 +608,71 @@ namespace FEZUG.Features.Console
 
         public void DrawHUD(GameTime gameTime)
         {
-            if (!Handler.Enabled) return;
-
-            Viewport viewport = DrawingTools.GetViewport();
-
             int margin = 20;
             int padding = 5;
             int lineHeight = 32;
             int outputBottomPadding = 50;
 
-            // draw command line
-
+            Viewport viewport = DrawingTools.GetViewport();
             int commandY = viewport.Height - margin - lineHeight - padding * 2;
             int commandWidth = viewport.Width - margin * 2;
 
+            int outputWidth = commandWidth;
+            int outputInnerWidth = commandWidth - padding * 4;
+            int outputHeight = lineHeight * OutputBufferLimit + padding * 2;
+            int outputY = commandY - outputBottomPadding - outputHeight;
+
+            // TODO: Cleanup all this code (might just be better to do in FEZUG repo)
+            if (!Handler.Enabled)
+            {
+                fadingTextBuffer = outputBuffer;
+                for (int i = 0; i < fadingTextBuffer.Count(); i++)
+                {
+                    if (Fezap.GameTime.TotalGameTime.Subtract(fadingTextBuffer[i].Time) > fadingTimeLimit)
+                    {
+                        fadingTextBuffer.RemoveAt(i);
+                    }
+                }
+
+                int fadedOutputPos = 0;
+                foreach (var outputLine in fadingTextBuffer)
+                {
+
+                    // Handle line wrapping
+                    List<ConsoleOutput> lines = [];
+                    string lineBuffer = "";
+                    foreach (var word in outputLine.Text.Split(' '))
+                    {
+                        float length = DrawingTools.DefaultFont.MeasureString(lineBuffer + word).X * DrawingTools.DefaultFontSize;
+                        if (length > outputInnerWidth)
+                        {
+                            lines.Add(new(lineBuffer, outputLine.Color, outputLine.Time));
+                            lineBuffer = $"{word} ";
+                        }
+                        else
+                        {
+                            lineBuffer += $"{word} ";
+                        }
+                    }
+                    lines.Add(new(lineBuffer, outputLine.Color, outputLine.Time));
+
+                    // Draw post-wrapping lines
+                    float fadeFactor = 1 - (Fezap.GameTime.TotalGameTime - outputLine.Time).Ticks / (float)fadingTimeLimit.Ticks;
+                    Color fadedColor = outputLine.Color * fadeFactor;
+                    for (int i = lines.Count - 1; i >= 0; i--)
+                    {
+                        fadedOutputPos++;
+                        DrawingTools.DrawText(
+                            lines[i].Text,
+                            new Vector2(margin + padding * 2, outputY + lineHeight * (OutputBufferLimit - fadedOutputPos) - 5),
+                            fadedColor
+                        );
+                    }
+                }
+                return;
+            }
+
+            // draw command line
             DrawingTools.DrawRect(new Rectangle(margin, commandY, commandWidth, lineHeight + padding*2), new Color(10, 10, 10, 220));
 
             // selection
@@ -661,11 +718,6 @@ namespace FEZUG.Features.Console
             }
 
             // draw output field
-            int outputWidth = commandWidth;
-            int outputInnerWidth = commandWidth - padding * 4;
-            int outputHeight = lineHeight * OutputBufferLimit + padding * 2;
-            int outputY = commandY - outputBottomPadding - outputHeight;
-
             DrawingTools.DrawRect(new Rectangle(margin, outputY, outputWidth, outputHeight), new Color(10, 10, 10, 220));
 
             var outputItemPos = 0;
