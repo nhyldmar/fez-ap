@@ -65,11 +65,11 @@ namespace FEZAP.Archipelago
                 case "Anti-Cube":
                     GameState.SaveData.SecretCubes += 1;
                     break;
-                case "Key":
-                    GameState.SaveData.Keys += 1;
-                    break;
                 case "Owl":
                     GameState.SaveData.CollectedOwls += 1;
+                    break;
+                case "Heart Cube":
+                    GameState.SaveData.PiecesOfHeart += 1;
                     break;
                 case "Red Map":
                     GameState.SaveData.Maps.Add("Red Map");
@@ -110,11 +110,11 @@ namespace FEZAP.Archipelago
                 case "The Skull Artifact":
                     GameState.SaveData.Artifacts.Add(ActorType.TriSkull);
                     break;
-                case "Heart Cube":
-                    GameState.SaveData.PiecesOfHeart += 1;
-                    break;
                 case "Sunglasses":
                     GameState.SaveData.HasFPView = true;
+                    break;
+                case "... Door Unlocked":
+                    // TODO: Add door unlock logic for each of the 8 doors
                     break;
                 case "Rotation Trap":
                     DoRotationTrap();

@@ -1,8 +1,5 @@
-// TODO: Verify the location list contains everything without duplicates
 // TODO: Add treasure chest data and handling
-// TODO: Improve the names for some of the anti-cubes
-// TODO: Add anything missing here and hope it can be wedged in nicely
-// TODO: Mirror all these entries and regions over to the apworld
+// TODO: Add spawning anti-cube data and handling
 
 using FezEngine.Structure;
 
@@ -18,7 +15,8 @@ namespace FEZAP.Archipelago
 
     public class LocationData
     {
-        public static readonly List<Location> allLocations = [
+        // 128 cube bits, usually converts to 8 full cubes
+        private static readonly List<Location> cubeBitLocations = [
             new("Abandoned A Cube Bit", "ABANDONED_A", [11, 9, 10]),
             new("Abandoned B Cube Bit", "ABANDONED_B", [7, 3, 10]),
             new("Ancient Walls Cube Bit 1", "ANCIENT_WALLS", [37, 35, 3]),
@@ -29,7 +27,6 @@ namespace FEZAP.Archipelago
             new("Arch Cube Bit 3", "ARCH", [19, 37, 15]),
             new("Bell Tower Cube Bit 1", "BELL_TOWER", [15, 32, 21]),
             new("Bell Tower Cube Bit 2", "BELL_TOWER", [16, 31, 16]),
-            new("Big Owl Anti-Cube", "BIG_OWL", [18, 29, 14]),
             new("Big Owl Cube Bit", "BIG_OWL", [18, 13, 10]),
             new("Big Tower Cube Bit 1", "BIG_TOWER", [13, 61, 10]),
             new("Big Tower Cube Bit 2", "BIG_TOWER", [10, 63, 32]),
@@ -39,12 +36,9 @@ namespace FEZAP.Archipelago
             new("Big Tower Cube Bit 6", "BIG_TOWER", [19, 49, 21]),
             new("Big Tower Cube Bit 7", "BIG_TOWER", [33, 57, 30]),
             new("Big Tower Cube Bit 8", "BIG_TOWER", [37, 59, 6]),
-            new("Clock Cube", "CLOCK", [41, 71, 35]),
-            new("CMY B Anti-Cube", "CMY_B", [14, 62, 11]),
             new("Extractor A Cube Bit", "EXTRACTOR_A", [24, 15, 12]),
             new("Five Towers Cube Bit 1", "FIVE_TOWERS", [32, 34, 27]),
             new("Five Towers Cube Bit 2", "FIVE_TOWERS", [26, 38, 21]),
-            new("Five Towers Cube 3", "FIVE_TOWERS", [45, 74, 19]),
             new("Five Towers Cube Bit 3", "FIVE_TOWERS", [45, 58, 32]),
             new("Fox Cube Bit", "FOX", [19, 74, 9]),
             new("Fractal Cube Bit 1", "FRACTAL", [28, 48, 21]),
@@ -65,9 +59,7 @@ namespace FEZAP.Archipelago
             new("Graveyard Cabin Cube Bit 2", "GRAVE_CABIN", [13, 27, 37]),
             new("Graveyard Ghost Cube Bit 1", "GRAVE_GHOST", [15, 21, 12]),
             new("Graveyard Ghost Cube Bit 2", "GRAVE_GHOST", [9, 8, 15]),
-            new("Graveyard Lesser Gate Cube Bit 1", "GRAVE_LESSER_GATE", [18, 12, 10]),
-            new("Graveyard Lesser Gate Cube 2", "GRAVE_LESSER_GATE", [18, 18, 14]),
-            new("Graveyard Treasure A Cube", "GRAVE_TREASURE_A", [10, 56, 8]),
+            new("Graveyard Lesser Gate Cube Bit", "GRAVE_LESSER_GATE", [18, 12, 10]),
             new("Graveyard Treasure A Cube Bit 1", "GRAVE_TREASURE_A", [7, 45, 8]),
             new("Graveyard Treasure A Cube Bit 2", "GRAVE_TREASURE_A", [10, 40, 5]),
             new("Industrial Superspin Cube Bit 1", "INDUSTRIAL_SUPERSPIN", [14, 71, 58]),
@@ -75,7 +67,6 @@ namespace FEZAP.Archipelago
             new("Industrial Superspin Cube Bit 3", "INDUSTRIAL_SUPERSPIN", [29, 134, 9]),
             new("Industrial Abandoned A Cube Bit", "INDUST_ABANDONED_A", [7, 11, 8]),
             new("Kitchen Cube Bit", "KITCHEN", [7, 12, 13]),
-            new("Lava Skull Anti-Cube", "LAVA_SKULL", [10, 30, 8]),
             new("Lighthouse Cube Bit 1", "LIGHTHOUSE", [23, 39, 32]),
             new("Lighthouse Cube Bit 2", "LIGHTHOUSE", [8, 28, 45]),
             new("Lighthouse House A Cube Bit", "LIGHTHOUSE_HOUSE_A", [13, 7, 4]),
@@ -88,12 +79,10 @@ namespace FEZAP.Archipelago
             new("Mine Bomb Pillar Cube Bit", "MINE_BOMB_PILLAR", [22, 55, 29]),
             new("Mine Wrap Cube Bit 1", "MINE_WRAP", [31, 42, 18]),
             new("Mine Wrap Cube Bit 2", "MINE_WRAP", [28, 37, 15]),
-            new("Mine Wrap Cube 3", "MINE_WRAP", [34, 68, 13]),
             new("Nature Hub Cube Bit 1", "NATURE_HUB", [7, 25, 22]),
             new("Nature Hub Cube Bit 2", "NATURE_HUB", [2, 16, 26]),
             new("Nu Zu Abandoned A Cube Bit", "NUZU_ABANDONED_A", [8, 5, 8]),
             new("Nu Zu Abandoned B Cube Bit", "NUZU_ABANDONED_B", [13, 2, 9]),
-            new("Observatory Cube", "OBSERVATORY", [5, 44, 6]),
             new("Oldschool Cube Bit", "OLDSCHOOL", [7, 5, 8]),
             new("Oldschool Ruins Cube Bit", "OLDSCHOOL_RUINS", [7, 5, 8]),
             new("Owl Cube Bit", "OWL", [18, 13, 10]),
@@ -103,16 +92,13 @@ namespace FEZAP.Archipelago
             new("Pivot 2 Cube Bit 1", "PIVOT_TWO", [24, 42, 17]),
             new("Pivot 2 Cube Bit 2", "PIVOT_TWO", [16, 46, 9]),
             new("Pivot 2 Cube Bit 3", "PIVOT_TWO", [32, 46, 25]),
-            new("Pivot 3 Cube", "PIVOT_THREE", [14, 66, 14]),
             new("Pivot Watertower Cube Bit", "PIVOT_WATERTOWER", [18, 34, 11]),
             new("Purple Lodge Ruin Cube Bit", "PURPLE_LODGE_RUIN", [10, 4, 9]),
-            new("Quantum Anti-Cube", "QUANTUM", [44, 83, 38]),
             new("School Cube Bit", "SCHOOL", [7, 3, 7]),
             new("Sewer Fork Cube Bit", "SEWER_FORK", [11, 42, 14]),
             new("Sewer Geyser Cube Bit", "SEWER_GEYSER", [19, 37, 12]),
             new("Sewer Hub Cube Bit 1", "SEWER_HUB", [34, 42, 35]),
             new("Sewer Hub Cube Bit 2", "SEWER_HUB", [8, 36, 9]),
-            new("Sewer Lesser Gate B Cube", "SEWER_LESSER_GATE_B", [15, 35, 20]),
             new("Sewer Pillars Cube Bit 1", "SEWER_PILLARS", [6, 24, 29]),
             new("Sewer Pillars Cube Bit 2", "SEWER_PILLARS", [30, 34, 5]),
             new("Sewer Pillars Cube Bit 3", "SEWER_PILLARS", [6, 16, 31]),
@@ -124,12 +110,9 @@ namespace FEZAP.Archipelago
             new("Skull Cube Bit 1", "SKULL", [8, 18, 10]),
             new("Skull Cube Bit 2", "SKULL", [32, 22, 34]),
             new("Skull Cube Bit 3", "SKULL", [22, 24, 21]),
-            new("Skull B Anti-Cube", "SKULL_B", [20, 21, 19]),
-            new("Spinning Plates Cube", "SPINNING_PLATES", [12, 60, 12]),
             new("Spinning Plates Cube Bit", "SPINNING_PLATES", [11, 40, 12]),
             new("Stargate Ruins Cube Bit 1", "STARGATE_RUINS", [16, 75, 19]),
             new("Stargate Ruins Cube Bit 2", "STARGATE_RUINS", [9, 75, 11]),
-            new("Superspin Cave Cube", "SUPERSPIN_CAVE", [7, 22, 6]),
             new("Throne Cube Bit", "THRONE", [30, 40, 28]),
             new("Tree Crumble Cube Bit", "TREE_CRUMBLE", [23, 52, 23]),
             new("Triple Pivot Cave Cube Bit 1", "TRIPLE_PIVOT_CAVE", [14, 46, 28]),
@@ -137,12 +120,10 @@ namespace FEZAP.Archipelago
             new("Two Walls Cube Bit 1", "TWO_WALLS", [28, 20, 19]),
             new("Two Walls Cube Bit 2", "TWO_WALLS", [23, 30, 29]),
             new("Two Walls Cube Bit 3", "TWO_WALLS", [22, 33, 16]),
-            new("Two Walls Cube", "TWO_WALLS", [22, 46, 32]),
             new("Villageville 3D Cube Bit 1", "VILLAGEVILLE_3D", [34, 36, 30]),
             new("Villageville 3D Cube Bit 2", "VILLAGEVILLE_3D", [33, 53, 32]),
             new("Villageville 3D Cube Bit 3", "VILLAGEVILLE_3D", [31, 44, 31]),
             new("Villageville 3D Cube Bit 4", "VILLAGEVILLE_3D", [41, 23, 32]),
-            new("Visitor Cube", "VISITOR", [26, 54, 21]),
             new("Wall Hole Cube Bit 1", "WALL_HOLE", [13, 23, 19]),
             new("Wall Hole Cube Bit 2", "WALL_HOLE", [10, 6, 14]),
             new("Wall Interior A Cube Bit", "WALL_INTERIOR_A", [10, 12, 10]),
@@ -157,16 +138,46 @@ namespace FEZAP.Archipelago
             new("Zu Bridge Cube Bit 2", "ZU_BRIDGE", [21, 50, 7]),
             new("Zu City Cube Bit 1", "ZU_CITY", [44, 59, 37]),
             new("Zu City Cube Bit 2", "ZU_CITY", [45, 21, 34]),
-            new("Zu Code Loop Cube", "ZU_CODE_LOOP", [5, 42, 5]),
             new("Zu Code Loop Cube Bit 1", "ZU_CODE_LOOP", [2, 31, 5]),
             new("Zu Code Loop Cube Bit 2", "ZU_CODE_LOOP", [2, 11, 2]),
-            new("Zu Heads Anti-Cube", "ZU_HEADS", [9, 68, 9]),
             new("Zu House Empty Cube Bit", "ZU_HOUSE_EMPTY", [9, 6, 8]),
             new("Zu House Ruin Visitors Cube Bit", "ZU_HOUSE_RUIN_VISITORS", [6, 4, 10]),
             new("Zu House Scaffolding Cube Bit", "ZU_HOUSE_SCAFFOLDING", [12, 9, 5]),
             new("Zu Library Cube Bit", "ZU_LIBRARY", [27, 40, 25]),
-            new("Zu Switch B Cube", "ZU_SWITCH_B", [17, 37, 20]),
             new("Zu Throne Ruins Cube Bit", "ZU_THRONE_RUINS", [9, 6, 8]),
         ];
+
+        // 16 total, 2 in chests
+        private static readonly List<Location> goldenCubeLocations = [
+            new("Clock Cube", "CLOCK", [41, 71, 35]),
+            new("Five Towers Cube", "FIVE_TOWERS", [45, 74, 19]),
+            new("Graveyard Lesser Gate Cube", "GRAVE_LESSER_GATE", [18, 18, 14]),
+            new("Graveyard Treasure A Cube", "GRAVE_TREASURE_A", [10, 56, 8]),
+            new("Mine Wrap Cube", "MINE_WRAP", [34, 68, 13]),
+            new("Observatory Cube", "OBSERVATORY", [5, 44, 6]),
+            new("Pivot 3 Cube", "PIVOT_THREE", [14, 66, 14]),
+            new("Sewer Lesser Gate B Cube", "SEWER_LESSER_GATE_B", [15, 35, 20]),
+            new("Spinning Plates Cube", "SPINNING_PLATES", [12, 60, 12]),
+            new("Superspin Cave Cube", "SUPERSPIN_CAVE", [7, 22, 6]),
+            new("Two Walls Cube", "TWO_WALLS", [22, 46, 32]),
+            new("Visitor Cube", "VISITOR", [26, 54, 21]),
+            new("Zu Code Loop Cube", "ZU_CODE_LOOP", [5, 42, 5]),
+            new("Zu Switch B Cube", "ZU_SWITCH_B", [17, 37, 20]),
+        ];
+
+        // 32 total, only 6 in world
+        private static readonly List<Location> antiCubeLocations = [
+            new("Big Owl Anti-Cube", "BIG_OWL", [18, 29, 14]),
+            new("CMY B Anti-Cube", "CMY_B", [14, 62, 11]),
+            new("Lava Skull Anti-Cube", "LAVA_SKULL", [10, 30, 8]),
+            new("Quantum Anti-Cube", "QUANTUM", [44, 83, 38]),
+            new("Skull B Anti-Cube", "SKULL_B", [20, 21, 19]),
+            new("Zu Heads Anti-Cube", "ZU_HEADS", [9, 68, 9]),
+        ];
+
+        // List of all locations that have a destructible trile associated with them
+        public static readonly List<Location> allLocations = [.. cubeBitLocations,
+                                                              .. goldenCubeLocations,
+                                                              .. antiCubeLocations];
     }
 }
