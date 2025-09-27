@@ -95,8 +95,9 @@ namespace FEZAP.Archipelago
             session.Socket.SocketClosed += HandleSocketClosed;
             session.Items.ItemReceived += HandleRecvItem;
 
-            // Set goal from slot data
+            // Setup goal checking
             LocationManager.goal = Convert.ToInt16(slotData["goal"]);
+            levelManager.LevelChanged += Fezap.locationManager.MonitorGoal;
 
             // Disable visual pain if in slot data
             if (Convert.ToBoolean(slotData["disable_visual_pain"]))
@@ -191,8 +192,8 @@ namespace FEZAP.Archipelago
         {
             if (IsConnected())
             {
+                // TODO: Move these over to a hook event handler
                 Fezap.locationManager.MonitorLocations();
-                Fezap.locationManager.MonitorGoal();
                 Fezap.deathManager.MonitorDeath();
             }
         }

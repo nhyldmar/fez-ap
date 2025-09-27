@@ -63,21 +63,11 @@ namespace FEZAP.Archipelago
 
         public void MonitorGoal()
         {
-            bool goalAchieved = false;
-            switch (goal)
+            if ((goal == 0) && Level.Name == "HEX_REBUILD")
             {
-                case 0:
-                    goalAchieved = GameState.SaveData.Finished32;
-                    break;
-                case 1:
-                    goalAchieved = GameState.SaveData.Finished64;
-                    break;
-                default:
-                    FezugConsole.Print("Incorrect slot data for goal", FezugConsole.OutputType.Error);
-                    break;
+                ArchipelagoManager.session.SetGoalAchieved();
             }
-
-            if (goalAchieved)
+            else if ((goal == 1) && Level.Name == "GOMEZ_HOUSE_END_64")
             {
                 ArchipelagoManager.session.SetGoalAchieved();
             }
