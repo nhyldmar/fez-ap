@@ -33,14 +33,13 @@ namespace FEZAP.Archipelago
 
         public bool IsCollected(Location location)
         {
-            LevelSaveData level = GameState.SaveData.World[location.levelName];
-            return level.DestroyedTriles.Contains(location.emplacement);
+            bool levelExists = GameState.SaveData.World.TryGetValue(location.levelName, out LevelSaveData level);
+            return levelExists && level.DestroyedTriles.Contains(location.emplacement);
         }
 
         public List<Location> GetAllCollected()
         {
             List<Location> collectedLocations = [];
-            Fezug.GetFeature<ProgressSet>().SetEveryLevelState(true);
             foreach (Location location in LocationData.allLocations)
             {
                 if (IsCollected(location))

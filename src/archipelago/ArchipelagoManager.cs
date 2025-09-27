@@ -26,6 +26,7 @@ namespace FEZAP.Archipelago
         private static ConnectionInfo connectionInfo;
         public static ArchipelagoSession session;
         public static DeathLinkService deathLinkService;
+        private static bool connectInitFinished;
 
         [ServiceDependency]
         public IGameStateManager GameState { get; set; }
@@ -50,15 +51,15 @@ namespace FEZAP.Archipelago
 
         public void Connect(string server, int port, string user, string pass = null)
         {
+            connectInitFinished = false;
             connectionInfo = new(server, port, user, pass);
-
             session = ArchipelagoSessionFactory.CreateSession(server, port);
-
             LoginResult result = session.TryConnectAndLogin(gameName, user, ItemsHandlingFlags.AllItems, password: pass, requestSlotData: true);
 
             if (result.Successful)
             {
                 OnConnectSuccess();
+                connectInitFinished = true;
             }
             else
             {
@@ -97,7 +98,8 @@ namespace FEZAP.Archipelago
 
             // Setup goal checking
             LocationManager.goal = Convert.ToInt16(slotData["goal"]);
-            levelManager.LevelChanged += Fezap.locationManager.MonitorGoal;
+            // TODO: Figure out why levelManager is a null reference
+            // levelManager.LevelChanged += Fezap.locationManager.MonitorGoal;
 
             // Disable visual pain if in slot data
             if (Convert.ToBoolean(slotData["disable_visual_pain"]))
@@ -118,14 +120,7 @@ namespace FEZAP.Archipelago
 
         public static bool IsConnected()
         {
-            if (session == null)
-            {
-                return false;
-            }
-            else
-            {
-                return session.Socket.Connected;
-            }
+            return (session != null) && session.Socket.Connected && connectInitFinished;
         }
 
         private static void HandleLogMsg(LogMessage message)
