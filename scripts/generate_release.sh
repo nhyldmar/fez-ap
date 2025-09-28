@@ -13,7 +13,9 @@ cp dependencies/Newtonsoft.Json.dll release/fezap/Newtonsoft.Json.dll
 zip -r release/FezAP.zip release/fezap
 rm -rf release/fezap
 
-# Generate fez.apworld (TODO: Confirm that this is all that's needed)
+# Generate fez.apworld
+# TODO: Swap with using the Generate Apworlds after rebasing the AP repo
+rm -rf Archipelago/worlds/fez/__pycache__
 cp -r Archipelago/worlds/fez release/apworld
 zip -r release/fez-apworld.zip release/apworld
 mv release/fez-apworld.zip release/fez.apworld

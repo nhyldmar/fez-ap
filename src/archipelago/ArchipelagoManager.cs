@@ -8,6 +8,7 @@ using FezEngine.Services;
 using FezEngine.Services.Scripting;
 using FezEngine.Tools;
 using FezGame.Services;
+using FezGame.Structure;
 using FEZUG.Features.Console;
 
 namespace FEZAP.Archipelago
@@ -51,6 +52,12 @@ namespace FEZAP.Archipelago
 
         public void Connect(string server, int port, string user, string pass = null)
         {
+            if (!IsSaveLoaded())
+            {
+                FezugConsole.Print("Select a save before connecting.", FezugConsole.OutputType.Error);
+                return;
+            }
+
             connectInitFinished = false;
             connectionInfo = new(server, port, user, pass);
             session = ArchipelagoSessionFactory.CreateSession(server, port);
@@ -60,25 +67,24 @@ namespace FEZAP.Archipelago
             {
                 OnConnectSuccess();
                 connectInitFinished = true;
+                return;
             }
             else
             {
-                LoginFailure failure = (LoginFailure)result;
-                string errorMessage = $"Failed to Connect to {server}:{port} as {user}";
-                if (pass != null)
-                {
-                    errorMessage += $" with password: {pass}";
-                }
-                foreach (string error in failure.Errors)
-                {
-                    errorMessage += $"\n    {error}";
-                }
-                foreach (ConnectionRefusedError error in failure.ErrorCodes)
-                {
-                    errorMessage += $"\n    {error}";
-                }
-                FezugConsole.Print(errorMessage, FezugConsole.OutputType.Error);
+                OnConnectFailed(result);
             }
+        }
+
+        private bool IsSaveLoaded()
+        {
+            int slot = GameState?.SaveSlot ?? -1;
+            bool isSaveLoaded = slot >= 0
+                                && !GameState.Loading
+                                && !GameState.TimePaused
+                                && PlayerManager.CanControl
+                                && PlayerManager.Action != ActionType.None
+                                && !PlayerManager.Hidden;
+            return isSaveLoaded;
         }
 
         private void OnConnectSuccess()
@@ -100,11 +106,14 @@ namespace FEZAP.Archipelago
             LocationManager.goal = Convert.ToInt16(slotData["goal"]);
             // TODO: Figure out why levelManager is a null reference
             // levelManager.LevelChanged += Fezap.locationManager.MonitorGoal;
+            string goalStr = LocationManager.goal == 0 ? "32 Cube Ending" : "64 Cube Ending";
+            FezugConsole.Print($"Goal set to {goalStr}");
 
             // Disable visual pain if in slot data
             if (Convert.ToBoolean(slotData["disable_visual_pain"]))
             {
-                levelManager.LevelChanged += HandleVisualPainRemoval;
+                // levelManager.LevelChanged += HandleVisualPainRemoval;
+                FezugConsole.Print("Visual pain disabled");
             }
 
             // Setup deathlink if enabled
@@ -116,6 +125,25 @@ namespace FEZAP.Archipelago
                 deathLinkService.OnDeathLinkReceived += Fezap.deathManager.HandleDeathlink;
                 FezugConsole.Print("Deathlink enabled");
             }
+        }
+
+        private void OnConnectFailed(LoginResult result)
+        {
+            LoginFailure failure = (LoginFailure)result;
+            string errorMessage = $"Failed to Connect to {connectionInfo.server}:{connectionInfo.port} as {connectionInfo.user}";
+            if (connectionInfo.pass != null)
+            {
+                errorMessage += $" with password: {connectionInfo.pass}";
+            }
+            foreach (string error in failure.Errors)
+            {
+                errorMessage += $"\n    {error}";
+            }
+            foreach (ConnectionRefusedError error in failure.ErrorCodes)
+            {
+                errorMessage += $"\n    {error}";
+            }
+            FezugConsole.Print(errorMessage, FezugConsole.OutputType.Error);
         }
 
         public static bool IsConnected()
@@ -187,7 +215,7 @@ namespace FEZAP.Archipelago
         {
             if (IsConnected())
             {
-                // TODO: Move these over to a hook event handler
+                // TODO: Move these over to a hook event handler or once a second
                 Fezap.locationManager.MonitorLocations();
                 Fezap.deathManager.MonitorDeath();
             }

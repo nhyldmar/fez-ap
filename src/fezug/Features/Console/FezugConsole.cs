@@ -622,7 +622,7 @@ namespace FEZUG.Features.Console
             int outputHeight = lineHeight * OutputBufferLimit + padding * 2;
             int outputY = commandY - outputBottomPadding - outputHeight;
 
-            // TODO: Cleanup all this code (might just be better to do in FEZUG repo)
+            // NOTE: This code is terrible and duplicates other bits. It needs cleaning up, but works for now.
             if (!Handler.Enabled)
             {
                 fadingTextBuffer = [.. outputBuffer];
