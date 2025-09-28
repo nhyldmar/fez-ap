@@ -6,10 +6,14 @@ using Archipelago.MultiClient.Net.MessageLog.Messages;
 using Archipelago.MultiClient.Net.Models;
 using FezEngine.Services;
 using FezEngine.Services.Scripting;
+using FezEngine.Structure;
 using FezEngine.Tools;
 using FezGame.Services;
 using FezGame.Structure;
+using FEZUG;
+using FEZUG.Features;
 using FEZUG.Features.Console;
+using FEZUG.Helpers;
 
 namespace FEZAP.Archipelago
 {
@@ -92,6 +96,9 @@ namespace FEZAP.Archipelago
             FezugConsole.Print("Connected successfully");
             var slotData = session.DataStorage.GetSlotData(session.ConnectionInfo.Slot);
 
+            // NOTE: Consider having this as a YAML option
+            SkipIntro();
+
             // Restore internal information
             Fezap.itemManager.RestoreReceivedItems();
             Fezap.locationManager.RestoreCollectedLocations();
@@ -150,6 +157,17 @@ namespace FEZAP.Archipelago
             return (session != null) && session.Socket.Connected && connectInitFinished;
         }
 
+        private void SkipIntro()
+        {
+            // TODO: Fix this
+            // if (GameState.SaveData.FezHidden)
+            // {
+            //     GameState.SaveData.FezHidden = false;
+            //     var warp = Fezug.GetFeature<WarpLevel>();
+            //     warp.WarpInternal("GOMEZ_HOUSE", WarpLevel.WarpType.InSession);
+            // }
+        }
+
         private static void HandleLogMsg(LogMessage message)
         {
             switch (message)
@@ -202,18 +220,17 @@ namespace FEZAP.Archipelago
 
         private void HandleVisualPainRemoval()
         {
-            FezugConsole.Print($"Quantum: {LevelManager.Quantum}");
-            FezugConsole.Print($"Rainy: {LevelManager.Rainy}");
-
+            // Remove quantum effect
             if (LevelManager.Quantum)
             {
                 LevelManager.Quantum = false;
             }
+
+            // Remove lightning flashes and make invisible triles visible
+            InvisibleTrilesDraw.WireframesEnabled = LevelManager.Rainy;
             if (LevelManager.Rainy)
             {
                 LevelManager.Rainy = false;
-                // TODO: Figure out how to keep rain, but remove lightning
-                // TODO: Figure out how to render invisible blocks just for these levels
             }
 
             // NOTE: Remove other sources of visual pain as requested

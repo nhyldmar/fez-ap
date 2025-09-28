@@ -47,8 +47,7 @@ namespace FEZAP
         public override void Draw(GameTime gameTime)
         {
             Fezug.Draw(gameTime);
-            // TODO: Figre out why this crashes
-            // FezugInGameRendering.Draw(gameTime);
+            FezugInGameRendering.Draw(gameTime);
         }
     }
 }
