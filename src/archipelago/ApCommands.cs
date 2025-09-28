@@ -175,10 +175,9 @@ namespace FEZAP.Archipelago
         {
             if (args.Length == 1)
             {
-                return LocationData.allLocations
-                    .Select(loc => loc.name.ToString())
-                    .Where(s => s.StartsWith(args[0], StringComparison.OrdinalIgnoreCase))
-                    .ToList();
+                return [.. LocationData.allLocations
+                        .Select(loc => loc.name.ToString())
+                        .Where(s => s.StartsWith(args[0], StringComparison.OrdinalIgnoreCase))];
             }
             return null;
         }
@@ -195,7 +194,7 @@ namespace FEZAP.Archipelago
                 }
                 else
                 {
-                    ArchipelagoManager.session.Locations.CompleteLocationChecks([locationId]);
+                    ArchipelagoManager.SendLocation(locationName);
                 }
             }
             else

@@ -196,15 +196,18 @@ namespace FEZAP.Archipelago
             }
         }
 
-        public static async Task SendLocation(string name)
+        public static void SendLocation(string name)
         {
             if (IsConnected())
             {
                 var id = session.Locations.GetLocationIdFromName(gameName, name);
-                var result = await session.Locations.ScoutLocationsAsync(id);
-                ScoutedItemInfo item = result[0];
-                await session.Locations.CompleteLocationChecksAsync(id);
-                FezugConsole.Print($"Sent {item.ItemDisplayName} to {item.ItemGame}");
+                session.Locations.CompleteLocationChecks([id]);
+                FezugConsole.Print($"Collected {name} ({id})");
+
+                // TODO: Figure out why it early returns whenever trying to index result
+                // var result = await session.Locations.ScoutLocationsAsync(id);
+                // ScoutedItemInfo item = result[0];
+                // FezugConsole.Print($"Sent {item.ItemDisplayName} to {item.ItemGame}");
             }
         }
 

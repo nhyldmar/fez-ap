@@ -27,6 +27,14 @@ namespace FEZAP.Archipelago
                 string name = ArchipelagoManager.session.Locations.GetLocationNameFromId(id);
                 Location location = LocationData.allLocations.Find(location => location.name == name);
                 allCollectedLocations.Add(location);
+
+                // Remove location if already collected (requires re-entering the level if in it)
+                if (!GameState.SaveData.World.ContainsKey(location.levelName))
+                {
+                    GameState.SaveData.World.Add(location.levelName, new LevelSaveData());
+                }
+                LevelSaveData levelData = GameState.SaveData.World[location.levelName];
+                levelData.DestroyedTriles.Add(location.emplacement);
             }
             FezugConsole.Print("Location data restored");
         }
@@ -52,11 +60,18 @@ namespace FEZAP.Archipelago
 
         public void MonitorLocations()
         {
+            // Send if something was collected
             var diff = GetAllCollected().Except(allCollectedLocations);
             foreach (Location location in diff)
             {
-                _ = ArchipelagoManager.SendLocation(location.name);
+                ArchipelagoManager.SendLocation(location.name);
                 allCollectedLocations.Add(location);
+            }
+
+            // Remove whatever was collected
+            if (diff.Count() > 0)
+            {
+                Fezap.itemManager.RestoreReceivedItems();
             }
         }
 
