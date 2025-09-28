@@ -173,10 +173,8 @@ namespace FEZAP.Archipelago
 
         public List<string> Autocomplete(string[] args)
         {
-            // TODO: Figure out if it needs to be >= 1 or if this is fine
             if (args.Length == 1)
             {
-                // TODO: Figure out if this works
                 return LocationData.allLocations
                     .Select(loc => loc.name.ToString())
                     .Where(s => s.StartsWith(args[0], StringComparison.OrdinalIgnoreCase))
@@ -223,7 +221,6 @@ namespace FEZAP.Archipelago
             {
                 var missingLocations = ArchipelagoManager.session.Locations.AllMissingLocations;
                 ArchipelagoManager.session.Locations.CompleteLocationChecks([.. missingLocations]);
-                // TODO: Figure out why it crashes here.
             }
             else
             {

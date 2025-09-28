@@ -625,7 +625,7 @@ namespace FEZUG.Features.Console
             // TODO: Cleanup all this code (might just be better to do in FEZUG repo)
             if (!Handler.Enabled)
             {
-                fadingTextBuffer = outputBuffer;
+                fadingTextBuffer = [.. outputBuffer];
                 for (int i = 0; i < fadingTextBuffer.Count(); i++)
                 {
                     if (Fezap.GameTime.TotalGameTime.Subtract(fadingTextBuffer[i].Time) > fadingTimeLimit)
