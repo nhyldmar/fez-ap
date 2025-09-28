@@ -54,9 +54,11 @@ namespace FEZAP.Archipelago
             List<ItemInfo> itemsReceived = [.. ArchipelagoManager.session.Items.AllItemsReceived];
             foreach (ItemInfo item in itemsReceived)
             {
-                HandleReceivedItem(item);
+                if (!item.ItemName.Contains("Trap") && !(item.ItemName == "Emotional Support"))
+                {
+                    HandleReceivedItem(item);
+                }
             }
-            FezugConsole.Print("Item data restored");
         }
 
         public void HandleReceivedItem(ItemInfo item)

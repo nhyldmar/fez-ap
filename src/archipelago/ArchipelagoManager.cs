@@ -200,14 +200,14 @@ namespace FEZAP.Archipelago
         {
             if (IsConnected())
             {
+                // Send location
                 var id = session.Locations.GetLocationIdFromName(gameName, name);
                 session.Locations.CompleteLocationChecks([id]);
-                FezugConsole.Print($"Collected {name} ({id})");
 
-                // TODO: Figure out why it early returns whenever trying to index result
-                // var result = await session.Locations.ScoutLocationsAsync(id);
-                // ScoutedItemInfo item = result[0];
-                // FezugConsole.Print($"Sent {item.ItemDisplayName} to {item.ItemGame}");
+                // Get location info
+                var result = session.Locations.ScoutLocationsAsync(false, [id]);
+                ScoutedItemInfo item = result.Result[id];
+                FezugConsole.Print($"Sent {item.ItemDisplayName} to {item.ItemGame}");
             }
         }
 

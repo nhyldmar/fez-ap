@@ -36,7 +36,6 @@ namespace FEZAP.Archipelago
                 LevelSaveData levelData = GameState.SaveData.World[location.levelName];
                 levelData.DestroyedTriles.Add(location.emplacement);
             }
-            FezugConsole.Print("Location data restored");
         }
 
         public bool IsCollected(Location location)
@@ -71,6 +70,7 @@ namespace FEZAP.Archipelago
             // Remove whatever was collected
             if (diff.Count() > 0)
             {
+                // TODO: Figure out why this is not being called
                 Fezap.itemManager.RestoreReceivedItems();
             }
         }
