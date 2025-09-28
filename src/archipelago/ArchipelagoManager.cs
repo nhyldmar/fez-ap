@@ -48,7 +48,7 @@ namespace FEZAP.Archipelago
         public IOwlService OwlService { private get; set; }
 
         [ServiceDependency]
-        public ILevelManager levelManager;
+        public ILevelManager LevelManager { private get; set; }
 
         public void Connect(string server, int port, string user, string pass = null)
         {
@@ -104,15 +104,14 @@ namespace FEZAP.Archipelago
 
             // Setup goal checking
             LocationManager.goal = Convert.ToInt16(slotData["goal"]);
-            // TODO: Figure out why levelManager is a null reference
-            // levelManager.LevelChanged += Fezap.locationManager.MonitorGoal;
+            LevelManager.LevelChanged += Fezap.locationManager.MonitorGoal;
             string goalStr = LocationManager.goal == 0 ? "32 Cube Ending" : "64 Cube Ending";
             FezugConsole.Print($"Goal set to {goalStr}");
 
-            // Disable visual pain if in slot data
+            // Disable visual pain if in options
             if (Convert.ToBoolean(slotData["disable_visual_pain"]))
             {
-                // levelManager.LevelChanged += HandleVisualPainRemoval;
+                LevelManager.LevelChanging += HandleVisualPainRemoval;
                 FezugConsole.Print("Visual pain disabled");
             }
 
@@ -203,12 +202,21 @@ namespace FEZAP.Archipelago
 
         private void HandleVisualPainRemoval()
         {
-            // TODO: Figure out how to keep rain, but remove lightning
-            // TODO: Remove other sources of visual pain
-            levelManager.Quantum = false;
-            levelManager.Rainy = false;
-            // TODO: Check if this is necessary
-            // levelManager.Rebuild();
+            FezugConsole.Print($"Quantum: {LevelManager.Quantum}");
+            FezugConsole.Print($"Rainy: {LevelManager.Rainy}");
+
+            if (LevelManager.Quantum)
+            {
+                LevelManager.Quantum = false;
+            }
+            if (LevelManager.Rainy)
+            {
+                LevelManager.Rainy = false;
+                // TODO: Figure out how to keep rain, but remove lightning
+                // TODO: Figure out how to render invisible blocks just for these levels
+            }
+
+            // NOTE: Remove other sources of visual pain as requested
         }
 
         public void Update()
