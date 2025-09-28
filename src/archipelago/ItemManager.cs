@@ -146,10 +146,8 @@ namespace FEZAP.Archipelago
 
         public void DoEmotionalSupport(ItemInfo item)
         {
-            // TODO: Check if the @ from Hat's handling of StaticText works here
-            var gameText = ServiceHelper.Get<IContentManagerProvider>().Global.Load<Dictionary<string, Dictionary<string, string>>>("Resources/GameText");
-            gameText[""]["FEZAP_CUSTOM"] = item.Player.Name + RandomHelper.InList(EmotionalSupportMsgs);
-            _ = DotService.Say("FEZAP_CUSTOM", true, true);
+            string msg = item.Player.Name + RandomHelper.InList(EmotionalSupportMsgs);
+            _ = DotService.Say($"@{msg}", true, true);
         }
     }
 }
