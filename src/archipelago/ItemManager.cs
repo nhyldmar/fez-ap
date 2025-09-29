@@ -38,6 +38,7 @@ namespace FEZAP.Archipelago
 
         private void ClearCollectibleSaveData()
         {
+            // TODO: Figure out why this is not resetting values
             GameState.SaveData.Artifacts = [];
             GameState.SaveData.CollectedOwls = 0;
             GameState.SaveData.CollectedParts = 0;
@@ -77,32 +78,32 @@ namespace FEZAP.Archipelago
                 case "Heart Cube":
                     GameState.SaveData.PiecesOfHeart += 1;
                     break;
-                case "Red Map":
-                    GameState.SaveData.Maps.Add("Red Map");
+                case "Arch Map":
+                    GameState.SaveData.Maps.Add("MAP_ARCH");
                     break;
-                case "Purple Map":
-                    GameState.SaveData.Maps.Add("Purple Map");
+                case "Crypt Map A":
+                    GameState.SaveData.Maps.Add("MAP_CRYPT_A");
                     break;
-                case "Tower Map":
-                    GameState.SaveData.Maps.Add("Tower Map");
+                case "Crypt Map B":
+                    GameState.SaveData.Maps.Add("MAP_CRYPT_B");
+                    break;
+                case "Crypt Map C":
+                    GameState.SaveData.Maps.Add("MAP_CRYPT_C");
+                    break;
+                case "Crypt Map D":
+                    GameState.SaveData.Maps.Add("MAP_CRYPT_D");
                     break;
                 case "QR Code Map":
-                    GameState.SaveData.Maps.Add("QR Code Map");
+                    GameState.SaveData.Maps.Add("MAP_MYSTERY");
                     break;
-                case "Burned Map":
-                    GameState.SaveData.Maps.Add("Burned Map");
+                case "Pivot Map":
+                    GameState.SaveData.Maps.Add("MAP_PIVOT");
                     break;
-                case "Cemetery Map 1":
-                    GameState.SaveData.Maps.Add("Cemetery Map 1");
+                case "Ritual Map":
+                    GameState.SaveData.Maps.Add("MAP_RITUAL");
                     break;
-                case "Cemetery Map 2":
-                    GameState.SaveData.Maps.Add("Cemetery Map 2");
-                    break;
-                case "Cemetery Map 3":
-                    GameState.SaveData.Maps.Add("Cemetery Map 3");
-                    break;
-                case "Cemetery Map 4":
-                    GameState.SaveData.Maps.Add("Cemetery Map 4");
+                case "Tree Sky Map":
+                    GameState.SaveData.Maps.Add("MAP_TREE_SKY");
                     break;
                 case "The Writing Cube":
                     GameState.SaveData.Artifacts.Add(ActorType.LetterCube);
@@ -182,7 +183,8 @@ namespace FEZAP.Archipelago
 
         private void DoSleepTrap()
         {
-            PlayerManager.NextAction = FezGame.Structure.ActionType.IdleSleep;
+            // TODO: Confirm this works
+            PlayerManager.NextAction = ActionType.IdleSleep;
             PlayerManager.CanControl = false;
             GameService.Wait(5);
             PlayerManager.CanControl = true;
