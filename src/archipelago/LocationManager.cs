@@ -2,9 +2,6 @@ using FezEngine.Services;
 using FezEngine.Tools;
 using FezGame.Services;
 using FezGame.Structure;
-using FEZUG;
-using FEZUG.Features;
-using FEZUG.Features.Console;
 
 namespace FEZAP.Archipelago
 {
@@ -24,24 +21,51 @@ namespace FEZAP.Archipelago
             var serverCheckedIds = ArchipelagoManager.session.Locations.AllLocationsChecked;
             foreach (long id in serverCheckedIds)
             {
+                // Identify and add location to our collected
                 string name = ArchipelagoManager.session.Locations.GetLocationNameFromId(id);
                 Location location = LocationData.allLocations.Find(location => location.name == name);
                 allCollectedLocations.Add(location);
 
-                // Remove location if already collected (requires re-entering the level if in it)
+                // Pre-load the level if needed
                 if (!GameState.SaveData.World.ContainsKey(location.levelName))
                 {
                     GameState.SaveData.World.Add(location.levelName, new LevelSaveData());
                 }
+
+                // Remove the location from the save state
                 LevelSaveData levelData = GameState.SaveData.World[location.levelName];
-                levelData.DestroyedTriles.Add(location.emplacement);
+                switch (location.type)
+                {
+                    case LocationType.DestroyedTriles:
+                        levelData.DestroyedTriles.Add(location.emplacement);
+                        break;
+                    case LocationType.InactiveArtObjects:
+                        levelData.InactiveArtObjects.Add(location.index);
+                        break;
+                    case LocationType.InactiveNPCs:
+                        levelData.InactiveNPCs.Add(location.index);
+                        break;
+                }
             }
         }
 
         public bool IsCollected(Location location)
         {
-            bool levelExists = GameState.SaveData.World.TryGetValue(location.levelName, out LevelSaveData level);
-            return levelExists && level.DestroyedTriles.Contains(location.emplacement);
+            // Pre-load the level if needed
+            if (!GameState.SaveData.World.ContainsKey(location.levelName))
+            {
+                GameState.SaveData.World.Add(location.levelName, new LevelSaveData());
+            }
+
+            // Check if location has been collected
+            LevelSaveData levelData = GameState.SaveData.World[location.levelName];
+            return location.type switch
+            {
+                LocationType.DestroyedTriles => levelData.DestroyedTriles.Contains(location.emplacement),
+                LocationType.InactiveArtObjects => levelData.InactiveArtObjects.Contains(location.index),
+                LocationType.InactiveNPCs => levelData.InactiveNPCs.Contains(location.index),
+                _ => false,
+            };
         }
 
         public List<Location> GetAllCollected()
@@ -59,18 +83,19 @@ namespace FEZAP.Archipelago
 
         public void MonitorLocations()
         {
-            // Send if something was collected
+            // Get what was collected
             var diff = GetAllCollected().Except(allCollectedLocations);
+
+            // Send if something was collected
             foreach (Location location in diff)
             {
                 ArchipelagoManager.SendLocation(location.name);
                 allCollectedLocations.Add(location);
             }
 
-            // Remove whatever was collected
+            // Remove what was collected
             if (diff.Count() > 0)
             {
-                // TODO: Figure out why this is not being called
                 Fezap.itemManager.RestoreReceivedItems();
             }
         }
