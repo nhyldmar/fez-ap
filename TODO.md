@@ -14,6 +14,7 @@
 - Entrance randomizer
   - Approach 1: Poll AP server on `LevelManager.LevelChanging` and update `LevelManager.LinkedLevels` on `LevelManager.LevelChanged`
   - Approach 2: Poll AP server at the start (or add in slot data) and update all level data through the custom dot message approach
+  - Study this awesome project: <https://github.com/admoore0/fez-randomizer/blob/master/src/mod/LevelChanger.cs>
 
 ## 4.0 Features
 

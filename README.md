@@ -19,6 +19,10 @@ It is heavily based on the wonderful [FEZUG](https://github.com/FEZModding/FEZUG
 - Everything should be fine if you see `Connected` in the top left of the screen
 - The first check is sent after Gomez wakes up with his Fez, so you can do the intro sequence before the countdown.
 - There are several other handy commands you can use like `ready`, `say`, `missing`, `received` and many quality of life ones ported over from FEZUG.
+- There are several utility commands like `collect`, `send`, `warp`, `tp` and `itemcount`, but they should only be used to get out of softlocks or other problems while this mod is not fully stable.
+- If you disconnect, don't open any doors that shouldn't be open with what you've received.
+- It is recommended to look up codes for anti-cubes and heart cubes online while the poptracker doesn't exist.
+- Handy tools that may help can be found here: <https://jenna1337.github.io/FezTools/>
 
 ## Building
 
@@ -34,5 +38,5 @@ It is heavily based on the wonderful [FEZUG](https://github.com/FEZModding/FEZUG
 
 ## Thanks
 
-Big thanks to the Fez Modding community especially Krzyhau for all the incredible tooling and help.
+Big thanks to the Fez Modding community especially Krzyhau and Jenna1337 for all the incredible tooling and help.
 If you like this mod, please send all the thanks their way.
