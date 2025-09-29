@@ -6,14 +6,11 @@ using Archipelago.MultiClient.Net.MessageLog.Messages;
 using Archipelago.MultiClient.Net.Models;
 using FezEngine.Services;
 using FezEngine.Services.Scripting;
-using FezEngine.Structure;
 using FezEngine.Tools;
 using FezGame.Services;
 using FezGame.Structure;
-using FEZUG;
 using FEZUG.Features;
 using FEZUG.Features.Console;
-using FEZUG.Helpers;
 
 namespace FEZAP.Archipelago
 {
@@ -96,9 +93,6 @@ namespace FEZAP.Archipelago
             FezugConsole.Print("Connected successfully");
             var slotData = session.DataStorage.GetSlotData(session.ConnectionInfo.Slot);
 
-            // NOTE: Consider having this as a YAML option
-            SkipIntro();
-
             // Restore internal information
             Fezap.itemManager.RestoreReceivedItems();
             Fezap.locationManager.RestoreCollectedLocations();
@@ -157,17 +151,6 @@ namespace FEZAP.Archipelago
             return (session != null) && session.Socket.Connected && connectInitFinished;
         }
 
-        private void SkipIntro()
-        {
-            // TODO: Fix this
-            // if (GameState.SaveData.FezHidden)
-            // {
-            //     GameState.SaveData.FezHidden = false;
-            //     var warp = Fezug.GetFeature<WarpLevel>();
-            //     warp.WarpInternal("GOMEZ_HOUSE", WarpLevel.WarpType.InSession);
-            // }
-        }
-
         private static void HandleLogMsg(LogMessage message)
         {
             switch (message)
@@ -175,6 +158,13 @@ namespace FEZAP.Archipelago
                 case CountdownLogMessage:
                 case ServerChatLogMessage:
                     FezugConsole.Print(message.ToString());
+                    break;
+                case HintItemSendLogMessage:
+                    var hintMsg = (HintItemSendLogMessage)message;
+                    if (hintMsg.IsRelatedToActivePlayer)
+                    {
+                        FezugConsole.Print(hintMsg.ToString());
+                    }
                     break;
                 default:
                     break;
