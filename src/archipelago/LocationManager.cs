@@ -42,8 +42,14 @@ namespace FEZAP.Archipelago
                     case LocationType.InactiveArtObjects:
                         levelData.InactiveArtObjects.Add(location.index);
                         break;
+                    case LocationType.InactiveVolumes:
+                        levelData.InactiveVolumes.Add(location.index);
+                        break;
                     case LocationType.InactiveNPCs:
                         levelData.InactiveNPCs.Add(location.index);
+                        break;
+                    case LocationType.AchievementCode:
+                        GameState.SaveData.AchievementCheatCodeDone = true;
                         break;
                 }
             }
@@ -63,7 +69,9 @@ namespace FEZAP.Archipelago
             {
                 LocationType.DestroyedTriles => levelData.DestroyedTriles.Contains(location.emplacement),
                 LocationType.InactiveArtObjects => levelData.InactiveArtObjects.Contains(location.index),
+                LocationType.InactiveVolumes => levelData.InactiveVolumes.Contains(location.index),
                 LocationType.InactiveNPCs => levelData.InactiveNPCs.Contains(location.index),
+                LocationType.AchievementCode => GameState.SaveData.AchievementCheatCodeDone,
                 _ => false,
             };
         }

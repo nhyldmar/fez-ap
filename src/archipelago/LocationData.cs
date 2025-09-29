@@ -6,7 +6,9 @@ namespace FEZAP.Archipelago
     {
         DestroyedTriles,  // bits, most cubes, some anti-cubes
         InactiveArtObjects,  // chests, some anti-cubes
+        InactiveVolumes,  // some anti-cubes
         InactiveNPCs,  // owls
+        AchievementCode,  // for achievement code andit-cube
     }
 
     /// Location information container
@@ -175,13 +177,56 @@ namespace FEZAP.Archipelago
 
         // 32 total, only 6 don't have spawning conditions
         private static readonly List<Location> antiCubeLocations = [
+            // Achievement
+            new("Achievement Anti-Cube", "GOMEZ_HOUSE", LocationType.AchievementCode),
+
+            // DestroyedTriles
+            new("CMY Tune Fork Anti-Cube", "CMY_FORK", LocationType.DestroyedTriles, [7, 9, 5]),
+            new("Lava Tune Fork Anti-Cube", "LAVA_FORK", LocationType.DestroyedTriles, [16, 45, 16]),
+            new("Zu Tune Fork Anti-Cube", "ZU_FORK", LocationType.DestroyedTriles, [16, 18, 15]),
+            new("Lighthouse Floor Anti-Cube", "LIGHTHOUSE", LocationType.DestroyedTriles, [46, 25, 9]),
+            new("Tree Cabin Floor Anti-Cube", "TREE", LocationType.DestroyedTriles, [44, 60, 4]),
+            new("Tree Sky Floor Anti-Cube", "TREE_SKY", LocationType.DestroyedTriles, [18, 50, 19]),
+            new("Bell Tower Anti-Cube", "BELL_TOWER", LocationType.DestroyedTriles, [17, 44, 19]),
+            new("Watertower Owl Anti-Cube", "WATERTOWER_SECRET", LocationType.DestroyedTriles, [9, 16, 12]),
+            new("Telescope Anti-Cube", "TELESCOPE", LocationType.DestroyedTriles, [18, 36, 20]),
+            new("Zu House QR Anti-Cube", "ZU_HOUSE_QR", LocationType.DestroyedTriles, [9, 6, 8]),
+            new("Zu Unfold Anti-Cube", "ZU_UNFOLD", LocationType.DestroyedTriles, [9, 59, 12]),
+            new("Code Machine Anti-Cube", "CODE_MACHINE", LocationType.DestroyedTriles, [35, 40, 10]),
+            new("Boileroom Anti-Cube", "BOILEROOM", LocationType.DestroyedTriles, [10, 10, 12]),
+            new("Nu Zu School Anti-Cube", "NUZU_SCHOOL", LocationType.DestroyedTriles, [5, 5, 5]),
             new("Big Owl Anti-Cube", "BIG_OWL", LocationType.DestroyedTriles, [18, 29, 14]),
             new("CMY B Anti-Cube", "CMY_B", LocationType.DestroyedTriles, [14, 62, 11]),
             new("Lava Skull Anti-Cube", "LAVA_SKULL", LocationType.DestroyedTriles, [10, 30, 8]),
             new("Quantum Anti-Cube", "QUANTUM", LocationType.DestroyedTriles, [44, 83, 38]),
             new("Skull B Anti-Cube", "SKULL_B", LocationType.DestroyedTriles, [20, 21, 19]),
             new("Zu Heads Anti-Cube", "ZU_HEADS", LocationType.DestroyedTriles, [9, 68, 9]),
-            // TODO: Add the others
+
+            // Throne cube accessible in 3 locations
+            new("Throne Anti-Cube", "SEWER_QR", LocationType.DestroyedTriles, [15, 41, 14]),
+            new("Throne Anti-Cube", "ZU_HOUSE_EMPTY", LocationType.DestroyedTriles, [9, 6, 8]),
+            new("Throne Anti-Cube", "ZU_THRONE_RUINS", LocationType.DestroyedTriles, [9, 6, 8]),
+
+            // Use InactiveVolumes instead of DestroyedTriles due to overlap with other locations
+            new("Sewer Tune Fork Anti-Cube", "SEWER_FORK", LocationType.InactiveVolumes, index: 1),
+            new("Zu Bridge Anti-Cube", "ZU_BRIDGE", LocationType.InactiveVolumes, index: 2),
+            new("Zu Code Loop Anti-Cube", "ZU_CODE_LOOP", LocationType.InactiveVolumes, index: 2),
+
+            // Use InactiveArtObjects since DestroyedTriles doesn't work for these
+            new("Clock Tower Minute Anti-Cube", "CLOCK", LocationType.InactiveArtObjects, index: 53),
+            new("Clock Tower Hour Anti-Cube", "CLOCK", LocationType.InactiveArtObjects, index: 54),
+            new("Clock Tower Day Anti-Cube", "CLOCK", LocationType.InactiveArtObjects, index: 55),
+            new("Clock Tower Week Anti-Cube", "CLOCK", LocationType.InactiveArtObjects, index: 56),
+            new("Parlor Anti-Cube", "PARLOR", LocationType.InactiveArtObjects, index: 5),  // TODO: Fix this
+
+            // If any of the 4 movable blocks is destroyed, it means the anti has been created
+            new("Zu 4 Side Anti-Cube", "ZU_4_SIDE", LocationType.DestroyedTriles, [26, 16, 16]),
+        ];
+
+        private static readonly List<Location> heartCubeLocations = [
+            new("Black Monolith Heart Cube", "RITUAL", LocationType.DestroyedTriles, [8, 61, 8]),
+            new("Telescope Heart Cube", "TELESCOPE", LocationType.DestroyedTriles, [21, 36, 20]),
+            new("Security Question Heart Cube", "ZU_ZUISH", LocationType.DestroyedTriles, [13, 59, 15]),
         ];
 
         // 24 total
@@ -224,6 +269,7 @@ namespace FEZAP.Archipelago
         public static readonly List<Location> allLocations = [.. cubeBitLocations,
                                                               .. goldenCubeLocations,
                                                               .. antiCubeLocations,
+                                                              .. heartCubeLocations,
                                                               .. chestLocations,
                                                               .. owlLocations];
     }
