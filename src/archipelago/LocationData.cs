@@ -265,7 +265,6 @@ namespace FEZAP.Archipelago
             new("Tree Owl", "TREE", LocationType.InactiveNPCs, index: 6),
         ];
 
-        // List of all locations that have a destructible trile associated with them
         public static readonly List<Location> allLocations = [.. cubeBitLocations,
                                                               .. goldenCubeLocations,
                                                               .. antiCubeLocations,

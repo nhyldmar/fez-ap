@@ -47,7 +47,8 @@ namespace FEZAP
         public override void Draw(GameTime gameTime)
         {
             Fezug.Draw(gameTime);
-            FezugInGameRendering.Draw(gameTime);
+            // TODO: Figure out why this sometimes causes a crash. Needed for invisible wireframe drawing.
+            // FezugInGameRendering.Draw(gameTime);
         }
     }
 }

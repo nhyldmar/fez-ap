@@ -78,14 +78,9 @@ namespace FEZAP.Archipelago
 
         private bool IsSaveLoaded()
         {
+            // NOTE: This flags when you have selected a slot, but does not check if you've loaded into the slot yet.
             int slot = GameState?.SaveSlot ?? -1;
-            bool isSaveLoaded = slot >= 0
-                                && !GameState.Loading
-                                && !GameState.TimePaused
-                                && PlayerManager.CanControl
-                                && PlayerManager.Action != ActionType.None
-                                && !PlayerManager.Hidden;
-            return isSaveLoaded;
+            return slot >= 0;
         }
 
         private void OnConnectSuccess()
@@ -197,7 +192,7 @@ namespace FEZAP.Archipelago
                 // Get location info
                 var result = session.Locations.ScoutLocationsAsync(false, [id]);
                 ScoutedItemInfo item = result.Result[id];
-                FezugConsole.Print($"Sent {item.ItemDisplayName} to {item.ItemGame}");
+                FezugConsole.Print($"Sent {item.ItemDisplayName} to {item.ItemGame} ({item.LocationName})");
             }
         }
 

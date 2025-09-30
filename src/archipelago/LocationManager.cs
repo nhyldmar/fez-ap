@@ -2,6 +2,7 @@ using FezEngine.Services;
 using FezEngine.Tools;
 using FezGame.Services;
 using FezGame.Structure;
+using FEZUG.Features.Console;
 
 namespace FEZAP.Archipelago
 {
@@ -110,13 +111,16 @@ namespace FEZAP.Archipelago
 
         public void MonitorGoal()
         {
-            if ((goal == 0) && Level.Name == "HEX_REBUILD")
+            int totalCubes = GameState.SaveData.CubeShards + GameState.SaveData.SecretCubes;
+            if ((goal == 0) && Level.Name == "HEX_REBUILD" && totalCubes >= 32)
             {
                 ArchipelagoManager.session.SetGoalAchieved();
+                FezugConsole.Print("Victory!");
             }
-            else if ((goal == 1) && Level.Name == "GOMEZ_HOUSE_END_64")
+            else if ((goal == 1) && Level.Name == "GOMEZ_HOUSE_END_64" && totalCubes >= 64)
             {
                 ArchipelagoManager.session.SetGoalAchieved();
+                FezugConsole.Print("Victory!");
             }
         }
     }

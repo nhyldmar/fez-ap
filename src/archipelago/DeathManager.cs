@@ -35,6 +35,7 @@ namespace FEZAP.Archipelago
             }
             else if (!GomezService.Alive && !handlingDeath && deathlinkOn)
             {
+                // TODO: Confirm this is checked
                 handlingDeath = true;
                 string playerName = ArchipelagoManager.session.Players.ActivePlayer.Name;
                 string cause = GetCause(PlayerManager.Action);

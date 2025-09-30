@@ -14,9 +14,8 @@ namespace FEZAP.Archipelago
         {
             if (args.Length == 1)
             {
-                return new string[] { "archipelago.gg", "localhost" }
-                .Where(s => s.StartsWith(args[0], StringComparison.OrdinalIgnoreCase))
-                .ToList();
+                return [.. new string[] { "archipelago.gg", "localhost" }
+                        .Where(s => s.StartsWith(args[0], StringComparison.OrdinalIgnoreCase))];
             }
             return null;
         }
@@ -240,9 +239,8 @@ namespace FEZAP.Archipelago
         {
             if (args.Length == 1)
             {
-                return new string[] { "true", "false" }
-                .Where(s => s.StartsWith(args[0], StringComparison.OrdinalIgnoreCase))
-                .ToList();
+                return [.. new string[] { "true", "false" }
+                        .Where(s => s.StartsWith(args[0], StringComparison.OrdinalIgnoreCase))];
             }
             return null;
         }
