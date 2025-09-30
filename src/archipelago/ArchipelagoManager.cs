@@ -184,8 +184,15 @@ namespace FEZAP.Archipelago
         {
             if (IsConnected())
             {
-                // Send location
+                // Ask server if it knows the location
                 var id = session.Locations.GetLocationIdFromName(gameName, name);
+                if (id == -1)
+                {
+                    FezugConsole.Print($"Server does not know location '{name}'. Check that the correct apworld was used to generate.");
+                    return;
+                }
+
+                // Send location
                 session.Locations.CompleteLocationChecks([id]);
 
                 // Get location info
