@@ -197,6 +197,7 @@ namespace FEZAP.Archipelago
             new("Nu Zu School Anti-Cube", "NUZU_SCHOOL", LocationType.DestroyedTriles, [5, 5, 5]),
             new("Big Owl Anti-Cube", "BIG_OWL", LocationType.DestroyedTriles, [18, 29, 14]),
             new("CMY B Anti-Cube", "CMY_B", LocationType.DestroyedTriles, [14, 62, 11]),
+            new("Zu Tetris Anti-Cube", "ZU_TETRIS", LocationType.DestroyedTriles, [14, 20, 13]),
             new("Lava Skull Anti-Cube", "LAVA_SKULL", LocationType.DestroyedTriles, [10, 30, 8]),
             new("Quantum Anti-Cube", "QUANTUM", LocationType.DestroyedTriles, [44, 83, 38]),
             new("Skull B Anti-Cube", "SKULL_B", LocationType.DestroyedTriles, [20, 21, 19]),
@@ -211,13 +212,13 @@ namespace FEZAP.Archipelago
             new("Sewer Tune Fork Anti-Cube", "SEWER_FORK", LocationType.InactiveVolumes, index: 1),
             new("Zu Bridge Anti-Cube", "ZU_BRIDGE", LocationType.InactiveVolumes, index: 2),
             new("Zu Code Loop Anti-Cube", "ZU_CODE_LOOP", LocationType.InactiveVolumes, index: 2),
+            new("Parlor Anti-Cube", "PARLOR", LocationType.InactiveVolumes, index: 4),
 
             // Use InactiveArtObjects since DestroyedTriles doesn't work for these
             new("Clock Tower Minute Anti-Cube", "CLOCK", LocationType.InactiveArtObjects, index: 53),
             new("Clock Tower Hour Anti-Cube", "CLOCK", LocationType.InactiveArtObjects, index: 54),
             new("Clock Tower Day Anti-Cube", "CLOCK", LocationType.InactiveArtObjects, index: 55),
             new("Clock Tower Week Anti-Cube", "CLOCK", LocationType.InactiveArtObjects, index: 56),
-            new("Parlor Anti-Cube", "PARLOR", LocationType.InactiveArtObjects, index: 5),  // TODO: Fix this
 
             // If any of the 4 movable blocks is destroyed, it means the anti has been created
             new("Zu 4 Side Anti-Cube", "ZU_4_SIDE", LocationType.DestroyedTriles, [26, 16, 16]),
