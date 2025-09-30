@@ -16,10 +16,10 @@ rm -rf release/fezap
 # Generate fez.apworld
 # TODO: Swap with using the Generate Apworlds after rebasing the AP repo
 rm -rf Archipelago/worlds/fez/__pycache__
-cp -r Archipelago/worlds/fez release/apworld
-zip -r release/fez-apworld.zip release/apworld
-mv release/fez-apworld.zip release/fez.apworld
-rm -rf release/apworld
+cp -r Archipelago/worlds/fez release/fez
+zip -r release/fez.zip release/fez
+mv release/fez.zip release/fez.apworld
+rm -rf release/fez
 
 # Copy YAML template
 cd Archipelago
