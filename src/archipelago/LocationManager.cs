@@ -1,4 +1,5 @@
 using FezEngine.Services;
+using FezEngine.Structure;
 using FezEngine.Tools;
 using FezGame.Services;
 using FezGame.Structure;
@@ -6,6 +7,20 @@ using FEZUG.Features.Console;
 
 namespace FEZAP.Archipelago
 {
+    /// Collectible data container
+    public readonly struct CollectibleData(List<ActorType> artifacts, int collectedOwls, int collectedParts, int cubeShards,
+                                           int keys, List<string> maps, int piecesOfHeart, int secretCubes)
+    {
+        public readonly List<ActorType> artifacts = artifacts;
+        public readonly int collectedOwls = collectedOwls;
+        public readonly int collectedParts = collectedParts;
+        public readonly int cubeShards = cubeShards;
+        public readonly int keys = keys;
+        public readonly List<string> maps = maps;
+        public readonly int piecesOfHeart = piecesOfHeart;
+        public readonly int secretCubes = secretCubes;
+    };
+
     public class LocationManager
     {
         [ServiceDependency]
@@ -14,6 +29,7 @@ namespace FEZAP.Archipelago
         [ServiceDependency]
         public ILevelManager Level { get; set; }
 
+        public static CollectibleData receivedCollectibleData = new();
         public static List<Location> allCollectedLocations = [];
         public static int goal;  // 0 is 32 Cubes and 1 is 64 Cubes
 
@@ -56,12 +72,13 @@ namespace FEZAP.Archipelago
             }
         }
 
-        public bool IsCollected(Location location)
+        private bool IsCollected(Location location)
         {
-            // Pre-load the level if needed
+            // If level doesn't exist, it's not collected in this save
             if (!GameState.SaveData.World.ContainsKey(location.levelName))
             {
-                GameState.SaveData.World.Add(location.levelName, new LevelSaveData());
+                // NOTE: Don't preload levels since that early unlocks link doors
+                return false;
             }
 
             // Check if location has been collected
@@ -77,7 +94,7 @@ namespace FEZAP.Archipelago
             };
         }
 
-        public List<Location> GetAllCollected()
+        private List<Location> GetAllCollected()
         {
             List<Location> collectedLocations = [];
             foreach (Location location in LocationData.allLocations)
@@ -90,6 +107,26 @@ namespace FEZAP.Archipelago
             return collectedLocations;
         }
 
+        public void MonitorCollectibles()
+        {
+            CollectibleData currentCollectibleData = new(
+                GameState.SaveData.Artifacts,
+                GameState.SaveData.CollectedOwls,
+                GameState.SaveData.CollectedParts,
+                GameState.SaveData.CubeShards,
+                GameState.SaveData.Keys,
+                GameState.SaveData.Maps,
+                GameState.SaveData.PiecesOfHeart,
+                GameState.SaveData.SecretCubes
+            );
+
+            // Remove what was collected
+            if (!currentCollectibleData.Equals(receivedCollectibleData))
+            {
+                Fezap.itemManager.RestoreReceivedItems();
+            }
+        }
+
         public void MonitorLocations()
         {
             // Get what was collected
@@ -100,12 +137,6 @@ namespace FEZAP.Archipelago
             {
                 ArchipelagoManager.SendLocation(location.name);
                 allCollectedLocations.Add(location);
-            }
-
-            // Remove what was collected
-            if (diff.Count() > 0)
-            {
-                Fezap.itemManager.RestoreReceivedItems();
             }
         }
 

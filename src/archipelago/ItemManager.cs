@@ -38,7 +38,6 @@ namespace FEZAP.Archipelago
 
         private void ClearCollectibleSaveData()
         {
-            // TODO: Figure out why this is not resetting values
             GameState.SaveData.Artifacts = [];
             GameState.SaveData.CollectedOwls = 0;
             GameState.SaveData.CollectedParts = 0;
@@ -52,14 +51,26 @@ namespace FEZAP.Archipelago
         public void RestoreReceivedItems()
         {
             ClearCollectibleSaveData();
+
             List<ItemInfo> itemsReceived = [.. ArchipelagoManager.session.Items.AllItemsReceived];
             foreach (ItemInfo item in itemsReceived)
             {
-                if (!item.ItemName.Contains("Trap") && !(item.ItemName == "Emotional Support"))
+                if (!(item.ItemName.Contains("Trap") || (item.ItemName == "Emotional Support")))
                 {
                     HandleReceivedItem(item);
                 }
             }
+
+            LocationManager.receivedCollectibleData = new(
+                GameState.SaveData.Artifacts,
+                GameState.SaveData.CollectedOwls,
+                GameState.SaveData.CollectedParts,
+                GameState.SaveData.CubeShards,
+                GameState.SaveData.Keys,
+                GameState.SaveData.Maps,
+                GameState.SaveData.PiecesOfHeart,
+                GameState.SaveData.SecretCubes
+            );
         }
 
         public void HandleReceivedItem(ItemInfo item)
@@ -166,6 +177,10 @@ namespace FEZAP.Archipelago
         {
             if (!GameState.SaveData.World.ContainsKey(levelName))
             {
+                // TODO: Rework this to unlock only if level exists or when level is created.
+                //       This early unlocks link doors for Mausoleum and Sewer Hub
+                //       if the other side of the link door is visited and
+                //       if the door is unlocked before visiting them.
                 GameState.SaveData.World.Add(levelName, new LevelSaveData());
             }
 
@@ -187,7 +202,7 @@ namespace FEZAP.Archipelago
         private void DoSleepTrap()
         {
             // Go to sleep
-            PlayerManager.Action = ActionType.IdleSleep;  // TODO: Fix sleep animation not set
+            PlayerManager.Action = ActionType.IdleSleep;  // TODO: Prevent sleep animation from being stopped
             PlayerManager.CanControl = false;
 
             // Add delayed effect

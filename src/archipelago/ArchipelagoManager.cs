@@ -229,6 +229,7 @@ namespace FEZAP.Archipelago
             if (updateCounter++ > 10 && IsConnected())
             {
                 updateCounter = 0;
+                Fezap.locationManager.MonitorCollectibles();
                 Fezap.locationManager.MonitorLocations();
                 Fezap.deathManager.MonitorDeath();
             }
