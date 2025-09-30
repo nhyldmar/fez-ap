@@ -150,6 +150,9 @@ namespace FEZAP.Archipelago
                 case "Sleep Trap":
                     DoSleepTrap();
                     break;
+                case "Gravity Trap":
+                    DoGravityTrap();
+                    break;
                 case "Emotional Support":
                     DoEmotionalSupport(item);
                     break;
@@ -183,11 +186,27 @@ namespace FEZAP.Archipelago
 
         private void DoSleepTrap()
         {
-            // TODO: Confirm this works
-            PlayerManager.NextAction = ActionType.IdleSleep;
+            // Go to sleep
+            PlayerManager.Action = ActionType.IdleSleep;  // TODO: Fix sleep animation not set
             PlayerManager.CanControl = false;
-            GameService.Wait(5);
-            PlayerManager.CanControl = true;
+
+            // Add delayed effect
+            // TODO: Extend the timer rather than creating a new one if one exists already
+            TimeSpan targetTime = Fezap.GameTime.TotalGameTime + new TimeSpan(0, 0, 15);  // schedule for 15 seconds later
+            DelayedAction delayedAction = new(targetTime, () => { PlayerManager.CanControl = true; });
+            Fezap.delayedActions.Add(delayedAction);
+        }
+
+        private void DoGravityTrap()
+        {
+            // Increase the gravity
+            GameService.SetGravity(false, 4);
+
+            // Add delayed effect
+            // TODO: Extend the timer rather than creating a new one if one exists already
+            TimeSpan targetTime = Fezap.GameTime.TotalGameTime + new TimeSpan(0, 0, 15);  // schedule for 15 seconds later
+            DelayedAction delayedAction = new(targetTime, () => { GameService.SetGravity(false, 1);; });
+            Fezap.delayedActions.Add(delayedAction);
         }
 
         public void DoEmotionalSupport(ItemInfo item)

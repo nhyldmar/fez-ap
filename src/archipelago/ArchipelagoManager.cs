@@ -8,7 +8,6 @@ using FezEngine.Services;
 using FezEngine.Services.Scripting;
 using FezEngine.Tools;
 using FezGame.Services;
-using FezGame.Structure;
 using FEZUG.Features;
 using FEZUG.Features.Console;
 
