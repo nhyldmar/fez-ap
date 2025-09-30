@@ -4,6 +4,8 @@
 
 - Handle all the game-breaking TODOs in the code
 - Fix any game-breaking bugs
+- Bugs
+  - While gravity trapped, opening a door will make the door unable to open until you leave the room
 
 ## 2.0 TODOs
 
@@ -15,6 +17,7 @@
 - Bugs
   - Fix the early link door unlock edge case for Mausoleum and Sewer Hub
   - Fix crash that can happen when drawing the wireframe for invisible triles
+  - Use async sending to avoid freezes on location checking
 
 ## 3.0 TODOs
 

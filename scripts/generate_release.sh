@@ -6,7 +6,8 @@ mkdir release
 mkdir release/fezap
 cp LICENSE release/fezap/LICENSE
 cp README.md release/fezap/README.md
-cp bin/Debug/FezAP.dll release/fezap/FezAP.dll
+cp Metadata.xml release/fezap/Metadata.xml
+cp bin/Release/FezAP.dll release/fezap/FezAP.dll
 cp -r Assets release/fezap/Assets
 cp dependencies/Archipelago.MultiClient.Net.dll release/fezap/Archipelago.MultiClient.Net.dll
 cp dependencies/Newtonsoft.Json.dll release/fezap/Newtonsoft.Json.dll
