@@ -298,4 +298,21 @@ namespace FEZAP.Archipelago
             }
         }
     }
+
+    #if DEBUG
+    internal class Debug : IFezugCommand
+    {
+        public string Name => "debug";
+
+        public string HelpText => "debug";
+
+        public List<string> Autocomplete(string[] args) { return null; }
+
+        public bool Execute(string[] args)
+        {
+            // Insert function to call here
+            return true;
+        }
+    }
+    #endif  // DEBUG
 }
