@@ -114,10 +114,10 @@ namespace FEZAP.Archipelago
             // Setup deathlink if enabled
             DeathManager.deathlinkOn = Convert.ToBoolean(slotData["death_link"]);
             deathLinkService = session.CreateDeathLinkService();
+            deathLinkService.OnDeathLinkReceived += Fezap.deathManager.HandleDeathlink;
             if (DeathManager.deathlinkOn)
             {
                 deathLinkService.EnableDeathLink();
-                deathLinkService.OnDeathLinkReceived += Fezap.deathManager.HandleDeathlink;
                 FezugConsole.Print("Deathlink enabled");
             }
         }
@@ -224,11 +224,12 @@ namespace FEZAP.Archipelago
             // NOTE: Remove other sources of visual pain as requested
         }
 
+        private static int updateCounter = 0;  // Used to reduce the frequency of the update counter for performance
         public void Update()
         {
-            if (IsConnected())
+            if (updateCounter++ > 10 && IsConnected())
             {
-                // TODO: Move these over to a hook event handler or once a second
+                updateCounter = 0;
                 Fezap.locationManager.MonitorLocations();
                 Fezap.deathManager.MonitorDeath();
             }

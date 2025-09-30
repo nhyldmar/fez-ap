@@ -123,15 +123,30 @@ namespace FEZAP.Archipelago
     {
         public string Name => "ready";
 
-        public string HelpText => "ready - send ready status to server";
+        public string HelpText => "ready <true/false> - send ready status to server or remove it";
 
-        public List<string> Autocomplete(string[] args) { return null; }
+        public List<string> Autocomplete(string[] args)
+        {
+            if (args.Length == 1)
+            {
+                return [.. new string[] { "true", "false" }
+                        .Where(s => s.StartsWith(args[0], StringComparison.OrdinalIgnoreCase))];
+            }
+            return null;
+        }
 
         public bool Execute(string[] args)
         {
             if (ArchipelagoManager.IsConnected())
             {
-                ArchipelagoManager.session.SetClientState(ArchipelagoClientState.ClientReady);
+                if (bool.Parse(args[0]))
+                {
+                    ArchipelagoManager.session.SetClientState(ArchipelagoClientState.ClientReady);
+                }
+                else
+                {
+                    ArchipelagoManager.session.SetClientState(ArchipelagoClientState.ClientUnknown);
+                }
             }
             else
             {
@@ -251,10 +266,12 @@ namespace FEZAP.Archipelago
             {
                 if (bool.Parse(args[0]))
                 {
+                    DeathManager.deathlinkOn = true;
                     ArchipelagoManager.deathLinkService.EnableDeathLink();
                 }
                 else
                 {
+                    DeathManager.deathlinkOn = false;
                     ArchipelagoManager.deathLinkService.DisableDeathLink();
                 }
             }

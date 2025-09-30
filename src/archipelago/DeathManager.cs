@@ -22,14 +22,17 @@ namespace FEZAP.Archipelago
 
         public void HandleDeathlink(DeathLink deathLink)
         {
-            handlingDeath = true;
-            FezugConsole.Print($"Death received: {deathLink.Cause}");
-            Fezug.GetFeature<Kill>().Execute(null);
+            if (deathlinkOn)
+            {
+                handlingDeath = true;
+                FezugConsole.Print($"Death received: {deathLink.Cause}");
+                Fezug.GetFeature<Kill>().Execute(null);
+            }
         }
 
         public void MonitorDeath()
         {
-            if (GomezService.Alive)
+            if (!deathlinkOn || GomezService.Alive)
             {
                 handlingDeath = false;
             }
