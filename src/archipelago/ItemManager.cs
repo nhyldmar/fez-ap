@@ -131,7 +131,7 @@ namespace FEZAP.Archipelago
                 case "Sunglasses":
                     GameState.SaveData.HasFPView = true;
                     break;
-                case "Boileroom Unlocked":
+                case "Boileroom Door Unlocked":
                     UnlockDoor("VILLAGEVILLE_3D", new(35, 30, 36));
                     break;
                 case "Lighthouse Door Unlocked":
@@ -215,6 +215,7 @@ namespace FEZAP.Archipelago
         private void DoGravityTrap()
         {
             // Increase the gravity
+            // TODO: Fix gravity trap causing doors to get stuck until level reload
             GameService.SetGravity(false, 4);
 
             // Add delayed effect
