@@ -24,9 +24,10 @@ namespace FEZAP.Archipelago
         {
             if (deathlinkOn)
             {
+                // TODO: Confirm this works
                 handlingDeath = true;
                 FezugConsole.Print($"Death received: {deathLink.Cause}");
-                Fezug.GetFeature<Kill>().Execute(null);
+                PlayerManager.Action = PlayerManager.Grounded ? ActionType.Dying : ActionType.FreeFalling;
             }
         }
 
@@ -38,7 +39,6 @@ namespace FEZAP.Archipelago
             }
             else if (!GomezService.Alive && !handlingDeath && deathlinkOn)
             {
-                // TODO: Confirm this is checked
                 handlingDeath = true;
                 string playerName = ArchipelagoManager.session.Players.ActivePlayer.Name;
                 string cause = GetCause(PlayerManager.Action);

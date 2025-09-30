@@ -17,7 +17,7 @@ It is heavily based on the wonderful [FEZUG](https://github.com/FEZModding/FEZUG
 - Press \` and use the `connect` command (if you type `help` followed by any command you can get more info).
   - Example: `connect archipelago.gg 12345 My_Fez`
 - Everything should be fine if you see `Connected` in the top left of the screen
-- The first check is sent after Gomez wakes up with his Fez, so you can do the intro sequence before the countdown.
+- There are no checks until you go outside with the Fez, so you can do the intro sequence before the countdown.
 - There are several other handy commands you can use like `ready`, `say`, `missing`, `received` and many quality of life ones ported over from FEZUG.
 - There are several utility commands like `collect`, `send`, `warp`, `tp` and `itemcount`, but they should only be used to get out of softlocks or other problems while this mod is not fully stable.
 - If you disconnect, don't open any doors that shouldn't be open with what you've received.

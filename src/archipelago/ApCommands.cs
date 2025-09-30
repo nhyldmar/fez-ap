@@ -137,22 +137,30 @@ namespace FEZAP.Archipelago
 
         public bool Execute(string[] args)
         {
-            if (ArchipelagoManager.IsConnected())
+            if (args.Length != 1)
             {
-                if (bool.Parse(args[0]))
-                {
-                    ArchipelagoManager.session.SetClientState(ArchipelagoClientState.ClientReady);
-                }
-                else
-                {
-                    ArchipelagoManager.session.SetClientState(ArchipelagoClientState.ClientUnknown);
-                }
+                FezugConsole.Print("Incorrect number of arguments.", FezugConsole.OutputType.Error);
+                return false;
             }
-            else
+
+            if (!ArchipelagoManager.IsConnected())
             {
                 FezugConsole.Print("Unable set ready status. Not connected to a server. Use 'connect' command first.", FezugConsole.OutputType.Warning);
+                return false;
             }
-            return true;
+
+            switch (args[0])
+            {
+                case "true":
+                    ArchipelagoManager.session.SetClientState(ArchipelagoClientState.ClientReady);
+                    return true;
+                case "false":
+                    ArchipelagoManager.session.SetClientState(ArchipelagoClientState.ClientUnknown);
+                    return true;
+                default:
+                    FezugConsole.Print($"Unknown argument '{args[0]}'.");
+                    return false;
+            }
         }
     }
 
@@ -262,25 +270,32 @@ namespace FEZAP.Archipelago
 
         public bool Execute(string[] args)
         {
-            if (ArchipelagoManager.IsConnected())
+            if (args.Length != 1)
             {
-                if (bool.Parse(args[0]))
-                {
-                    DeathManager.deathlinkOn = true;
-                    ArchipelagoManager.deathLinkService.EnableDeathLink();
-                }
-                else
-                {
-                    DeathManager.deathlinkOn = false;
-                    ArchipelagoManager.deathLinkService.DisableDeathLink();
-                }
-            }
-            else
-            {
-                FezugConsole.Print("Unable to update deathlink flag. Not connected to a server. Use 'connect' command first.", FezugConsole.OutputType.Warning);
+                FezugConsole.Print("Incorrect number of arguments.", FezugConsole.OutputType.Error);
+                return false;
             }
 
-            return true;
+            if (!ArchipelagoManager.IsConnected())
+            {
+                FezugConsole.Print("Unable to update deathlink flag. Not connected to a server. Use 'connect' command first.", FezugConsole.OutputType.Warning);
+                return false;
+            }
+
+            switch (args[0])
+            {
+                case "true":
+                    DeathManager.deathlinkOn = true;
+                    ArchipelagoManager.deathLinkService.EnableDeathLink();
+                    return true;
+                case "false":
+                    DeathManager.deathlinkOn = false;
+                    ArchipelagoManager.deathLinkService.DisableDeathLink();
+                    return true;
+                default:
+                    FezugConsole.Print($"Unknown argument '{args[0]}'.");
+                    return false;
+            }
         }
     }
 }
