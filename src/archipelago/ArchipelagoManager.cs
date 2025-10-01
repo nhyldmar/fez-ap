@@ -198,7 +198,14 @@ namespace FEZAP.Archipelago
                 // Get location info
                 var result = session.Locations.ScoutLocationsAsync(false, [id]);
                 ScoutedItemInfo item = result.Result[id];
-                FezugConsole.Print($"Sent {item.ItemDisplayName} to {item.ItemGame} ({item.LocationName})");
+                if (item.Player.Name == connectionInfo.user)
+                {
+                    FezugConsole.Print($"Found your own {item.ItemName} ({item.LocationName})");
+                }
+                else
+                {
+                    FezugConsole.Print($"Sent {item.ItemName} to {item.Player.Alias} ({item.LocationName})");
+                }
             }
         }
 
