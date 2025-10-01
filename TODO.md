@@ -19,7 +19,6 @@
   - Extend the timer rather than starting a new one
   - Figure out some way to add a black hole trap
 - Bugs
-  - Fix universal tracker problem
   - Fix door unlocking not updating map locked door icon
   - Fix dot sending the message for collecting stuff every time you collect something, have it removed and then collect another thing and get the message again
   - Fix the early link door unlock edge case for Mausoleum and Sewer Hub
