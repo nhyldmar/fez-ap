@@ -35,4 +35,4 @@ generate_yaml_templates(target, False)
 cd -
 cp Archipelago/Players/Templates/Fez.yaml release/Fez.yaml
 
-echo "Tag your commit and double check your zips before uploading them."
+echo "Make sure Fezap.cs and Metadata.xml have the correct version, tag your commit and double check your zips before uploading them."
