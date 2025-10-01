@@ -1,5 +1,4 @@
 using Archipelago.MultiClient.Net.Enums;
-using Archipelago.MultiClient.Net.Models;
 using FEZUG.Features.Console;
 
 namespace FEZAP.Archipelago
@@ -72,23 +71,58 @@ namespace FEZAP.Archipelago
     {
         public string Name => "received";
 
-        public string HelpText => "received - list all received items";
+        public string HelpText => "received <page> - displays given page of all received items";
+
+        private readonly int ListPageSize = 10;
 
         public List<string> Autocomplete(string[] args) { return null; }
 
         public bool Execute(string[] args)
         {
-            if (ArchipelagoManager.IsConnected())
+            if (args.Length > 1)
             {
-                foreach (ItemInfo item in ArchipelagoManager.session.Items.AllItemsReceived)
-                {
-                    FezugConsole.Print(item.ItemName);
-                }
+                FezugConsole.Print("Incorrect number of arguments", FezugConsole.OutputType.Warning);
+                return false;
             }
-            else
+
+            if (!ArchipelagoManager.IsConnected())
             {
                 FezugConsole.Print("Unable to check received items. Not connected to a server. Use 'connect' command first.", FezugConsole.OutputType.Warning);
+                return false;
             }
+
+            int pageNumber = 1;  // If no arg, show first page
+            if (args.Length != 0 && !int.TryParse(args[0], out pageNumber))
+            {
+                FezugConsole.Print($"Unknown argument: '{args[0]}' is not a number", FezugConsole.OutputType.Warning);
+                return false;
+            }
+
+            // Get item names, then sort and group them
+            var itemStrings = ArchipelagoManager.session.Items.AllItemsReceived
+                                .Select(item => item.ItemName)  // Get name
+                                .OrderBy(str => str)            // Alphabetise
+                                .GroupBy(str => str);           // Collect multiple occurences
+            int pageCount = (int)Math.Ceiling(itemStrings.Count() / (float)ListPageSize);
+
+            if (pageNumber > pageCount)
+            {
+                FezugConsole.Print($"Page number {pageNumber} is not within range 1-{pageCount}", FezugConsole.OutputType.Warning);
+                return false;
+            }
+
+            // Print page
+            var pageStart = (pageNumber - 1) * ListPageSize;
+            var pageEnd = Math.Min(itemStrings.Count(), pageNumber * ListPageSize);
+            FezugConsole.Print($"=== Received - page {pageNumber}/{pageCount} ===");
+            for (var i = pageStart; i < pageEnd; i++)
+            {
+                string toPrint = itemStrings.ElementAt(i).Key;
+                int count = itemStrings.ElementAt(i).Count();
+                toPrint += (count == 1) ? "" : $" (x{count})";
+                FezugConsole.Print(toPrint);
+            }
+
             return true;
         }
     }
@@ -97,24 +131,59 @@ namespace FEZAP.Archipelago
     {
         public string Name => "missing";
 
-        public string HelpText => "missing - list all missing locations";
+        public string HelpText => "missing <page> - displays given page of all missing locations";
+        private readonly int ListPageSize = 10;
 
         public List<string> Autocomplete(string[] args) { return null; }
 
         public bool Execute(string[] args)
         {
-            if (ArchipelagoManager.IsConnected())
+            if (args.Length > 1)
             {
-                foreach (long locationId in ArchipelagoManager.session.Locations.AllMissingLocations)
-                {
-                    string locationName = ArchipelagoManager.session.Locations.GetLocationNameFromId(locationId);
-                    FezugConsole.Print(locationName);
-                }
+                FezugConsole.Print("Incorrect number of arguments", FezugConsole.OutputType.Warning);
+                return false;
             }
-            else
+
+            if (!ArchipelagoManager.IsConnected())
             {
                 FezugConsole.Print("Unable to check missing locations. Not connected to a server. Use 'connect' command first.", FezugConsole.OutputType.Warning);
+                return false;
             }
+
+            int pageNumber = 1;  // If no arg, show first page
+            if (args.Length != 0 && !int.TryParse(args[0], out pageNumber))
+            {
+                FezugConsole.Print($"Unknown argument: '{args[0]}' is not a number", FezugConsole.OutputType.Warning);
+                return false;
+            }
+
+            // Get item names, then sort them
+            var locationStrings = ArchipelagoManager.session.Locations.AllMissingLocations
+                                    .Select(locationId => ArchipelagoManager.session.Locations.GetLocationNameFromId(locationId))
+                                    .OrderBy(str => str);
+            int pageCount = (int)Math.Ceiling(locationStrings.Count() / (float)ListPageSize);
+
+            if (pageCount == 0)
+            {
+                FezugConsole.Print("No missing locations");
+                return true;
+            }
+
+            if (pageNumber > pageCount)
+                {
+                    FezugConsole.Print($"Page number {pageNumber} is not within range 1-{pageCount}", FezugConsole.OutputType.Warning);
+                    return false;
+                }
+
+            // Print page
+            var pageStart = (pageNumber - 1) * ListPageSize;
+            var pageEnd = Math.Min(locationStrings.Count(), pageNumber * ListPageSize);
+            FezugConsole.Print($"=== Missing - page {pageNumber}/{pageCount} ===");
+            for (var i = pageStart; i < pageEnd; i++)
+            {
+                FezugConsole.Print(locationStrings.ElementAt(i));
+            }
+
             return true;
         }
     }

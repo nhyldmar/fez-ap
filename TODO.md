@@ -7,8 +7,6 @@
   - While gravity trapped, opening a door will make the door unable to open until you leave the room
   - Sleep trap doesn't keep you in sleep animation
   - Make clock antis not send anything if not shuffled into pool (maybe read from slot data)
-- Quality of life
-  - Paginate missing/received like help
 
 ## 2.0 TODOs
 
