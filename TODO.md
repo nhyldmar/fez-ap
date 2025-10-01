@@ -10,7 +10,6 @@
   - Make clock antis not send anything if not shuffled into pool (maybe read from slot data)
   - Split lighthouse into two regions in apworld for the top and bottom areas
 - Quality of life
-  - Combine messages of items being sent locally
   - Paginate missing/received like help
 
 ## 2.0 TODOs

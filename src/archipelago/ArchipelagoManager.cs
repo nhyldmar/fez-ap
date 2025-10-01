@@ -207,7 +207,10 @@ namespace FEZAP.Archipelago
             while (helper.Any())
             {
                 ItemInfo item = helper.DequeueItem();
-                FezugConsole.Print($"Received {item.ItemDisplayName} from {item.ItemGame}");
+                if (item.Player.Name != connectionInfo.user)
+                {
+                    FezugConsole.Print($"Received {item.ItemDisplayName} from {item.Player.Alias} ({item.LocationName})");
+                }
                 Fezap.itemManager.HandleReceivedItem(item);
             }
         }
