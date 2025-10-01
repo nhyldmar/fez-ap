@@ -4,6 +4,8 @@ using FezEngine.Tools;
 using FezGame.Services;
 using FezGame.Structure;
 using FEZUG.Features.Console;
+using FEZUG.Helpers;
+using Microsoft.Xna.Framework;
 
 namespace FEZAP.Archipelago
 {
@@ -131,6 +133,14 @@ namespace FEZAP.Archipelago
         {
             // Get what was collected
             var diff = GetAllCollected().Except(allCollectedLocations);
+
+            // Safety check for if someone selects the wrong save
+            if (diff.Count() > 10)
+            {
+                // NOTE: This could be improved with a mechanism for confirmation and no wall of text, but it gets the point across.
+                FezugConsole.Print($"Collected {diff.Count()} locations since last send. Swap to the correct or a new save file.", FezugConsole.OutputType.Warning);
+                return;
+            }
 
             // Send if something was collected
             foreach (Location location in diff)

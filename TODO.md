@@ -9,7 +9,6 @@
   - Make clock antis not send anything if not shuffled into pool (maybe read from slot data)
   - Add location handling for boileroom map (not in chest)
 - Quality of life
-  - If about to send like 20+ locations since last send, instead just say "you sure you're on the right save?"
   - Visual indication of sleep/gravity trap duration
 
 ## 2.0 TODOs
