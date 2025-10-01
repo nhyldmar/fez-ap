@@ -11,6 +11,7 @@ cp bin/Release/FezAP.dll release/fezap/FezAP.dll
 cp -r Assets release/fezap/Assets
 cp dependencies/Archipelago.MultiClient.Net.dll release/fezap/Archipelago.MultiClient.Net.dll
 cp dependencies/Newtonsoft.Json.dll release/fezap/Newtonsoft.Json.dll
+# TODO: Confirm this zips it such that it's zipping the files into the zip not the folder
 zip -r release/FezAP.zip release/fezap
 rm -rf release/fezap
 
