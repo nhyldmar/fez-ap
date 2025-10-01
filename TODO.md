@@ -14,6 +14,8 @@
 
 ## 2.0 TODOs
 
+- More locked doors
+  - Add more locked doors that require items in order to spread out sphere size and add gameplay variety
 - Hints
   - Poll AP server at the start and update all the NPC dialogue with hints through the custom dot message approach
 - Traps

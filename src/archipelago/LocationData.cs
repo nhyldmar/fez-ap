@@ -266,11 +266,17 @@ namespace FEZAP.Archipelago
             new("Tree Owl", "TREE", LocationType.InactiveNPCs, index: 6),
         ];
 
+        // Misc locations
+        private static readonly List<Location> miscLocations = [
+            new("Boileroom Map", "BOILEROOM", LocationType.InactiveArtObjects, index: 7),
+        ];
+
         public static readonly List<Location> allLocations = [.. cubeBitLocations,
                                                               .. goldenCubeLocations,
                                                               .. antiCubeLocations,
                                                               .. heartCubeLocations,
                                                               .. chestLocations,
-                                                              .. owlLocations];
+                                                              .. owlLocations,
+                                                              .. miscLocations];
     }
 }
