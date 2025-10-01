@@ -8,7 +8,6 @@
   - Sleep trap doesn't keep you in sleep animation
   - Make the mod not need to be unzipped
   - Make clock antis not send anything if not shuffled into pool (maybe read from slot data)
-  - Split lighthouse into two regions in apworld for the top and bottom areas
 - Quality of life
   - Paginate missing/received like help
 
