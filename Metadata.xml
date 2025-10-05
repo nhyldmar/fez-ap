@@ -2,7 +2,7 @@
    <Name>FezAP</Name>
    <Description>Archipelago multiworld randomizer client mod for Fez.</Description>
    <Author>NoliH</Author>
-   <Version>0.2.0</Version>
+   <Version>0.3.0</Version>
    <LibraryName>FezAP.dll</LibraryName>
    <Dependencies>
       <DependencyInfo Name="HAT" MinimumVersion="1.0"/>
