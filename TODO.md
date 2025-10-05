@@ -12,8 +12,6 @@
 
 ## 2.0 TODOs
 
-- More locked doors
-  - Add more locked doors that require items in order to spread out sphere size and add gameplay variety
 - Hints
   - Poll AP server at the start and update all the NPC dialogue with hints through the custom dot message approach
 - Traps
@@ -22,7 +20,6 @@
 - Bugs
   - Fix door unlocking not updating map locked door icon
   - Fix dot sending the message for collecting stuff every time you collect something, have it removed and then collect another thing and get the message again
-  - Fix the early link door unlock edge case for Mausoleum and Sewer Hub
   - Fix crash that can happen when drawing the wireframe for invisible triles (currently disabled functionality by commenting out FezugInGameRendering.Draw)
   - Think of performance/approach improvements to avoid freezes on location checking (maybe handle ap interactions on another task)
 
