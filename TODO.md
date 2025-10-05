@@ -7,13 +7,12 @@
   - While gravity trapped, opening a door will make the door unable to open until you leave the room
   - Sleep trap doesn't keep you in sleep animation
   - Custom locked doors look broken
+  - Get the hint dialogue in DialogueManager working
 - Quality of life
   - Visual indication of sleep/gravity trap duration
 
 ## 2.0 TODOs
 
-- Hints
-  - Poll AP server at the start and update all the NPC dialogue with hints through the custom dot message approach
 - Traps
   - Extend the timer rather than starting a new one
   - Figure out some way to add a black hole trap

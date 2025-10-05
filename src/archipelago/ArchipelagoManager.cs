@@ -123,6 +123,9 @@ namespace FEZAP.Archipelago
                 deathLinkService.EnableDeathLink();
                 FezugConsole.Print("Deathlink enabled");
             }
+
+            // Add hints
+            LevelManager.LevelChanging += Fezap.dialogueManager.LoadNpcHintDialogue;
         }
 
         private void OnConnectFailed(LoginResult result)

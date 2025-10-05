@@ -18,6 +18,7 @@ namespace FEZAP
         public readonly Fezug Fezug = new();
         public static readonly ArchipelagoManager archipelagoManager = new();
         public static readonly DeathManager deathManager = new();
+        public static readonly DialogueManager dialogueManager = new();
         public static readonly DoorManager doorManager = new();
         public static readonly ItemManager itemManager = new();
         public static readonly LocationManager locationManager = new();
@@ -41,6 +42,7 @@ namespace FEZAP
             // Inject all our code
             ServiceHelper.InjectServices(archipelagoManager);
             ServiceHelper.InjectServices(deathManager);
+            ServiceHelper.InjectServices(dialogueManager);
             ServiceHelper.InjectServices(doorManager);
             ServiceHelper.InjectServices(itemManager);
             ServiceHelper.InjectServices(locationManager);
