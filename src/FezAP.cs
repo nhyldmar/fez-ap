@@ -14,10 +14,11 @@ namespace FEZAP
 
     public class Fezap : DrawableGameComponent
     {
-        public static string Version = "v0.2.0";
+        public static string Version = "v0.3.0";
         public readonly Fezug Fezug = new();
         public static readonly ArchipelagoManager archipelagoManager = new();
         public static readonly DeathManager deathManager = new();
+        public static readonly DoorManager doorManager = new();
         public static readonly ItemManager itemManager = new();
         public static readonly LocationManager locationManager = new();
         public static List<DelayedAction> delayedActions = [];
@@ -40,6 +41,7 @@ namespace FEZAP
             // Inject all our code
             ServiceHelper.InjectServices(archipelagoManager);
             ServiceHelper.InjectServices(deathManager);
+            ServiceHelper.InjectServices(doorManager);
             ServiceHelper.InjectServices(itemManager);
             ServiceHelper.InjectServices(locationManager);
         }
@@ -49,6 +51,8 @@ namespace FEZAP
             GameTime = gameTime;
             Fezug.Update(gameTime);
             archipelagoManager.Update();
+
+            // Handle delayed actions
             for (int i = 0; i < delayedActions.Count; i++)
             {
                 DelayedAction delayedAction = delayedActions[i];

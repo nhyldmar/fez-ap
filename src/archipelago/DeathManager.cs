@@ -3,8 +3,6 @@ using FezEngine.Services.Scripting;
 using FezEngine.Tools;
 using FezGame.Services;
 using FezGame.Structure;
-using FEZUG;
-using FEZUG.Features;
 using FEZUG.Features.Console;
 
 namespace FEZAP.Archipelago

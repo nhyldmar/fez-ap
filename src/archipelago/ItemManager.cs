@@ -132,28 +132,44 @@ namespace FEZAP.Archipelago
                     GameState.SaveData.HasFPView = true;
                     break;
                 case "Boileroom Door Unlocked":
-                    UnlockDoor("VILLAGEVILLE_3D", new(35, 30, 36));
+                    DoorManager.unlockedDoors.Add(new("VILLAGEVILLE_3D", [35, 30, 36]));
                     break;
                 case "Lighthouse Door Unlocked":
-                    UnlockDoor("LIGHTHOUSE", new(21, 20, 27));
+                    DoorManager.unlockedDoors.Add(new("LIGHTHOUSE", [21, 20, 27]));
                     break;
                 case "Tree Door Unlocked":
-                    UnlockDoor("TREE", new(41, 50, 2));
+                    DoorManager.unlockedDoors.Add(new("TREE", [41, 50, 2]));
                     break;
                 case "Well Door Unlocked":
-                    UnlockDoor("RAILS", new(14, 21, 14));
+                    DoorManager.unlockedDoors.Add(new("RAILS", [14, 21, 14]));
                     break;
                 case "Windmill Door Unlocked":
-                    UnlockDoor("PIVOT_ONE", new(26, 61, 30));
+                    DoorManager.unlockedDoors.Add(new("PIVOT_ONE", [26, 61, 30]));
                     break;
                 case "Mausoleum Door Unlocked":
-                    UnlockDoor("MAUSOLEUM", new(21, 13, 23));
+                    DoorManager.unlockedDoors.Add(new("MAUSOLEUM", [21, 13, 23]));
                     break;
                 case "Sewer Hub Door Unlocked":
-                    UnlockDoor("SEWER_HUB", new(10, 42, 9));
+                    DoorManager.unlockedDoors.Add(new("SEWER_HUB", [10, 42, 9]));
                     break;
                 case "Sewer Pillars Door Unlocked":
-                    UnlockDoor("SEWER_PILLARS", new(8, 14, 30));
+                    DoorManager.unlockedDoors.Add(new("SEWER_PILLARS", [8, 14, 30]));
+                    break;
+                case "Arch Door Unlocked":
+                    DoorManager.unlockedDoors.Add(new("NATURE_HUB", [16, 18, 15]));
+                    DoorManager.lockedDoors.Remove(new("NATURE_HUB", [16, 18, 15]));
+                    break;
+                case "Bell Tower Door Unlocked":
+                    DoorManager.unlockedDoors.Add(new("NATURE_HUB", [0, 14, 27]));
+                    DoorManager.lockedDoors.Remove(new("NATURE_HUB", [0, 14, 27]));
+                    break;
+                case "Cabin Door Unlocked":
+                    DoorManager.unlockedDoors.Add(new("TREE", [24, 59, 20]));
+                    DoorManager.lockedDoors.Remove(new("TREE", [24, 59, 20]));
+                    break;
+                case "Throne Door Unlocked":
+                    DoorManager.unlockedDoors.Add(new("TREE_SKY", [14, 35, 19]));
+                    DoorManager.lockedDoors.Remove(new("TREE_SKY", [14, 35, 19]));
                     break;
                 case "Rotation Trap":
                     DoRotationTrap();
@@ -170,27 +186,6 @@ namespace FEZAP.Archipelago
                 default:
                     FezugConsole.Print($"Unknown item: {item.ItemDisplayName}", FezugConsole.OutputType.Error);
                     break;
-            }
-        }
-
-        private void UnlockDoor(string levelName, TrileEmplacement trileEmplacement)
-        {
-            if (!GameState.SaveData.World.ContainsKey(levelName))
-            {
-                // TODO: Rework this to unlock only if level exists or when level is created.
-                //       This early unlocks link doors for Mausoleum and Sewer Hub
-                //       if the other side of the link door is visited and
-                //       if the door is unlocked before visiting them.
-                GameState.SaveData.World.Add(levelName, new LevelSaveData());
-            }
-
-            LevelSaveData levelData = GameState.SaveData.World[levelName];
-            levelData.InactiveTriles.Add(trileEmplacement);
-
-            // NOTE: Ideally we would reload the level
-            if (LevelManager.Name == levelName)
-            {
-                FezugConsole.Print("Re-enter this level to unlock the door");
             }
         }
 

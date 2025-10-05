@@ -91,11 +91,15 @@ namespace FEZAP.Archipelago
             Fezap.itemManager.RestoreReceivedItems();
             Fezap.locationManager.RestoreCollectedLocations();
 
-            // Bind events
+            // Bind AP events
             session.MessageLog.OnMessageReceived += HandleLogMsg;
             session.Socket.ErrorReceived += HandleErrorRecv;
             session.Socket.SocketClosed += HandleSocketClosed;
             session.Items.ItemReceived += HandleRecvItem;
+
+            // Setup door locking/unlocking
+            LevelManager.LevelChanging += Fezap.doorManager.LockDoors;
+            LevelManager.LevelChanging += Fezap.doorManager.UnlockDoors;
 
             // Setup goal checking
             LocationManager.goal = Convert.ToInt16(slotData["goal"]);
