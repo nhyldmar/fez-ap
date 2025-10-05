@@ -6,7 +6,7 @@
 - Bugs
   - While gravity trapped, opening a door will make the door unable to open until you leave the room
   - Sleep trap doesn't keep you in sleep animation
-  - Make clock antis not send anything if not shuffled into pool (maybe read from slot data)
+  - Custom locked doors look broken
 - Quality of life
   - Visual indication of sleep/gravity trap duration
 
