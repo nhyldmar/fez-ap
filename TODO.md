@@ -8,8 +8,10 @@
   - Sleep trap doesn't keep you in sleep animation
   - Custom locked doors look broken
   - Get the hint dialogue in DialogueManager working
+  - When door is unlocked, have to leave and re-enter after first entering
 - Quality of life
   - Visual indication of sleep/gravity trap duration
+  - When door is unlocked in current level, need to leave and re-enter
 
 ## 2.0 TODOs
 
@@ -24,12 +26,17 @@
 
 ## 3.0 TODOs
 
+- Doorsanity
+  - Make every door (or different groupings depending on option) locked with the custom locked doors
+
+## 4.0 TODOs
+
 - Entrance randomizer
   - Approach 1: Poll AP server on `LevelManager.LevelChanging` and update `LevelManager.LinkedLevels` on `LevelManager.LevelChanged`
   - Approach 2: Poll AP server at the start (or add in slot data) and update all level data through the custom dot message approach
   - Study this awesome project: <https://github.com/admoore0/fez-randomizer/blob/master/src/mod/LevelChanger.cs>
 
-## 4.0 TODOs
+## 5.0 TODOs
 
 - Multiplayer mod integration
   - <https://github.com/FEZModding/FezMultiplayerMod/tree/main>
