@@ -7,11 +7,22 @@
   - While gravity trapped, opening a door will make the door unable to open until you leave the room
   - Sleep trap doesn't keep you in sleep animation
   - Custom locked doors look broken
+  - Throne locked door doesn't unlock
+  - Have to re-enter level with locked door to unlock the door
+  - Fix water-level logic
+  - Fix logic of Big Owl Cube Bit not needing owls
+  - Fix NUZU_ABANDONED_B bit also collects anti
+  - Fix FOX chest collecting a second thing
+  - Fix Zu Heads Anti-Cube / ZU_4_SIDE Anti Cube problem
   - Get the hint dialogue in DialogueManager working
-  - When door is unlocked, have to leave and re-enter after first entering
+  - Fix "Memory stream is not expandable" caused whenever saving after playing for a while
 - Quality of life
   - Visual indication of sleep/gravity trap duration
-  - When door is unlocked in current level, need to leave and re-enter
+  - Update default trap weights
+  - Add option profiles (sync, async, awful)
+  - Make anti-cubes requiring tetromino/language/maps/sunglasses to be out of logic without them
+  - Fix mines cube bit collected when revealing rather than collecting
+  - When door is unlocked, have to leave and re-enter after first entering
 
 ## 2.0 TODOs
 
@@ -23,11 +34,14 @@
   - Fix dot sending the message for collecting stuff every time you collect something, have it removed and then collect another thing and get the message again
   - Fix crash that can happen when drawing the wireframe for invisible triles (currently disabled functionality by commenting out FezugInGameRendering.Draw)
   - Think of performance/approach improvements to avoid freezes on location checking (maybe handle ap interactions on another task)
+- Qualtiy of life
+  - Update world map to indicate levels by colour if they have checks remaining in logic, out of logic, locked and completed
+  - Replace chest contents with custom triles representing (progression, non-progression, trap, filler)
 
 ## 3.0 TODOs
 
 - Doorsanity
-  - Make every door (or different groupings depending on option) locked with the custom locked doors
+  - Lock different subsets of doors in option (vanilla, default, all hubs, all doors)
 
 ## 4.0 TODOs
 
