@@ -219,9 +219,6 @@ namespace FEZAP.Archipelago
             new("Clock Tower Hour Anti-Cube", "CLOCK", LocationType.InactiveArtObjects, index: 54),
             new("Clock Tower Day Anti-Cube", "CLOCK", LocationType.InactiveArtObjects, index: 55),
             new("Clock Tower Week Anti-Cube", "CLOCK", LocationType.InactiveArtObjects, index: 56),
-
-            // If any of the 4 movable blocks is destroyed, it means the anti has been created
-            new("Zu 4 Side Anti-Cube", "ZU_4_SIDE", LocationType.DestroyedTriles, [26, 16, 16]),
         ];
 
         private static readonly List<Location> heartCubeLocations = [

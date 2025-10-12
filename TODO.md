@@ -9,18 +9,14 @@
   - Custom locked doors look broken
   - Throne locked door doesn't unlock
   - Have to re-enter level with locked door to unlock the door
-  - Fix water-level logic
-  - Fix logic of Big Owl Cube Bit not needing owls
   - Fix NUZU_ABANDONED_B bit also collects anti
   - Fix FOX chest collecting a second thing
-  - Fix Zu Heads Anti-Cube / ZU_4_SIDE Anti Cube problem
   - Get the hint dialogue in DialogueManager working
   - Fix "Memory stream is not expandable" caused whenever saving after playing for a while
+  - Fix knowledge logic failing generation
 - Quality of life
   - Visual indication of sleep/gravity trap duration
-  - Update default trap weights
   - Add option profiles (sync, async, awful)
-  - Make anti-cubes requiring tetromino/language/maps/sunglasses to be out of logic without them
   - Fix mines cube bit collected when revealing rather than collecting
   - When door is unlocked, have to leave and re-enter after first entering
   - Add black monolith code to itempool
