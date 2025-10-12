@@ -14,7 +14,7 @@ namespace FEZAP
 
     public class Fezap : DrawableGameComponent
     {
-        public static string Version = "v0.3.0";
+        public static string Version = "v0.4.0";
         public readonly Fezug Fezug = new();
         public static readonly ArchipelagoManager archipelagoManager = new();
         public static readonly DeathManager deathManager = new();
