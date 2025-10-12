@@ -23,6 +23,7 @@
   - Make anti-cubes requiring tetromino/language/maps/sunglasses to be out of logic without them
   - Fix mines cube bit collected when revealing rather than collecting
   - When door is unlocked, have to leave and re-enter after first entering
+  - Add black monolith code to itempool
 
 ## 2.0 TODOs
 

@@ -17,6 +17,7 @@ rm -rf release/fezap
 
 # Generate fez.apworld
 # TODO: Swap with using the Generate Apworlds after rebasing the AP repo
+# py Launcher.py "Build APWorlds" -- "Fez"
 rm -rf Archipelago/worlds/fez/__pycache__
 cp -r Archipelago/worlds/fez release/fez
 zip -r release/fez.zip release/fez

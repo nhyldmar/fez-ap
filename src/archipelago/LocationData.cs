@@ -210,7 +210,7 @@ namespace FEZAP.Archipelago
 
             // Use InactiveVolumes instead of DestroyedTriles due to overlap with other locations
             new("Sewer Tune Fork Anti-Cube", "SEWER_FORK", LocationType.InactiveVolumes, index: 1),
-            new("Zu Bridge Anti-Cube", "ZU_BRIDGE", LocationType.InactiveVolumes, index: 2),
+            new("Zu Bridge Floor Anti-Cube", "ZU_BRIDGE", LocationType.InactiveVolumes, index: 2),
             new("Zu Code Loop Anti-Cube", "ZU_CODE_LOOP", LocationType.InactiveVolumes, index: 2),
             new("Parlor Anti-Cube", "PARLOR", LocationType.InactiveVolumes, index: 4),
 
