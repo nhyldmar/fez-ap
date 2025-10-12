@@ -171,6 +171,8 @@ namespace FEZAP.Archipelago
                     DoorManager.unlockedDoors.Add(new("TREE_SKY", [11, 51, 9]));
                     DoorManager.lockedDoors.Remove(new("TREE_SKY", [11, 51, 9]));
                     break;
+                case "ssqee w":
+                    break;
                 case "Rotation Trap":
                     DoRotationTrap();
                     break;
