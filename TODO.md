@@ -11,6 +11,7 @@
   - Get the hint dialogue in DialogueManager working
   - Fix "Memory stream is not expandable" caused whenever saving after playing for a while
   - Fix knowledge logic failing generation
+  - Fix skull artifact logic not updating in game
 - Quality of life
   - Visual indication of sleep/gravity trap duration
   - Add option profiles (sync, async, awful)

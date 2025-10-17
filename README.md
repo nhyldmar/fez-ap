@@ -5,6 +5,23 @@
 This is a [HAT](https://github.com/FEZModding/HAT) mod which adds archipelago multiworld randomizer support to FEZ.
 It is heavily based on the wonderful [FEZUG](https://github.com/FEZModding/FEZUG).
 
+## Details
+
+Every collectible is a location check to send, but the clock anti-cubes can be disabled through the option `shuffle_clock_antis: false`. Progression items sent are golden cubes, anti-cubes and door unlocks. The golden and anti-cubes are not distinct so you hint for a general "next cube of type". Door unlocks are are a replacement for keys with 4 additional locked doors added to balance sphere sizes. These doors are:
+
+- Nature Hub -> Arch
+- Nature Hub -> Bell Tower
+- Tree -> Cabin Interior B
+- Tree Sky -> Throne
+
+In addition to the progression items, every treasure map, artifact, heart cube and the first-person sunglasses is also an item that can be sent. There is no game logic tied to them except for if the knowledge logic option is enabled with `knowledge_logic: true`. This is since you can look up the codes/invisible platforms online or remember them from a previous run. The brute forced black monolith code can be found in-game now if you want to go for the full knowledge logic experience.
+
+The remaining space in the item pool is filled with traps and filler with a ratio depending on the options `trap_percentage` and `trap_weights`. Thee traps are:
+
+- **Rotation Trap**: forcefully rotates your screen
+- **Sleep Trap**: removes control of Gomez for 15 seconds
+- **Gravity Trap**: quadruples gravity for 15 seconds
+
 ## Installing
 
 - Follow the instructions to setup HAT.
@@ -26,6 +43,7 @@ It is heavily based on the wonderful [FEZUG](https://github.com/FEZModding/FEZUG
 - It is recommended to look up codes for anti-cubes and heart cubes online while the poptracker doesn't exist.
 - Handy tools that may help can be found here: <https://jenna1337.github.io/FezTools/>
 - Check the [TODO list](TODO.md) for a list of known bugs and future plans.
+- Check the pinned spreadsheet on the AP discord server's Fez thread for codes and bug workarounds.
 
 ## Building
 
