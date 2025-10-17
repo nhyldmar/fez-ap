@@ -12,6 +12,11 @@
   - Fix "Memory stream is not expandable" caused whenever saving after playing for a while
   - Fix knowledge logic failing generation
   - Fix skull artifact logic not updating in game
+  - PIVOT_THREE needs to be split like with LIGHTHOUSE
+  - Force you to always bee in neew gamee sincee otherwise can't do the black monolith puzzle
+  - Swap knowledge logic for counting to the zu school instead of counting cube
+  - Add sewer to lava tetromino logic
+  - Add audio trigger for receiving items
 - Quality of life
   - Visual indication of sleep/gravity trap duration
   - Add option profiles (sync, async, awful)
