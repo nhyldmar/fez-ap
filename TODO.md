@@ -13,7 +13,6 @@
   - Force you to always be in new game since otherwise can't do the black monolith puzzle
   - Swap knowledge logic for counting to the zu school instead of counting cube
   - Add sewer to lava tetromino logic
-  - Fix reload trap having some triles absent until an input is given
 - Quality of life
   - Fix mines cube bit collected when revealing rather than collecting
   - When door is unlocked, have to leave and re-enter after first entering
