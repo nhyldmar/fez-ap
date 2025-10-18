@@ -248,15 +248,26 @@ namespace FEZAP.Archipelago
 
         private void DoGravityTrap()
         {
+            int gravityTrapDuration = 15;
+
             // Increase the gravity
             // TODO: Fix gravity trap causing doors to get stuck until level reload
             GameService.SetGravity(false, 4);
 
             // Add delayed effect
             // TODO: Extend the timer rather than creating a new one if one exists already
-            TimeSpan targetTime = Fezap.GameTime.TotalGameTime + new TimeSpan(0, 0, 15);  // schedule for 15 seconds later
-            DelayedAction delayedAction = new(targetTime, () => { GameService.SetGravity(false, 1); ; });
+            TimeSpan targetTime = Fezap.GameTime.TotalGameTime + new TimeSpan(0, 0, gravityTrapDuration);
+            DelayedAction delayedAction = new(targetTime, () => { GameService.SetGravity(false, 1); });
             Fezap.delayedActions.Add(delayedAction);
+
+            // Add countdown for when the gravity trap will end
+            for (int i = 1; i <= gravityTrapDuration; i++)
+            {
+                TimeSpan timeOfMsg = Fezap.GameTime.TotalGameTime + new TimeSpan(0, 0, gravityTrapDuration - i);
+                string msg = $"{i}";
+                DelayedAction msgAction = new(timeOfMsg, () => { FezugConsole.Print(msg); });
+                Fezap.delayedActions.Add(msgAction);
+            }
         }
 
         public void DoEmotionalSupport(ItemInfo item)

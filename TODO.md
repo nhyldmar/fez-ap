@@ -16,7 +16,6 @@
   - Add sewer to lava tetromino logic
   - Fix reload trap having some triles absent until an input is given
 - Quality of life
-  - Visual indication of sleep/gravity trap duration
   - Add option profiles (sync, async, awful)
   - Fix mines cube bit collected when revealing rather than collecting
   - When door is unlocked, have to leave and re-enter after first entering
