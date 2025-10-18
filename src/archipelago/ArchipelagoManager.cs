@@ -6,10 +6,12 @@ using Archipelago.MultiClient.Net.MessageLog.Messages;
 using Archipelago.MultiClient.Net.Models;
 using FezEngine.Services;
 using FezEngine.Services.Scripting;
+using FezEngine.Structure;
 using FezEngine.Tools;
 using FezGame.Services;
 using FEZUG.Features;
 using FEZUG.Features.Console;
+using Microsoft.Xna.Framework.Audio;
 
 namespace FEZAP.Archipelago
 {
@@ -49,6 +51,9 @@ namespace FEZAP.Archipelago
 
         [ServiceDependency]
         public ILevelManager LevelManager { private get; set; }
+
+        [ServiceDependency]
+        public IContentManagerProvider ContentManagerProvider { private get; set; }
 
         public void Connect(string server, int port, string user, string pass = null)
         {
@@ -224,9 +229,40 @@ namespace FEZAP.Archipelago
                 if (item.Player.Name != connectionInfo.user)
                 {
                     FezugConsole.Print($"Received {item.ItemDisplayName} from {item.Player.Alias} ({item.LocationName})");
+                    Fezap.archipelagoManager.PlaySound(item.ItemName);
                 }
                 Fezap.itemManager.HandleReceivedItem(item);
             }
+        }
+
+        private void PlaySound(string itemName)
+        {
+            string soundEffectPath;
+
+            if (itemName.Contains("Unlocked"))
+            {
+                soundEffectPath = "sounds/collects/splitupcube/assemble_a_maj";
+            }
+            else if (itemName.Contains("Map"))
+            {
+                soundEffectPath = "sounds/ui/mapbeacon";
+            }
+            else if (itemName.Contains("Trap"))
+            {
+                soundEffectPath = "sounds/ui/worldmapmagnet";
+            }
+            else
+            {
+                soundEffectPath = itemName switch
+                {
+                    "Golden Cube" or "Anti-Cube" => "sounds/collects/splitupcube/assemble_a_maj",
+                    "Emotional Support" => "sounds/gomez/yawn",
+                    _ => "sounds/ui/mapbeacon",
+                };
+            }
+
+            SoundEffect soundEffect = ContentManagerProvider.Global.Load<SoundEffect>(soundEffectPath);
+            soundEffect.EmitAt(PlayerManager.Position).NoAttenuation = true;
         }
 
         private void HandleVisualPainRemoval()
