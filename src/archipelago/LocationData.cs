@@ -202,6 +202,8 @@ namespace FEZAP.Archipelago
             new("Quantum Anti-Cube", "QUANTUM", LocationType.DestroyedTriles, [44, 83, 38]),
             new("Skull B Anti-Cube", "SKULL_B", LocationType.DestroyedTriles, [20, 21, 19]),
             new("Zu Heads Anti-Cube", "ZU_HEADS", LocationType.DestroyedTriles, [9, 68, 9]),
+            new("Parlor Anti-Cube", "PARLOR", LocationType.DestroyedTriles, [18, 4, 5]),
+            new("Sewer Tune Fork Anti-Cube", "SEWER_FORK", LocationType.DestroyedTriles, [11, 41, 14]),
 
             // Throne cube accessible in 3 locations
             new("Throne Anti-Cube", "SEWER_QR", LocationType.DestroyedTriles, [15, 41, 14]),
@@ -209,12 +211,10 @@ namespace FEZAP.Archipelago
             new("Throne Anti-Cube", "ZU_THRONE_RUINS", LocationType.DestroyedTriles, [9, 6, 8]),
 
             // Use InactiveVolumes instead of DestroyedTriles due to overlap with other locations
-            new("Sewer Tune Fork Anti-Cube", "SEWER_FORK", LocationType.InactiveVolumes, index: 1),
-            new("Zu Bridge Floor Anti-Cube", "ZU_BRIDGE", LocationType.InactiveVolumes, index: 2),
-            new("Zu Code Loop Anti-Cube", "ZU_CODE_LOOP", LocationType.InactiveVolumes, index: 2),
-            new("Parlor Anti-Cube", "PARLOR", LocationType.InactiveVolumes, index: 4),
+            new("Zu Bridge Floor Anti-Cube", "ZU_BRIDGE", LocationType.InactiveVolumes, [38, 57, 41], index: 2),  // TODO: Fix this still only using volume
+            new("Zu Code Loop Anti-Cube", "ZU_CODE_LOOP", LocationType.InactiveVolumes, [5, 42, 5], index: 2),
 
-            // Use InactiveArtObjects since DestroyedTriles doesn't work for these
+            // Use InactiveArtObjects since DestroyedTriles doesn't work for these since they're all [0, 0, 0]
             new("Clock Tower Minute Anti-Cube", "CLOCK", LocationType.InactiveArtObjects, index: 53),
             new("Clock Tower Hour Anti-Cube", "CLOCK", LocationType.InactiveArtObjects, index: 54),
             new("Clock Tower Day Anti-Cube", "CLOCK", LocationType.InactiveArtObjects, index: 55),

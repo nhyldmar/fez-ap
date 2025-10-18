@@ -74,6 +74,16 @@ namespace FEZAP.Archipelago
             }
         }
 
+        private bool IsVolumeCollected(Location location)
+        {
+            // Some antis overlap with other destroyed triles so this method checks their collection
+            // by seeing if there's two instances of an emplacement and the volume is also inactive
+            LevelSaveData levelData = GameState.SaveData.World[location.levelName];
+            int emplacementCount = levelData.DestroyedTriles.Select(x => x == location.emplacement).Count();
+
+            return levelData.InactiveVolumes.Contains(location.index) && emplacementCount == 2;
+        }
+
         private bool IsCollected(Location location)
         {
             // If level doesn't exist, it's not collected in this save
@@ -89,7 +99,7 @@ namespace FEZAP.Archipelago
             {
                 LocationType.DestroyedTriles => levelData.DestroyedTriles.Contains(location.emplacement),
                 LocationType.InactiveArtObjects => levelData.InactiveArtObjects.Contains(location.index),
-                LocationType.InactiveVolumes => levelData.InactiveVolumes.Contains(location.index),
+                LocationType.InactiveVolumes => IsVolumeCollected(location),
                 LocationType.InactiveNPCs => levelData.InactiveNPCs.Contains(location.index),
                 LocationType.AchievementCode => GameState.SaveData.AchievementCheatCodeDone,
                 _ => false,
