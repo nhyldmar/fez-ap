@@ -19,7 +19,7 @@ In addition to the progression items, every treasure map, artifact, heart cube a
 The remaining space in the item pool is filled with traps and filler with a ratio depending on the options `trap_percentage` and `trap_weights`. Thee traps are:
 
 - **Rotation Trap**: forcefully rotates your screen
-- **Sleep Trap**: removes control of Gomez for 15 seconds
+- **Reload Trap**: reloads the current level sending you to the entrance
 - **Gravity Trap**: quadruples gravity for 15 seconds
 
 ## Installing

@@ -5,6 +5,7 @@ using FezEngine.Structure;
 using FezEngine.Tools;
 using FezGame.Services;
 using FezGame.Structure;
+using FEZUG.Features;
 using FEZUG.Features.Console;
 
 namespace FEZAP.Archipelago
@@ -174,8 +175,8 @@ namespace FEZAP.Archipelago
                 case "Rotation Trap":
                     DoRotationTrap();
                     break;
-                case "Sleep Trap":
-                    DoSleepTrap();
+                case "Reload Trap":
+                    DoReloadTrap();
                     break;
                 case "Gravity Trap":
                     DoGravityTrap();
@@ -194,17 +195,10 @@ namespace FEZAP.Archipelago
             CameraService.Rotate(RandomHelper.Random.Next(-2, 2));
         }
 
-        private void DoSleepTrap()
+        private void DoReloadTrap()
         {
-            // Go to sleep
-            PlayerManager.Action = ActionType.IdleSleep;  // TODO: Prevent sleep animation from being stopped
-            PlayerManager.CanControl = false;
-
-            // Add delayed effect
-            // TODO: Extend the timer rather than creating a new one if one exists already
-            TimeSpan targetTime = Fezap.GameTime.TotalGameTime + new TimeSpan(0, 0, 15);  // schedule for 15 seconds later
-            DelayedAction delayedAction = new(targetTime, () => { PlayerManager.CanControl = true; });
-            Fezap.delayedActions.Add(delayedAction);
+            // TODO: Some triles are weirdly absent until an input is given
+            WarpLevel.Warp(LevelManager.Name);
         }
 
         private void DoGravityTrap()
