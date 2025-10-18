@@ -2,7 +2,6 @@
 
 ## 1.0 TODOs
 
-- Fix any game-breaking bugs
 - Bugs
   - While gravity trapped, opening a door will make the door unable to open until you leave the room
   - Custom locked doors look broken
@@ -11,12 +10,11 @@
   - Fix "Memory stream is not expandable" caused whenever saving after playing for a while
   - Fix knowledge logic failing generation
   - PIVOT_THREE needs to be split like with LIGHTHOUSE
-  - Force you to always bee in new game since otherwise can't do the black monolith puzzle
+  - Force you to always be in new game since otherwise can't do the black monolith puzzle
   - Swap knowledge logic for counting to the zu school instead of counting cube
   - Add sewer to lava tetromino logic
   - Fix reload trap having some triles absent until an input is given
 - Quality of life
-  - Add option profiles (sync, async, awful)
   - Fix mines cube bit collected when revealing rather than collecting
   - When door is unlocked, have to leave and re-enter after first entering
 
