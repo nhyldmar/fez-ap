@@ -20,7 +20,6 @@
   - Add option profiles (sync, async, awful)
   - Fix mines cube bit collected when revealing rather than collecting
   - When door is unlocked, have to leave and re-enter after first entering
-  - Add audio trigger for receiving items
 
 ## 2.0 TODOs
 
