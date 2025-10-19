@@ -190,7 +190,7 @@ namespace FEZAP.Archipelago
             new("Tree Cabin Floor Anti-Cube", "TREE", LocationType.DestroyedTriles, [44, 60, 4]),
             new("Tree Sky Floor Anti-Cube", "TREE_SKY", LocationType.DestroyedTriles, [18, 50, 19]),
             new("Bell Tower Anti-Cube", "BELL_TOWER", LocationType.DestroyedTriles, [17, 44, 19]),
-            new("Watertower Owl Anti-Cube", "WATERTOWER_SECRET", LocationType.DestroyedTriles, [9, 16, 12]),
+            new("Watertower Secret Anti-Cube", "WATERTOWER_SECRET", LocationType.DestroyedTriles, [9, 16, 12]),
             new("Telescope Anti-Cube", "TELESCOPE", LocationType.DestroyedTriles, [18, 36, 20]),
             new("Zu House QR Anti-Cube", "ZU_HOUSE_QR", LocationType.DestroyedTriles, [9, 6, 8]),
             new("Zu Unfold Anti-Cube", "ZU_UNFOLD", LocationType.DestroyedTriles, [9, 59, 12]),
