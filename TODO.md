@@ -14,7 +14,6 @@
   - Swap knowledge logic for counting to the zu school instead of counting cube
   - Add sewer to lava tetromino logic
 - Quality of life
-  - Fix mines cube bit collected when revealing rather than collecting
   - When door is unlocked, have to leave and re-enter after first entering
 
 ## 2.0 TODOs

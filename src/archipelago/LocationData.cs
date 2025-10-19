@@ -4,15 +4,14 @@ namespace FEZAP.Archipelago
 {
     public enum LocationType
     {
-        DestroyedTriles,  // bits, most cubes, some anti-cubes
-        InactiveArtObjects,  // chests, some anti-cubes
-        InactiveVolumes,  // some anti-cubes
+        DestroyedTriles,  // bits, most golden cubes, most anti-cubes
+        InactiveArtObjects,  // chests, clock anti-cubes
         InactiveNPCs,  // owls
         AchievementCode,  // for achievement code andit-cube
     }
 
     /// Location information container
-    public readonly struct Location(string name, string levelName, LocationType type, List<int> emplacement = null, int index = 0)
+    public readonly struct Location(string name, string levelName, LocationType type, List<int> emplacement = null, int count = 1, int index = 0)
     {
         public readonly string name = name;  // apworld location name
         public readonly string levelName = levelName;  // name of the containing fezlvl
@@ -20,6 +19,7 @@ namespace FEZAP.Archipelago
         public readonly TrileEmplacement emplacement = (emplacement != null) ?
                                                        new(emplacement[0], emplacement[1], emplacement[2]) :
                                                        new(0, 0, 0);  // for DestroyedTriles
+        public readonly int count = count;  // for overlaping DestroyedTriles
         public readonly int index = index;  // for InactiveArtObjects and Inactive NPCs
     };
 
@@ -86,7 +86,6 @@ namespace FEZAP.Archipelago
             new("Mausoleum Cube Bit 3", "MAUSOLEUM", LocationType.DestroyedTriles, [31, 19, 11]),
             new("Mausoleum Cube Bit 4", "MAUSOLEUM", LocationType.DestroyedTriles, [5, 9, 2]),
             new("Mine A Cube Bit", "MINE_A", LocationType.DestroyedTriles, [20, 43, 26]),
-            new("Mine Bomb Pillar Cube Bit", "MINE_BOMB_PILLAR", LocationType.DestroyedTriles, [22, 55, 29]),
             new("Mine Wrap Cube Bit 1", "MINE_WRAP", LocationType.DestroyedTriles, [31, 42, 18]),
             new("Mine Wrap Cube Bit 2", "MINE_WRAP", LocationType.DestroyedTriles, [28, 37, 15]),
             new("Nature Hub Cube Bit 1", "NATURE_HUB", LocationType.DestroyedTriles, [7, 25, 22]),
@@ -155,6 +154,9 @@ namespace FEZAP.Archipelago
             new("Zu House Scaffolding Cube Bit", "ZU_HOUSE_SCAFFOLDING", LocationType.DestroyedTriles, [12, 9, 5]),
             new("Zu Library Cube Bit", "ZU_LIBRARY", LocationType.DestroyedTriles, [27, 40, 25]),
             new("Zu Throne Ruins Cube Bit", "ZU_THRONE_RUINS", LocationType.DestroyedTriles, [9, 6, 8]),
+
+            // Overlaps emplacement with one of the explodable walls
+            new("Mine Bomb Pillar Cube Bit", "MINE_BOMB_PILLAR", LocationType.DestroyedTriles, [22, 55, 29], count: 2),
         ];
 
         // 16 total, 2 in chests
@@ -210,9 +212,9 @@ namespace FEZAP.Archipelago
             new("Throne Anti-Cube", "ZU_HOUSE_EMPTY", LocationType.DestroyedTriles, [9, 6, 8]),
             new("Throne Anti-Cube", "ZU_THRONE_RUINS", LocationType.DestroyedTriles, [9, 6, 8]),
 
-            // Use InactiveVolumes instead of DestroyedTriles due to overlap with other locations
-            new("Zu Bridge Floor Anti-Cube", "ZU_BRIDGE", LocationType.InactiveVolumes, [38, 57, 41], index: 2),  // TODO: Fix this still only using volume
-            new("Zu Code Loop Anti-Cube", "ZU_CODE_LOOP", LocationType.InactiveVolumes, [5, 42, 5], index: 2),
+            // Use count due to overlap with other locations
+            new("Zu Bridge Floor Anti-Cube", "ZU_BRIDGE", LocationType.DestroyedTriles, [38, 57, 41], count: 2),
+            new("Zu Code Loop Anti-Cube", "ZU_CODE_LOOP", LocationType.DestroyedTriles, [5, 42, 5], count: 2),
 
             // Use InactiveArtObjects since DestroyedTriles doesn't work for these since they're all [0, 0, 0]
             new("Clock Tower Minute Anti-Cube", "CLOCK", LocationType.InactiveArtObjects, index: 53),
