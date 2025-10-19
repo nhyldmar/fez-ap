@@ -1,4 +1,8 @@
 using Archipelago.MultiClient.Net.Enums;
+using FezEngine.Services;
+using FezEngine.Structure;
+using FezEngine.Tools;
+using FezGame.Services;
 using FEZUG.Features.Console;
 
 namespace FEZAP.Archipelago
@@ -369,6 +373,44 @@ namespace FEZAP.Archipelago
     }
 
     #if DEBUG
+    internal class LevelInfo : IFezugCommand
+    {
+        public string Name => "levelinfo";
+
+        public string HelpText => "levelinfo";
+
+        public List<string> Autocomplete(string[] args) { return null; }
+
+        [ServiceDependency]
+        public IGameStateManager GameState { get; set; }
+
+        [ServiceDependency]
+        public ILevelManager LevelManager { get; set; }
+
+        public bool Execute(string[] args)
+        {
+            string level = LevelManager.Name;
+
+            List<TrileEmplacement> DestroyedTriles = GameState.SaveData.World[level].DestroyedTriles;
+            List<TrileEmplacement> InactiveTriles = GameState.SaveData.World[level].InactiveTriles;
+            List<int> InactiveArtObjects = GameState.SaveData.World[level].InactiveArtObjects;
+            List<int> InactiveEvents = GameState.SaveData.World[level].InactiveEvents;
+            List<int> InactiveGroups = GameState.SaveData.World[level].InactiveGroups;
+            List<int> InactiveVolumes = GameState.SaveData.World[level].InactiveVolumes;
+            List<int> InactiveNPCs = GameState.SaveData.World[level].InactiveNPCs;
+
+            DestroyedTriles.ForEach(x => FezugConsole.Print($"Destroyed Triles: {x.X}, {x.Y}, {x.Z}"));
+            InactiveTriles.ForEach(x => FezugConsole.Print($"Inactive Triles: {x.X}, {x.Y}, {x.Z}"));
+            InactiveArtObjects.ForEach(x => FezugConsole.Print($"Art Objects: {x}"));
+            InactiveEvents.ForEach(x => FezugConsole.Print($"Events: {x}"));
+            InactiveGroups.ForEach(x => FezugConsole.Print($"Groups: {x}"));
+            InactiveVolumes.ForEach(x => FezugConsole.Print($"Volumes: {x}"));
+            InactiveNPCs.ForEach(x => FezugConsole.Print($"NPCs: {x}"));
+
+            return true;
+        }
+    }
+
     internal class Debug : IFezugCommand
     {
         public string Name => "debug";
