@@ -14,7 +14,7 @@ Every collectible is a location check to send, but the clock anti-cubes can be d
 - Tree -> Cabin Interior B
 - Tree Sky -> Throne
 
-In addition to the progression items, every treasure map, artifact, heart cube and the first-person sunglasses is also an item that can be sent. There is no game logic tied to them except for if the knowledge logic option is enabled with `knowledge_logic: true`. This is since you can look up the codes/invisible platforms online or remember them from a previous run. The brute forced black monolith code can be found in-game now if you want to go for the full knowledge logic experience.
+In addition to the progression items, every treasure map, artifact, heart cube and the first-person sunglasses is also an item that can be sent. There is no game logic tied to them ~~except for if the knowledge logic option is enabled with `knowledge_logic: true`~~ (known bug, not currently enabled). This is since you can look up the codes/invisible platforms online or remember them from a previous run. The brute forced black monolith code can be found in-game now if you want to go for the full knowledge logic experience.
 
 The remaining space in the item pool is filled with traps and filler with a ratio depending on the options `trap_percentage` and `trap_weights`. Thee traps are:
 

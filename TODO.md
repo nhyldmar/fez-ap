@@ -5,7 +5,6 @@
 - Bugs
   - While gravity trapped, opening a door will make the door unable to open until you leave the room
   - Custom locked doors look broken
-  - Have to re-enter level with locked door to unlock the door
   - Get the hint dialogue in DialogueManager working
   - Fix "Memory stream is not expandable" caused whenever saving after playing for a while
   - Fix knowledge logic failing generation
