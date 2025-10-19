@@ -229,37 +229,22 @@ namespace FEZAP.Archipelago
                 if (item.Player.Name != connectionInfo.user)
                 {
                     FezugConsole.Print($"Received {item.ItemDisplayName} from {item.Player.Alias} ({item.LocationName})");
-                    Fezap.archipelagoManager.PlaySound(item.ItemName);
                 }
+                Fezap.archipelagoManager.PlaySound(item.Flags);
                 Fezap.itemManager.HandleReceivedItem(item);
             }
         }
 
-        private void PlaySound(string itemName)
+        private void PlaySound(ItemFlags itemType)
         {
-            string soundEffectPath;
-
-            if (itemName.Contains("Unlocked"))
+            string soundEffectPath = itemType switch
             {
-                soundEffectPath = "sounds/collects/splitupcube/assemble_a_maj";
-            }
-            else if (itemName.Contains("Map"))
-            {
-                soundEffectPath = "sounds/ui/mapbeacon";
-            }
-            else if (itemName.Contains("Trap"))
-            {
-                soundEffectPath = "sounds/ui/worldmapmagnet";
-            }
-            else
-            {
-                soundEffectPath = itemName switch
-                {
-                    "Golden Cube" or "Anti-Cube" => "sounds/collects/splitupcube/assemble_a_maj",
-                    "Emotional Support" => "sounds/gomez/yawn",
-                    _ => "sounds/ui/mapbeacon",
-                };
-            }
+                ItemFlags f when f.HasFlag(ItemFlags.None) => "sounds/gomez/yawn",
+                ItemFlags f when f.HasFlag(ItemFlags.Advancement) => "sounds/collects/splitupcube/assemble_a_maj",
+                ItemFlags f when f.HasFlag(ItemFlags.NeverExclude) => "sounds/ui/mapbeacon",
+                ItemFlags f when f.HasFlag(ItemFlags.Trap) => "sounds/ui/worldmapmagnet",
+                _ => throw new NotImplementedException($"Unknown flag {itemType}")
+            };
 
             SoundEffect soundEffect = ContentManagerProvider.Global.Load<SoundEffect>(soundEffectPath);
             soundEffect.EmitAt(PlayerManager.Position).NoAttenuation = true;
