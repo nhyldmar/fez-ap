@@ -3,14 +3,11 @@
 ## 1.0 TODOs
 
 - Bugs
+  - Force you to always be in new game since otherwise can't do the black monolith puzzle
   - While gravity trapped, opening a door will make the door unable to open until you leave the room
   - Custom locked doors look broken
-  - Get the hint dialogue in DialogueManager working
-  - Fix "Memory stream is not expandable" caused whenever saving after playing for a while
-  - PIVOT_THREE needs to be split like with LIGHTHOUSE
-  - Force you to always be in new game since otherwise can't do the black monolith puzzle
-- Quality of life
   - When door is unlocked, have to leave and re-enter after first entering
+  - Fix "Memory stream is not expandable" caused whenever saving after playing for a while
 
 ## 2.0 TODOs
 
@@ -22,6 +19,7 @@
   - Fix dot sending the message for collecting stuff every time you collect something, have it removed and then collect another thing and get the message again
   - Fix crash that can happen when drawing the wireframe for invisible triles (currently disabled functionality by commenting out FezugInGameRendering.Draw)
   - Think of performance/approach improvements to avoid freezes on location checking (maybe handle ap interactions on another task)
+  - Get the hint dialogue in DialogueManager working
 - Qualtiy of life
   - Update world map to indicate levels by colour if they have checks remaining in logic, out of logic, locked and completed
   - Replace chest contents with custom triles representing (progression, non-progression, trap, filler)
@@ -33,6 +31,8 @@
 
 ## 4.0 TODOs
 
+- Bugs
+  - PIVOT_THREE needs to be split like with LIGHTHOUSE
 - Entrance randomizer
   - Approach 1: Poll AP server on `LevelManager.LevelChanging` and update `LevelManager.LinkedLevels` on `LevelManager.LevelChanged`
   - Approach 2: Poll AP server at the start (or add in slot data) and update all level data through the custom dot message approach
