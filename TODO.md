@@ -7,11 +7,8 @@
   - Custom locked doors look broken
   - Get the hint dialogue in DialogueManager working
   - Fix "Memory stream is not expandable" caused whenever saving after playing for a while
-  - Fix knowledge logic failing generation
   - PIVOT_THREE needs to be split like with LIGHTHOUSE
   - Force you to always be in new game since otherwise can't do the black monolith puzzle
-  - Swap knowledge logic for counting to the zu school instead of counting cube
-  - Add sewer to lava tetromino logic
 - Quality of life
   - When door is unlocked, have to leave and re-enter after first entering
 
