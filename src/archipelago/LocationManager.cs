@@ -135,8 +135,8 @@ namespace FEZAP.Archipelago
 
         public void MonitorLocations()
         {
-            // Get what was collected
-            var diff = GetAllCollected().Except(allCollectedLocations);
+            // Get what was collected (we don't use Except since the throne anti-cube has 3 locations)
+            var diff = GetAllCollected().Where(x => allCollectedLocations.All(y => x.name != y.name));
 
             // Safety check for if someone selects the wrong save
             if (diff.Count() > 10)
