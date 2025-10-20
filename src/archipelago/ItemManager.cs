@@ -199,7 +199,9 @@ namespace FEZAP.Archipelago
 
         private void DoRotationTrap()
         {
-            CameraService.Rotate(RandomHelper.Random.Next(-2, 2));
+            List<int> rotationOptions = [-2, -1, 1, 2];
+            int index = RandomHelper.Random.Next(rotationOptions.Count);
+            CameraService.Rotate(rotationOptions[index]);
         }
 
         private void DoReloadTrap()
@@ -232,7 +234,7 @@ namespace FEZAP.Archipelago
             }
         }
 
-        public void DoEmotionalSupport(ItemInfo item)
+        private void DoEmotionalSupport(ItemInfo item)
         {
             string msg = item.Player.Name + RandomHelper.InList(EmotionalSupportMsgs);
             _ = DotService.Say($"@{msg}", true, true);
