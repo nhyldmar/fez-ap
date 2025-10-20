@@ -3,7 +3,6 @@
 ## 1.0 TODOs
 
 - Bugs
-  - Force you to always be in new game since otherwise can't do the black monolith puzzle
   - While gravity trapped, opening a door will make the door unable to open until you leave the room
   - Custom locked doors look broken
   - When door is unlocked, have to leave and re-enter after first entering
