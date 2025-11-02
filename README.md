@@ -19,8 +19,8 @@ In addition to the progression items, every treasure map, artifact, heart cube a
 The remaining space in the item pool is filled with traps and filler with a ratio depending on the options `trap_percentage` and `trap_weights`. Thee traps are:
 
 - **Rotation Trap**: forcefully rotates your screen
-- **Reload Trap**: reloads the current level sending you to the entrance
-- **Gravity Trap**: quadruples gravity for 15 seconds
+- (Currently disabled) ~~**Reload Trap**: reloads the current level sending you to the entrance~~
+- (Currently disabled) ~~**Gravity Trap**: quadruples gravity for 15 seconds~~
 
 ## Installing
 
