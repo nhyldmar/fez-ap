@@ -206,12 +206,15 @@ namespace FEZAP.Archipelago
 
         private void DoReloadTrap()
         {
+            #if DEBUG
             // TODO: Some triles are weirdly absent until an input is given
             WarpLevel.Warp(LevelManager.Name);
+            #endif  // DEBUG
         }
 
         private void DoGravityTrap()
         {
+            #if DEBUG
             int gravityTrapDuration = 15;
 
             // Increase the gravity
@@ -232,6 +235,7 @@ namespace FEZAP.Archipelago
                 DelayedAction msgAction = new(timeOfMsg, () => { FezugConsole.Print(msg); });
                 Fezap.delayedActions.Add(msgAction);
             }
+            #endif  // DEBUG
         }
 
         private void DoEmotionalSupport(ItemInfo item)
