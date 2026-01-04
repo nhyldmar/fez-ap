@@ -207,9 +207,11 @@ namespace FEZAP.Archipelago
             new("Parlor Anti-Cube", "PARLOR", LocationType.DestroyedTriles, [18, 4, 5]),
             new("Sewer Tune Fork Anti-Cube", "SEWER_FORK", LocationType.DestroyedTriles, [11, 41, 14]),
 
-            // Use count due to overlap with other locations
+            // Use count and alternate spawn position due to possible overlap with other locations
             new("Zu Bridge Floor Anti-Cube", "ZU_BRIDGE", LocationType.DestroyedTriles, [38, 57, 41], count: 2),
+            new("Zu Bridge Floor Anti-Cube", "ZU_BRIDGE", LocationType.DestroyedTriles, [41, 57, 41]),
             new("Zu Code Loop Anti-Cube", "ZU_CODE_LOOP", LocationType.DestroyedTriles, [5, 42, 5], count: 2),
+            new("Zu Code Loop Anti-Cube", "ZU_CODE_LOOP", LocationType.DestroyedTriles, [5, 42, 3]),
 
             // Throne cube accessible in 3 locations
             new("Throne Anti-Cube", "SEWER_QR", LocationType.DestroyedTriles, [15, 41, 14]),
