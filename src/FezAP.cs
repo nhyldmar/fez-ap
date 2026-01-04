@@ -22,6 +22,7 @@ namespace FEZAP
         public static readonly DoorManager doorManager = new();
         public static readonly ItemManager itemManager = new();
         public static readonly LocationManager locationManager = new();
+        public static readonly RegionManager regionManager = new();
         public static List<DelayedAction> delayedActions = [];
         public static Fez Fez { get; private set; }
         public static GameTime GameTime { get; private set; }
@@ -46,6 +47,7 @@ namespace FEZAP
             ServiceHelper.InjectServices(doorManager);
             ServiceHelper.InjectServices(itemManager);
             ServiceHelper.InjectServices(locationManager);
+            ServiceHelper.InjectServices(regionManager);
         }
 
         public override void Update(GameTime gameTime)
