@@ -120,7 +120,7 @@ namespace FEZAP.Archipelago
             }
             
             // put level changes in AP data storage for tracking
-            LevelManager.LevelChanging += Fezap.regionManager.UpdateCurrentLevel;
+            LevelManager.LevelChanged += Fezap.regionManager.UpdateCurrentRegion;
 
             // Setup deathlink if enabled
             DeathManager.deathlinkOn = Convert.ToBoolean(slotData["death_link"]);

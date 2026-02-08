@@ -1,6 +1,6 @@
+using Archipelago.MultiClient.Net.Enums;
 using FezEngine.Services;
 using FezEngine.Tools;
-using FEZUG.Features.Console;
 
 namespace FEZAP.Archipelago
 {
@@ -12,22 +12,34 @@ namespace FEZAP.Archipelago
         public ILevelManager Level { get; set; }
         
         // the levels' names that should trigger an update to the AP data storage (to avoid spamming updates)
-        private static readonly List<string> levelNamesUpdate = [
-            "BIG_TOWER", "MEMORY_CORE",
-            "NATURE_HUB", "LIGHTHOUSE", "TREE",
-            "INDUSTRIAL_HUB", "WATER_TOWER", "WELL_2",
-            "SEWER_HUB", "SEWER_START",
-            "GRAVEYARD_GATE", "GRAVE_CABIN",
-            "ZU_CITY_RUINS", "TREE_SKY"
-        ];
-
-        public void UpdateCurrentLevel()
+        private static readonly Dictionary<string, Region> levelNamesUpdate = new()
         {
-            if (!ArchipelagoManager.IsConnected() || !levelNamesUpdate.Contains(Level.Name)) return;
-            // put the region we just loaded into in AP data storage for tracking
-            var slotData = ArchipelagoManager.session.DataStorage.GetSlotData(ArchipelagoManager.session.ConnectionInfo.Slot);
-            slotData["current_level"] = Level.Name;
-            FezugConsole.Print("Updated CurrentLevel to "+Level.Name+" in AP data storage");
+            { "GOMEZ_HOUSE", Region.Village }, { "BIG_TOWER", Region.Village }, { "MEMORY_CORE", Region.Core },
+            { "NATURE_HUB", Region.Nature }, { "LIGHTHOUSE", Region.Nature }, { "TREE", Region.Nature }, { "TREE_ROOTS", Region.Nature },
+            { "INDUSTRIAL_HUB", Region.Indust }, { "WATER_TOWER", Region.Indust }, { "WELL_2", Region.Indust },
+            { "SEWER_HUB", Region.Sewer }, { "SEWER_START", Region.Sewer }, { "SEWER_TO_LAVA", Region.Sewer },
+            { "GRAVEYARD_GATE", Region.Grave }, { "CABIN_INTERIOR_B", Region.Grave }, { "MAUSOLEUM", Region.Grave },
+            { "ZU_CITY_RUINS", Region.Ruins }, { "TREE_SKY", Region.Ruins }
+        };
+
+        public void UpdateCurrentRegion()
+        {
+            if (!ArchipelagoManager.IsConnected()) return;
+            if (levelNamesUpdate.TryGetValue(Level.Name, out var currentRegion))
+            {
+                ArchipelagoManager.session.DataStorage[Scope.Slot, "current_region"] = currentRegion.ToString();
+            }
+        }
+
+        private enum Region
+        {
+            Village,
+            Core,
+            Nature,
+            Indust,
+            Sewer,
+            Grave,
+            Ruins
         }
     }
 }
