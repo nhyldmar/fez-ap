@@ -112,6 +112,15 @@ namespace FEZAP.Archipelago
             string goalStr = LocationManager.goal == 0 ? "32 Cube Ending" : "64 Cube Ending";
             FezugConsole.Print($"Goal set to {goalStr}");
 
+            // Shuffle tetromino codes if in options
+            if (Convert.ToBoolean(slotData["scramble_tetrominos"]))
+            {
+                // We use the AP seed to ensure the same scrambling result even if the player ever disconnects.
+                // We also use the slot number so two different players in the same AP will have different scrambling.
+                CodeInputScrambler.ShuffleCodeInputs(int.Parse(session.RoomState.Seed) + session.ConnectionInfo.Slot);
+                FezugConsole.Print("Tetrominos scrambled");
+            }
+
             // Disable visual pain if in options
             if (Convert.ToBoolean(slotData["disable_visual_pain"]))
             {
