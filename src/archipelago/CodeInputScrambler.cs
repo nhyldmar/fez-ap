@@ -4,7 +4,7 @@ using FezEngine.Tools;
 using FezGame;
 using FEZUG.Features.Console;
 
-// Scrambler by Jenna1337: https://gist.github.com/Jenna1337/814b2f833632f712af304311ed13a14d 
+// Scrambler by Jenna1337: https://gist.github.com/Jenna1337/814b2f833632f712af304311ed13a14d
 namespace FEZAP.Archipelago
 {
     public class CodeInputScrambler
@@ -74,7 +74,7 @@ namespace FEZAP.Archipelago
         private static Dictionary<CodeInput, int[]> codemachinemapping;
         private static Dictionary<CodeInput, int[]> original;
         private static volatile bool DidInit = false;
-        public static void ShuffleCodeInputs(int seed)
+        public static void ShuffleCodeInputs(string seed)
         {
             if (!DidInit)
             {
@@ -83,8 +83,10 @@ namespace FEZAP.Archipelago
             }
             CodeInput[] c = Enum.GetValues(typeof(CodeInput)).Cast<CodeInput>().Where(ci => ci != CodeInput.None).ToArray();
             CodeInput[] k = (CodeInput[])c.Clone();
-            Random random = new Random(seed);
+            Random random = new Random(seed.GetHashCode());
             ShuffleInputs(random, k);
+
+            ResetScramble();
             for (int i = 0; i < c.Length; ++i)
             {
                 codeInputMap.Add(c[i], k[i]);
@@ -95,14 +97,20 @@ namespace FEZAP.Archipelago
                 codemachinemapping[key] = original[codeInputMap[key]];
             }
         }
+        public static void ResetScramble()
+        {
+            codemachinemapping = new Dictionary<CodeInput, int[]>(original);
+            codeInputMap.Clear();
+        }
+        
         static CodeInputScrambler()
         {
             _ = Waiters.Wait(() => ServiceHelper.FirstLoadDone,
             () =>
             {
                 InputManager = ServiceHelper.Get<IInputManager>();
-                codemachinemapping = (Dictionary<CodeInput, int[]>)typeof(Fez).Assembly.GetType("FezGame.Components.CodeMachineHost").GetField("BitPatterns", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).GetValue(null);
-                original = new Dictionary<CodeInput, int[]>(codemachinemapping);
+                original = (Dictionary<CodeInput, int[]>)typeof(Fez).Assembly.GetType("FezGame.Components.CodeMachineHost").GetField("BitPatterns", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).GetValue(null);
+                ResetScramble();
 
                 var detour = new MonoMod.RuntimeDetour.Hook(
                     volHostType.GetMethod("GrabInput", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance),

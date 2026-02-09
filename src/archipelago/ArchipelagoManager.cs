@@ -72,7 +72,6 @@ namespace FEZAP.Archipelago
             {
                 OnConnectSuccess();
                 connectInitFinished = true;
-                return;
             }
             else
             {
@@ -117,7 +116,7 @@ namespace FEZAP.Archipelago
             {
                 // We use the AP seed to ensure the same scrambling result even if the player ever disconnects.
                 // We also use the slot number so two different players in the same AP will have different scrambling.
-                CodeInputScrambler.ShuffleCodeInputs(int.Parse(session.RoomState.Seed) + session.ConnectionInfo.Slot);
+                CodeInputScrambler.ShuffleCodeInputs(session.RoomState.Seed + session.ConnectionInfo.Slot);
                 FezugConsole.Print("Tetrominos scrambled");
             }
 
