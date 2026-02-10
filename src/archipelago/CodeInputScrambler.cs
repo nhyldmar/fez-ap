@@ -1,3 +1,4 @@
+using System.Reflection;
 using FezEngine.Components;
 using FezEngine.Structure.Input;
 using FezEngine.Tools;
@@ -10,8 +11,78 @@ namespace FEZAP.Archipelago
     public class CodeInputScrambler
     {
         private CodeInputScrambler() { }
-        private static void ShuffleInputs(Random random, CodeInput[] array)
+        
+        private const BindingFlags Flags = BindingFlags.NonPublic | BindingFlags.Static;
+        
+        private static IInputManager InputManager;
+        private static readonly Type volHostType = typeof(Fez).Assembly.GetType("FezGame.Components.VolumesHost");
+        private static readonly Dictionary<CodeInput, CodeInput> codeInputMap = new();
+        private static readonly Dictionary<CodeInput, CodeInput> reverseInputMap = new();
+        
+        private static volatile bool _initDone = false;
+        private static Dictionary<CodeInput, int[]> codeMachine;
+        private static Dictionary<CodeInput, int[]> originalCodeMachine;
+        
+        private static CodeInput[] achievementCode;
+        private static CodeInput[] originalAchievementCode;
+        private static CodeInput[] qrMapCode;
+        private static CodeInput[] originalQrMapCode;
+        private static CodeInput[] flyCode;
+        private static CodeInput[] originalFlyCode;
+        
+        static CodeInputScrambler()
         {
+            _ = Waiters.Wait(() => ServiceHelper.FirstLoadDone,
+                () =>
+                {
+                    InputManager = ServiceHelper.Get<IInputManager>();
+                    codeMachine = (Dictionary<CodeInput, int[]>)typeof(Fez).Assembly.GetType("FezGame.Components.CodeMachineHost").GetField("BitPatterns", Flags).GetValue(null);
+                    originalCodeMachine = new Dictionary<CodeInput, int[]>(codeMachine);
+                    
+                    var GameWideCodes = typeof(Fez).Assembly.GetType("FezGame.Components.GameWideCodes");
+                    achievementCode = (CodeInput[])GameWideCodes.GetField("AchievementCode", Flags).GetValue(null);
+                    originalAchievementCode = (CodeInput[])achievementCode.Clone();
+                    qrMapCode = (CodeInput[])GameWideCodes.GetField("MapCode", Flags).GetValue(null);
+                    originalQrMapCode = (CodeInput[])qrMapCode.Clone();
+                    flyCode = (CodeInput[])GameWideCodes.GetField("JetpackCode", Flags).GetValue(null);
+                    originalFlyCode = (CodeInput[])flyCode.Clone();
+
+                    var detour = new MonoMod.RuntimeDetour.Hook(
+                        volHostType.GetMethod("GrabInput", BindingFlags.NonPublic | BindingFlags.Instance),
+                        new Func<object, bool>(CustomCodeInputMethod));
+                    _initDone = true;
+                });
+        }
+        
+        public static void ShuffleCodeInputs(string seed)
+        {
+            if (!_initDone)
+            {
+                Waiters.Wait(() => _initDone, () => ShuffleCodeInputs(seed));
+                return;
+            }
+            CodeInput[] c = Enum.GetValues(typeof(CodeInput)).Cast<CodeInput>().Where(ci => ci != CodeInput.None).ToArray();
+            CodeInput[] k = (CodeInput[])c.Clone();
+            ShuffleInputs(seed, k);
+
+            codeInputMap.Clear();
+            reverseInputMap.Clear();
+            for (int i = 0; i < c.Length; ++i)
+            {
+                codeInputMap.Add(c[i], k[i]);
+                reverseInputMap.Add(k[i], c[i]);
+            }
+            foreach (var key in originalCodeMachine.Keys)
+            {
+                codeMachine[key] = originalCodeMachine[codeInputMap[key]];
+            }
+            UpdateGameWideCodes();
+            FezugConsole.Print("Tetrominos scrambled");
+        }
+        
+        private static void ShuffleInputs(string seed, CodeInput[] array)
+        {
+            var random = new Random(seed.GetHashCode());
             var n = array.Length;
             while (n > 1)
             {
@@ -24,12 +95,44 @@ namespace FEZAP.Archipelago
                 array[n] = value;
             }
         }
-        private static IInputManager InputManager;
-        private static readonly Type volHostType = typeof(Fez).Assembly.GetType("FezGame.Components.VolumesHost");
-        private static readonly Dictionary<CodeInput, CodeInput> codeInputMap = new();
+        
+        public static void ResetScramble()
+        {
+            codeMachine = new Dictionary<CodeInput, int[]>(originalCodeMachine);
+            codeInputMap.Clear();
+            reverseInputMap.Clear();
+            UpdateGameWideCodes();
+        }
+
+        private static void UpdateGameWideCodes()
+        {
+            // reset codes
+            if (reverseInputMap.Count == 0)
+            {
+                Array.Copy(originalAchievementCode, achievementCode, originalAchievementCode.Length);
+                Array.Copy(originalQrMapCode, qrMapCode, originalQrMapCode.Length);
+                Array.Copy(originalFlyCode, flyCode, originalFlyCode.Length);
+                return;
+            }
+            
+            // Instead of updating the method to check for the 3 game wide codes, we just modify the codes themselves
+            for (var i = 0; i < achievementCode.Length; i++)
+            {
+                achievementCode[i] = reverseInputMap[originalAchievementCode[i]];
+            }
+            for (var i = 0; i < qrMapCode.Length; i++)
+            {
+                qrMapCode[i] = reverseInputMap[originalQrMapCode[i]];
+            }
+            for (var i = 0; i < flyCode.Length; i++)
+            {
+                flyCode[i] = reverseInputMap[originalFlyCode[i]];
+            }
+        }
+        
         private static bool CustomCodeInputMethod(object self)
         {
-            var inputField = volHostType.GetField("Input", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            var inputField = volHostType.GetField("Input", BindingFlags.NonPublic | BindingFlags.Instance);
             CodeInput codeInput = CodeInput.None;
             if (InputManager.Jump == FezButtonState.Pressed)
             {
@@ -70,53 +173,6 @@ namespace FEZAP.Archipelago
                 Input.RemoveAt(0);
             }
             return true;
-        }
-        private static Dictionary<CodeInput, int[]> codemachinemapping;
-        private static Dictionary<CodeInput, int[]> original;
-        private static volatile bool DidInit = false;
-        public static void ShuffleCodeInputs(string seed)
-        {
-            if (!DidInit)
-            {
-                Waiters.Wait(() => DidInit, () => ShuffleCodeInputs(seed));
-                return;
-            }
-            CodeInput[] c = Enum.GetValues(typeof(CodeInput)).Cast<CodeInput>().Where(ci => ci != CodeInput.None).ToArray();
-            CodeInput[] k = (CodeInput[])c.Clone();
-            Random random = new Random(seed.GetHashCode());
-            ShuffleInputs(random, k);
-
-            ResetScramble();
-            for (int i = 0; i < c.Length; ++i)
-            {
-                codeInputMap.Add(c[i], k[i]);
-                FezugConsole.Print($"{c[i]}: {k[i]}");
-            }
-            foreach (var key in original.Keys)
-            {
-                codemachinemapping[key] = original[codeInputMap[key]];
-            }
-        }
-        public static void ResetScramble()
-        {
-            codemachinemapping = new Dictionary<CodeInput, int[]>(original);
-            codeInputMap.Clear();
-        }
-        
-        static CodeInputScrambler()
-        {
-            _ = Waiters.Wait(() => ServiceHelper.FirstLoadDone,
-            () =>
-            {
-                InputManager = ServiceHelper.Get<IInputManager>();
-                codemachinemapping = (Dictionary<CodeInput, int[]>)typeof(Fez).Assembly.GetType("FezGame.Components.CodeMachineHost").GetField("BitPatterns", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).GetValue(null);
-                original = new Dictionary<CodeInput, int[]>(codemachinemapping);
-
-                var detour = new MonoMod.RuntimeDetour.Hook(
-                    volHostType.GetMethod("GrabInput", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance),
-                    new Func<object, bool>(CustomCodeInputMethod));
-                DidInit = true;
-            });
         }
     }
 }

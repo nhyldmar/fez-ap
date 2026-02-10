@@ -62,6 +62,7 @@ namespace FEZAP.Archipelago
             if (ArchipelagoManager.IsConnected())
             {
                 ArchipelagoManager.session.Socket.DisconnectAsync();
+                CodeInputScrambler.ResetScramble();
             }
             else
             {
