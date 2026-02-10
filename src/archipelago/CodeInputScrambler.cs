@@ -109,8 +109,8 @@ namespace FEZAP.Archipelago
             () =>
             {
                 InputManager = ServiceHelper.Get<IInputManager>();
-                original = (Dictionary<CodeInput, int[]>)typeof(Fez).Assembly.GetType("FezGame.Components.CodeMachineHost").GetField("BitPatterns", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).GetValue(null);
-                ResetScramble();
+                codemachinemapping = (Dictionary<CodeInput, int[]>)typeof(Fez).Assembly.GetType("FezGame.Components.CodeMachineHost").GetField("BitPatterns", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).GetValue(null);
+                original = new Dictionary<CodeInput, int[]>(codemachinemapping);
 
                 var detour = new MonoMod.RuntimeDetour.Hook(
                     volHostType.GetMethod("GrabInput", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance),
