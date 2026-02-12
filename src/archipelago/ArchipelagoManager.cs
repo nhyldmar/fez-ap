@@ -118,6 +118,10 @@ namespace FEZAP.Archipelago
                 LevelManager.LevelChanging += HandleVisualPainRemoval;
                 FezugConsole.Print("Visual pain disabled");
             }
+            
+            // put level changes in AP data storage for tracking
+            Fezap.regionManager.UpdateCurrentRegion();
+            LevelManager.LevelChanged += Fezap.regionManager.UpdateCurrentRegion;
 
             // Setup deathlink if enabled
             DeathManager.deathlinkOn = Convert.ToBoolean(slotData["death_link"]);
