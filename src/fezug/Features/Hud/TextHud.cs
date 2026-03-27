@@ -23,7 +23,12 @@ namespace FEZUG.Features.Hud
 
     public class TextHud : IFezugFeature
     {
-        private List<(FezugVariable var, Func<string> provider)> hudVars = [];
+        private struct HudVar
+        {
+            public FezugVariable var;
+            public Func<string> provider;
+        }
+        private List<HudVar> hudVars = new List<HudVar>();
 
         private FezugVariable hud_hide;
 
@@ -48,12 +53,15 @@ namespace FEZUG.Features.Hud
         {
             void CreateHudVariable(string name, string desc, Func<string> provider)
             {
-                hudVars.Add((new FezugVariable(name, $"If set, enables {desc} text hud.", "0")
+                var newHudVar = new HudVar();
+                newHudVar.var = new FezugVariable(name, $"If set, enables {desc} text hud.", "0")
                 {
                     SaveOnChange = true,
                     Min = 0,
                     Max = 1
-                }, provider));
+                };
+                newHudVar.provider = provider;
+                hudVars.Add(newHudVar);
             }
             string FormatVector3(Vector3 vector3)
             {

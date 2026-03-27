@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net48</TargetFramework>
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <DebugType>full</DebugType>
@@ -13,6 +13,7 @@
     <PropertyGroup>
       <!-- Replace with your fez Mod directory path -->
       <FezModDirectory>D:\Games\Steam\steamapps\common\FEZ\Mods\</FezModDirectory>
+      <!-- <FezModDirectory>/home/<user>/.steam/steam/steamapps/common/FEZ/Mods/</FezModDirectory> -->
     </PropertyGroup>
     <ItemGroup>
         <ModdedAssets Include="$(ProjectDir)\Assets\**\*.*" />
