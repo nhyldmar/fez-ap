@@ -37,6 +37,7 @@ namespace FEZAP
 
         public override void Initialize()
         {
+            System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
             base.Initialize();
             Fezug.Initialize();
 
