@@ -64,7 +64,7 @@ namespace FEZAP.Archipelago
                 return;
             }
 
-            ItemManager.ReceivedAbilityData = new(false, false);
+            ItemManager.ReceivedAbilityData = new(false, false, false);
 
             connectInitFinished = false;
             connectionInfo = new(server, port, user, pass);
@@ -205,7 +205,8 @@ namespace FEZAP.Archipelago
             LevelManager.LevelChanged -= Fezap.regionManager.UpdateCurrentRegion;
             LevelManager.LevelChanging -= Fezap.dialogueManager.LoadNpcHintDialogue;
             deathLinkService = null;
-            ItemManager.ReceivedAbilityData = new(true, true);
+            ItemManager.ReceivedAbilityData.Carry = true;
+            ItemManager.ReceivedAbilityData.TurnObjects = true;
             if (reason != "")
             {
                 FezugConsole.Print($"Socket closed: {reason}", FezugConsole.OutputType.Error);
