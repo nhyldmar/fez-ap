@@ -31,8 +31,8 @@
 
 ## 4.0 TODOs
 
-- [ ] Bugs
-  - PIVOT_THREE needs to be split like with LIGHTHOUSE
+- Bugs
+  - [ ] PIVOT_THREE needs to be split like with LIGHTHOUSE
 - [ ] Entrance randomizer
   - Approach 1: Poll AP server on `LevelManager.LevelChanging` and update `LevelManager.LinkedLevels` on `LevelManager.LevelChanged`
   - Approach 2: Poll AP server at the start (or add in slot data) and update all level data through the custom dot message approach
