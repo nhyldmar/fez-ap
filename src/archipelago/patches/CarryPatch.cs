@@ -22,9 +22,6 @@ namespace FEZAP.Archipelago
         [ServiceDependency]
         public IDotService DotService { private get; set; }
 
-        [ServiceDependency]
-        public IDotManager Dot { get; set; }
-
         private ILHook LiftTestConditionsHook;
         private Hook GrabTestConditionsHook;
 
@@ -44,7 +41,7 @@ namespace FEZAP.Archipelago
             ILCursor cursor = new(il);
             ILLabel skipLabel = il.DefineLabel();
 
-            cursor.GotoNext(MoveType.Before, [ // ActionType actionType = ((!trileInstance.Trile.ActorSettings.Type.IsLight()) ...;
+            cursor.GotoNext(MoveType.AfterLabel, [ // ActionType actionType = ((!trileInstance.Trile.ActorSettings.Type.IsLight()) ...;
                 i => i.MatchLdloc(1) || i.MatchLdloc(2),
                 i => i.MatchLdfld("FezEngine.Structure.TrileInstance", "Trile"),
                 i => i.MatchCallvirt("FezEngine.Structure.Trile", "get_ActorSettings"),
@@ -52,12 +49,10 @@ namespace FEZAP.Archipelago
                 i => i.MatchCall("FezEngine.Structure.ActorTypeExtensions", "IsLight"),
             ]);
 
-            cursor.MoveAfterLabels(); // Change the label behavior when emitting the delegate so branches will properly hit it
             cursor.EmitDelegate(LiftTestConditionsHooked); // Call check method
-            cursor.MoveBeforeLabels(); // Back to default label behavior
             cursor.Emit(OpCodes.Brfalse, skipLabel); // If we can't carry, skip to the return
 
-            cursor.GotoNext(MoveType.Before, i => i.MatchRet()); // return;
+            cursor.GotoNext(MoveType.Before, i => i.MatchRet());
             cursor.MarkLabel(skipLabel); // Mark the return as location to skip to
         }
 
