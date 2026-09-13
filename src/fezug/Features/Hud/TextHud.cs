@@ -38,6 +38,8 @@ namespace FEZUG.Features.Hud
 
         private HudPositioner Positioner;
 
+        public static float ItemHudHeight;
+
         [ServiceDependency]
         public IPlayerManager PlayerManager { private get; set; }
 
@@ -149,6 +151,7 @@ namespace FEZUG.Features.Hud
                 if (i == 0) DrawingTools.DrawText(line.text, position + new Vector2(padX, (i*30.0f)-1.0f), line.color);
             }
 
+            ItemHudHeight = position.Y + height + 15;
         }
     }
 }
