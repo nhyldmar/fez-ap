@@ -2,6 +2,7 @@
 using FEZAP.Archipelago;
 using FezEngine.Services;
 using FezEngine.Tools;
+using FezGame.Components;
 using FezGame.Services;
 using FEZUG.Features.Console;
 using FEZUG.Helpers;
@@ -49,6 +50,9 @@ namespace FEZUG.Features.Hud
         [ServiceDependency]
         public ITimeManager TimeManager { private get; set; }
 
+        [ServiceDependency]
+        public IDotManager Dot { private get; set; }
+
         public void Initialize()
         {
             void CreateHudVariable(string name, string desc, Func<string> provider)
@@ -77,6 +81,7 @@ namespace FEZUG.Features.Hud
             CreateHudVariable("hud_state", "Gomez's state", () => $"State: {PlayerManager.Action}");
             CreateHudVariable("hud_viewpoint", "camera viewpoint", () => $"Viewpoint: {CameraManager.Viewpoint}");
             CreateHudVariable("hud_daytime", "Time of day", () => $"Time of day: {TimeManager.CurrentTime.TimeOfDay.ToString(@"hh':'mm':'ss")}");
+            CreateHudVariable("hud_dot", "Dot behavior", () => $"Dot: {Dot.Behaviour}");
 
             hud_hide = new FezugVariable("hud_hide", "If set, hides FEZUG HUD entirely when console is not opened.", "0")
             {
