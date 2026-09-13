@@ -151,7 +151,10 @@ namespace FEZUG.Features.Hud
                 if (i == 0) DrawingTools.DrawText(line.text, position + new Vector2(padX, (i*30.0f)-1.0f), line.color);
             }
 
-            ItemHudHeight = position.Y + height + 15;
+            if (Positioner.XCoordVariable.ValueFloat == 0f && Positioner.YCoordVariable.ValueFloat == 0f)
+                ItemHudHeight = position.Y + height + 15;
+            else
+                ItemHudHeight = 0f; // They moved the hud from the top left corner so don't try to fudge it
         }
     }
 }
