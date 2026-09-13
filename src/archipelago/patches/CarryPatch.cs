@@ -45,7 +45,7 @@ namespace FEZAP.Archipelago
             ILLabel skipLabel = il.DefineLabel();
 
             cursor.GotoNext(MoveType.Before, [ // ActionType actionType = ((!trileInstance.Trile.ActorSettings.Type.IsLight()) ...;
-                i => i.MatchLdloc(2),
+                i => i.MatchLdloc(1) || i.MatchLdloc(2),
                 i => i.MatchLdfld("FezEngine.Structure.TrileInstance", "Trile"),
                 i => i.MatchCallvirt("FezEngine.Structure.Trile", "get_ActorSettings"),
                 i => i.MatchCallvirt("FezEngine.Structure.TrileActorSettings", "get_Type"),
