@@ -229,16 +229,12 @@ namespace FEZAP.Archipelago
                 session.Locations.CompleteLocationChecks([id]);
 
                 // Get location info
-                var result = session.Locations.ScoutLocationsAsync(false, [id]);
-                ScoutedItemInfo item = result.Result[id];
-                if (item.Player.Name == connectionInfo.user)
+                session.Locations.ScoutLocationsAsync(false, [id]).ContinueWith(task =>
                 {
-                    FezugConsole.Print($"Found your own {item.ItemName} ({item.LocationName})");
-                }
-                else
-                {
-                    FezugConsole.Print($"Sent {item.ItemName} to {item.Player.Alias} ({item.LocationName})");
-                }
+                    ScoutedItemInfo item = task.Result[id];
+                    if (item.Player.Name != connectionInfo.user)
+                        FezugConsole.Print($"Sent {item.ItemDisplayName} to {item.Player.Alias} ({item.LocationName})");
+                });
             }
         }
 
@@ -253,6 +249,8 @@ namespace FEZAP.Archipelago
                 {
                     if (item.Player.Name != connectionInfo.user)
                         FezugConsole.Print($"Received {item.ItemDisplayName} from {item.Player.Alias} ({item.LocationName})");
+                    else
+                        FezugConsole.Print($"Found your own {item.ItemDisplayName} ({item.LocationName})");
                     Fezap.archipelagoManager.PlaySound(item.Flags);
                 }
                 Fezap.itemManager.HandleReceivedItem(item);
