@@ -2,6 +2,7 @@
 using FEZAP.Archipelago;
 using FezEngine.Services;
 using FezEngine.Tools;
+using FezGame.Components;
 using FezGame.Services;
 using FEZUG.Features.Console;
 using FEZUG.Helpers;
@@ -37,6 +38,8 @@ namespace FEZUG.Features.Hud
 
         private HudPositioner Positioner;
 
+        public static float ItemHudHeight;
+
         [ServiceDependency]
         public IPlayerManager PlayerManager { private get; set; }
 
@@ -48,6 +51,9 @@ namespace FEZUG.Features.Hud
 
         [ServiceDependency]
         public ITimeManager TimeManager { private get; set; }
+
+        [ServiceDependency]
+        public IDotManager Dot { private get; set; }
 
         public void Initialize()
         {
@@ -77,6 +83,7 @@ namespace FEZUG.Features.Hud
             CreateHudVariable("hud_state", "Gomez's state", () => $"State: {PlayerManager.Action}");
             CreateHudVariable("hud_viewpoint", "camera viewpoint", () => $"Viewpoint: {CameraManager.Viewpoint}");
             CreateHudVariable("hud_daytime", "Time of day", () => $"Time of day: {TimeManager.CurrentTime.TimeOfDay.ToString(@"hh':'mm':'ss")}");
+            CreateHudVariable("hud_dot", "Dot behavior", () => $"Dot: {Dot.Behaviour}");
 
             hud_hide = new FezugVariable("hud_hide", "If set, hides FEZUG HUD entirely when console is not opened.", "0")
             {
@@ -144,6 +151,10 @@ namespace FEZUG.Features.Hud
                 if (i == 0) DrawingTools.DrawText(line.text, position + new Vector2(padX, (i*30.0f)-1.0f), line.color);
             }
 
+            if (Positioner.XCoordVariable.ValueFloat == 0f && Positioner.YCoordVariable.ValueFloat == 0f)
+                ItemHudHeight = position.Y + height + 15;
+            else
+                ItemHudHeight = 0f; // They moved the hud from the top left corner so don't try to fudge it
         }
     }
 }
