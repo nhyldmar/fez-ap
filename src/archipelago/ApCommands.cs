@@ -379,6 +379,53 @@ namespace FEZAP.Archipelago
         }
     }
 
+    internal class ToggleAbility : IFezugCommand
+    {
+        public string Name => "toggleability";
+
+        public string HelpText => "toggleability <Carry/TurnObjects> - toggles an ability while disconnected from an AP for testing or practice";
+
+        public List<string> Autocomplete(string[] args)
+        {
+            if (args.Length == 1)
+            {
+                return [.. new string[] { "Carry", "TurnObjects" }
+                        .Where(s => s.StartsWith(args[0], StringComparison.OrdinalIgnoreCase))];
+            }
+            return null;
+        }
+
+        public bool Execute(string[] args)
+        {
+            if (ArchipelagoManager.IsConnected())
+            {
+                FezugConsole.Print("Cannot toggle an ability while connected to an AP.", FezugConsole.OutputType.Warning);
+                return false;
+            }
+
+            if (args.Length != 1)
+            {
+                FezugConsole.Print("Incorrect number of arguments.", FezugConsole.OutputType.Error);
+                return false;
+            }
+
+            switch (args[0])
+            {
+                case "Carry":
+                    ItemManager.ReceivedAbilityData.Carry = !ItemManager.ReceivedAbilityData.Carry;
+                    FezugConsole.Print("Carry -> " + ItemManager.ReceivedAbilityData.Carry);
+                    return true;
+                case "TurnObjects":
+                    ItemManager.ReceivedAbilityData.TurnObjects = !ItemManager.ReceivedAbilityData.TurnObjects;
+                    FezugConsole.Print("TurnObjects -> " + ItemManager.ReceivedAbilityData.TurnObjects);
+                    return true;
+                default:
+                    FezugConsole.Print("Unknown ability", FezugConsole.OutputType.Error);
+                    return false;
+            }
+        }
+    }
+
     #if DEBUG
     internal class LevelInfo : IFezugCommand
     {

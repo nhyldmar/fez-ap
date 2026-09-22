@@ -205,6 +205,7 @@ namespace FEZAP.Archipelago
             LevelManager.LevelChanged -= Fezap.regionManager.UpdateCurrentRegion;
             LevelManager.LevelChanging -= Fezap.dialogueManager.LoadNpcHintDialogue;
             deathLinkService = null;
+            ItemManager.ReceivedAbilityData = new(true, true);
             if (reason != "")
             {
                 FezugConsole.Print($"Socket closed: {reason}", FezugConsole.OutputType.Error);

@@ -57,7 +57,7 @@ namespace FEZAP.Archipelago
         [ServiceDependency]
         public IDotService DotService { private get; set; }
 
-        public static AbilityData ReceivedAbilityData = new(false, false);
+        public static AbilityData ReceivedAbilityData = new(true, true);
 
         public static CollectibleData ReceivedCollectibleData = new([], 0, 0, 0, 0, [], 0, 0);
 
