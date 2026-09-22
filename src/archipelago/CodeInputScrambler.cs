@@ -24,8 +24,6 @@ namespace FEZAP.Archipelago
         private static CodeInput[] originalAchievementCode;
         private static CodeInput[] qrMapCode;
         private static CodeInput[] originalQrMapCode;
-        private static CodeInput[] flyCode;
-        private static CodeInput[] originalFlyCode;
 
         public override void Initialize()
         {
@@ -37,8 +35,6 @@ namespace FEZAP.Archipelago
             originalAchievementCode = (CodeInput[])achievementCode.Clone();
             qrMapCode = (CodeInput[])GameWideCodes.GetField("MapCode", Flags).GetValue(null);
             originalQrMapCode = (CodeInput[])qrMapCode.Clone();
-            flyCode = (CodeInput[])GameWideCodes.GetField("JetpackCode", Flags).GetValue(null);
-            originalFlyCode = (CodeInput[])flyCode.Clone();
         }
 
         public static void ShuffleCodeInputs(string seed)
@@ -103,7 +99,6 @@ namespace FEZAP.Archipelago
             {
                 Array.Copy(originalAchievementCode, achievementCode, originalAchievementCode.Length);
                 Array.Copy(originalQrMapCode, qrMapCode, originalQrMapCode.Length);
-                Array.Copy(originalFlyCode, flyCode, originalFlyCode.Length);
                 return;
             }
 
@@ -115,10 +110,6 @@ namespace FEZAP.Archipelago
             for (var i = 0; i < qrMapCode.Length; i++)
             {
                 qrMapCode[i] = reverseInputMap[originalQrMapCode[i]];
-            }
-            for (var i = 0; i < flyCode.Length; i++)
-            {
-                flyCode[i] = reverseInputMap[originalFlyCode[i]];
             }
         }
     }

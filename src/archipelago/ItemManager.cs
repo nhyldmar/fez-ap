@@ -9,10 +9,11 @@ using FEZUG.Features.Console;
 
 namespace FEZAP.Archipelago
 {
-    public struct AbilityData(bool Carry, bool TurnObjects)
+    public struct AbilityData(bool Carry, bool TurnObjects, bool Jetpack)
     {
         public bool Carry = Carry;
         public bool TurnObjects = TurnObjects;
+        public bool Jetpack = Jetpack;
     }
 
     /// Collectible data container
@@ -57,7 +58,7 @@ namespace FEZAP.Archipelago
         [ServiceDependency]
         public IDotService DotService { private get; set; }
 
-        public static AbilityData ReceivedAbilityData = new(false, false);
+        public static AbilityData ReceivedAbilityData = new(false, false, false);
 
         public static CollectibleData ReceivedCollectibleData = new([], 0, 0, 0, 0, [], 0, 0);
 
@@ -227,6 +228,9 @@ namespace FEZAP.Archipelago
                     break;
                 case "Turn Objects":
                     ReceivedAbilityData.TurnObjects = true;
+                    break;
+                case "Jetpack":
+                    ReceivedAbilityData.Jetpack = true;
                     break;
                 case "Rotation Trap":
                     DoRotationTrap();

@@ -64,7 +64,7 @@ namespace FEZAP.Archipelago
                 return;
             }
 
-            ItemManager.ReceivedAbilityData = new(false, false);
+            ItemManager.ReceivedAbilityData = new(false, false, false);
 
             connectInitFinished = false;
             connectionInfo = new(server, port, user, pass);
