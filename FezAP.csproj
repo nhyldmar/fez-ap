@@ -1,12 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net48</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <DebugType>full</DebugType>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <GenerateDependencyFile>true</GenerateDependencyFile>
   </PropertyGroup>
 
   <Import Project="$(ProjectDir)UserProperties.xml" />
@@ -25,13 +26,13 @@
         <ModdedAssets Include="$(ProjectDir)\Assets\**\*.*" />
     </ItemGroup>
 
-    <Copy SourceFiles="$(TargetDir)$(TargetName).dll;$(TargetDir)$(TargetName).pdb" DestinationFolder="$(ModCompileOutputDir)" Retries="0" />
+    <Copy SourceFiles="$(TargetDir)$(TargetName).dll;$(TargetDir)$(TargetName).pdb;$(TargetDir)$(TargetName).deps.json" DestinationFolder="$(ModCompileOutputDir)" Retries="0" />
     <Copy SourceFiles="$(ProjectDir)Metadata.xml" DestinationFolder="$(ModCompileOutputDir)" Retries="0" />
     <Copy SourceFiles="$(ProjectDir)LICENSE" DestinationFolder="$(ModCompileOutputDir)" Retries="0" />
     <Copy SourceFiles="$(ProjectDir)README.md" DestinationFolder="$(ModCompileOutputDir)" Retries="0" />
     <Copy SourceFiles="@(ModdedAssets)" DestinationFolder="$(ModCompileOutputDir)Assets\%(RecursiveDir)" Retries="0" />
-    <Copy SourceFiles="$(PkgArchipelago_MultiClient_Net)\lib\net45\Archipelago.MultiClient.Net.dll" DestinationFolder="$(ModCompileOutputDir)" Retries="0" />
-    <Copy SourceFiles="$(PkgArchipelago_MultiClient_Net)\lib\net45\Newtonsoft.Json.dll" DestinationFolder="$(ModCompileOutputDir)" Retries="0" />
+    <Copy SourceFiles="$(PkgArchipelago_MultiClient_Net)\lib\net6.0\Archipelago.MultiClient.Net.dll" DestinationFolder="$(ModCompileOutputDir)" Retries="0" />
+    <Copy SourceFiles="$(PkgArchipelago_MultiClient_Net)\lib\net6.0\Newtonsoft.Json.dll" DestinationFolder="$(ModCompileOutputDir)" Retries="0" />
   </Target>
 
   <!-- Archipelago C# client package -->
@@ -58,7 +59,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="FEZ">
-      <HintPath>$(FezDir)\FEZ.exe</HintPath>
+      <HintPath>$(FezDir)\HAT.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="FezEngine">
@@ -71,10 +72,6 @@
     </Reference>
     <Reference Include="XnaWordWrapCore">
       <HintPath>$(FezDir)\XnaWordWrapCore.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="MonoMod">
-      <HintPath>$(MonoModDir)\MonoMod.exe</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="MonoMod.RuntimeDetour">
