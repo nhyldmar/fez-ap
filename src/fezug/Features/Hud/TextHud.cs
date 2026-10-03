@@ -107,7 +107,11 @@ namespace FEZUG.Features.Hud
             if(hud_hide.ValueBool)
             {
                 var console = Fezug.GetFeature<FezugConsole>();
-                if (!console.Handler.Enabled) return;
+                if (!console.Handler.Enabled)
+                {
+                    ItemHudHeight = 0f;
+                    return;
+                }
             }
 
 
