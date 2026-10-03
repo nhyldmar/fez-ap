@@ -1,9 +1,11 @@
 using System.Reflection;
 using FezEngine.Services;
 using FezEngine.Services.Scripting;
+using FezEngine.Structure;
 using FezEngine.Tools;
 using FezGame;
 using FezGame.Services;
+using FezGame.Structure;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
@@ -27,6 +29,9 @@ namespace FEZAP.Archipelago
 
         [ServiceDependency]
         public ILevelManager LevelManager { private get; set; }
+
+        [ServiceDependency]
+        public IGameStateManager GameState { private get; set; }
 
         [ServiceDependency]
         public IDotService DotService { private get; set; }
@@ -83,10 +88,12 @@ namespace FEZAP.Archipelago
 
         private bool EnterDoorTestConditionsHooked()
         {
-            if (DoorManager.LighthouseUnlocked || !ArchipelagoManager.IsConnected())
+            if (LevelManager.Name != "LIGHTHOUSE" || PlayerManager.Position.Y < 30f)
                 return true;
 
-            if (LevelManager.Name != "LIGHTHOUSE" || PlayerManager.Position.Y < 30f)
+            // Check if the lighthouse door is open
+            LevelSaveData level = GameState.SaveData.World["LIGHTHOUSE"];
+            if (level != null && level.InactiveTriles.Contains(new TrileEmplacement(21, 20, 27)))
                 return true;
 
             // The player is in LIGHTHOUSE, too high, and doesn't have the key! Prevent them from entering the door
@@ -94,7 +101,7 @@ namespace FEZAP.Archipelago
             if (!DotTalking)
             {
                 DotTalking = true;
-                DotService.Say("@No cheating!!! Come back when you have Lighthouse Door Unlocked.", true, true).Ended = delegate { DotTalking = false; };
+                DotService.Say("@No cheating!!! Come back when the Lighthouse door is open.", true, true).Ended = delegate { DotTalking = false; };
             }
             return false;
         }
