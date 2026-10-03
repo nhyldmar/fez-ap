@@ -1,4 +1,5 @@
 using System.Reflection;
+using FezEngine.Services;
 using FezEngine.Services.Scripting;
 using FezEngine.Tools;
 using FezGame;
@@ -21,6 +22,9 @@ namespace FEZAP.Archipelago
     {
         [ServiceDependency]
         public IPlayerManager PlayerManager { private get; set; }
+
+        [ServiceDependency]
+        public ILevelManager LevelManager { private get; set; }
 
         [ServiceDependency]
         public IDotService DotService { private get; set; }
@@ -56,11 +60,13 @@ namespace FEZAP.Archipelago
 
         private bool EnterDoorTestConditionsHooked()
         {
-            if (PlayerManager.NextLevel != "LIGHTHOUSE_SPIN" && PlayerManager.NextLevel != "WATER_TOWER")
+            if (DoorManager.LighthouseUnlocked || !ArchipelagoManager.IsConnected())
                 return true;
 
-            if (DoorManager.LighthouseUnlocked)
+            if (LevelManager.Name != "LIGHTHOUSE" || PlayerManager.Position.Y < 30f)
                 return true;
+
+            // The player is in LIGHTHOUSE, too high, and doesn't have the key! Prevent them from entering the door
 
             if (!DotTalking)
             {
