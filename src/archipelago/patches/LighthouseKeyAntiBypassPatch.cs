@@ -15,6 +15,8 @@ using MonoMod.RuntimeDetour;
  * door if certain conditions aren't met, e.g. you can't enter SKULL_B if you didn't rotate all four tombstones to the
  * same direction. We're adding another one that checks if you're entering any of the post-lighthouse key rooms and
  * cancelling it if you don't have the key yet.
+ *
+ * We also hook OpenDoor to prevent the WATER_TOWER door from being openable for a bit of polish.
  */
 namespace FEZAP.Archipelago
 {
@@ -30,6 +32,7 @@ namespace FEZAP.Archipelago
         public IDotService DotService { private get; set; }
 
         private ILHook EnterDoorTestConditionsHook;
+        private ILHook OpenDoorTestConditionsHook;
 
         private bool DotTalking = false;
 
@@ -37,6 +40,9 @@ namespace FEZAP.Archipelago
         {
             Type EnterDoor = typeof(Fez).Assembly.GetType("FezGame.Components.Actions.EnterDoor");
             EnterDoorTestConditionsHook = new ILHook(EnterDoor.GetMethod("TestConditions", BindingFlags.NonPublic | BindingFlags.Instance), CreateEnterDoorTestConditionsHook);
+
+            Type OpenDoor = typeof(Fez).Assembly.GetType("FezGame.Components.Actions.OpenDoor");
+            OpenDoorTestConditionsHook = new ILHook(OpenDoor.GetMethod("TestConditions", BindingFlags.NonPublic | BindingFlags.Instance), CreateOpenDoorTestConditionsHook);
         }
 
         private void CreateEnterDoorTestConditionsHook(ILContext il)
@@ -49,6 +55,23 @@ namespace FEZAP.Archipelago
                 i => i.MatchCall("FezGame.Components.Actions.PlayerAction", "get_GameState"),
                 i => i.MatchLdarg(0),
                 i => i.MatchLdarg(0),
+            ]);
+
+            cursor.EmitDelegate(EnterDoorTestConditionsHooked); // Call check method
+            cursor.Emit(OpCodes.Brfalse, skipLabel); // If we can't enter, skip to the return
+
+            cursor.GotoNext(MoveType.Before, i => i.MatchRet());
+            cursor.MarkLabel(skipLabel); // Mark the return as location to skip to
+        }
+
+        private void CreateOpenDoorTestConditionsHook(ILContext il)
+        {
+            ILCursor cursor = new(il);
+            ILLabel skipLabel = il.DefineLabel();
+
+            cursor.GotoNext(MoveType.AfterLabel, [ // base.WalkTo.Destination = GetDestination;
+                i => i.MatchLdarg(0),
+                i => i.MatchCall("FezGame.Components.Actions.PlayerAction", "get_WalkTo"),
             ]);
 
             cursor.EmitDelegate(EnterDoorTestConditionsHooked); // Call check method
@@ -79,6 +102,7 @@ namespace FEZAP.Archipelago
         public void Dispose()
         {
             EnterDoorTestConditionsHook.Dispose();
+            OpenDoorTestConditionsHook.Dispose();
         }
     }
 }
