@@ -1,4 +1,5 @@
-﻿using FezEngine.Tools;
+﻿using FEZAP.Archipelago;
+using FezEngine.Tools;
 using FezGame.Services;
 using FEZUG.Features.Console;
 using System;
@@ -22,6 +23,12 @@ namespace FEZUG.Features
 
         public bool Execute(string[] args)
         {
+            if (ArchipelagoManager.IsConnected())
+            {
+                FezugConsole.Print($"Cannot change item count while connected to an AP", FezugConsole.OutputType.Warning);
+                return false;
+            }
+
             if (args.Length != 2)
             {
                 FezugConsole.Print($"Incorrect number of parameters: '{args.Length}'", FezugConsole.OutputType.Warning);
