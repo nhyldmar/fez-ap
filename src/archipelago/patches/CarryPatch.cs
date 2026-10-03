@@ -2,8 +2,11 @@ using System.Reflection;
 using FezEngine.Services.Scripting;
 using FezEngine.Tools;
 using FezGame;
+using FezGame.Components;
 using FezGame.Services;
 using FezGame.Structure;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 
 /*
@@ -19,33 +22,71 @@ namespace FEZAP.Archipelago
         [ServiceDependency]
         public IDotService DotService { private get; set; }
 
-        private Hook LiftAllowedHook;
+        private ILHook LiftTestConditionsHook;
+        private Hook GrabTestConditionsHook;
+
+        private bool DotTalking = false;
 
         public void Init()
         {
             Type LiftAction = typeof(Fez).Assembly.GetType("FezGame.Components.Actions.Lift");
-            LiftAllowedHook = new Hook(LiftAction.GetMethod("Begin", BindingFlags.NonPublic | BindingFlags.Instance), LiftAllowedHooked);
+            LiftTestConditionsHook = new ILHook(LiftAction.GetMethod("TestConditions", BindingFlags.NonPublic | BindingFlags.Instance), CreateLiftTestConditionsHook);
+
+            Type GrabAction = typeof(Fez).Assembly.GetType("FezGame.Components.Actions.Grab");
+            GrabTestConditionsHook = new Hook(GrabAction.GetMethod("TestConditions", BindingFlags.NonPublic | BindingFlags.Instance), GrabTestConditionsHooked);
         }
 
-        private void LiftAllowedHooked(Action<object> original, object self)
+        private void CreateLiftTestConditionsHook(ILContext il)
         {
-            if (ItemManager.ReceivedAbilityData.Carry || !ArchipelagoManager.IsConnected())
+            ILCursor cursor = new(il);
+            ILLabel skipLabel = il.DefineLabel();
+
+            cursor.GotoNext(MoveType.AfterLabel, [ // ActionType actionType = ((!trileInstance.Trile.ActorSettings.Type.IsLight()) ...;
+                i => i.MatchLdloc(1) || i.MatchLdloc(2),
+                i => i.MatchLdfld("FezEngine.Structure.TrileInstance", "Trile"),
+                i => i.MatchCallvirt("FezEngine.Structure.Trile", "get_ActorSettings"),
+                i => i.MatchCallvirt("FezEngine.Structure.TrileActorSettings", "get_Type"),
+                i => i.MatchCall("FezEngine.Structure.ActorTypeExtensions", "IsLight"),
+            ]);
+
+            cursor.EmitDelegate(LiftTestConditionsHooked); // Call check method
+            cursor.Emit(OpCodes.Brfalse, skipLabel); // If we can't carry, skip to the return
+
+            cursor.GotoNext(MoveType.Before, i => i.MatchRet());
+            cursor.MarkLabel(skipLabel); // Mark the return as location to skip to
+        }
+
+        private bool LiftTestConditionsHooked()
+        {
+            if (ItemManager.ReceivedAbilityData.Carry)
+                return true;
+
+            if (!DotTalking)
             {
-                original(self);
-                return;
+                DotTalking = true;
+                DotService.Say("@You can't carry objects yet.", true, true).Ended = delegate { DotTalking = false; };
+
+                if (PlayerManager.Action == ActionType.Grabbing || PlayerManager.Action == ActionType.Pushing)
+                {
+                    // You can't get the dot text while pushing so cancel it to immediately get the text
+                    PlayerManager.Action = ActionType.Idle;
+                    PlayerManager.PushedInstance = null;
+                }
             }
 
-            PlayerManager.Action = ActionType.Idle;
-            PlayerManager.CarriedInstance = null;
-            PlayerManager.PushedInstance = null;
+            return false;
+        }
 
-            string LiftMsg = "You can't carry objects yet";
-            DotService.Say($"@{LiftMsg}", true, true);
+        private void GrabTestConditionsHooked(Action<object> original, object self)
+        {
+            if (!DotTalking) // Prevent immediately re-grabbing the block (which would delay the dot text)
+                original(self);
         }
 
         public void Dispose()
         {
-            LiftAllowedHook.Dispose();
+            LiftTestConditionsHook.Dispose();
+            GrabTestConditionsHook.Dispose();
         }
     }
 }
