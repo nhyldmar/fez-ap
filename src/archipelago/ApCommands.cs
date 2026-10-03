@@ -389,7 +389,7 @@ namespace FEZAP.Archipelago
         {
             if (args.Length == 1)
             {
-                return [.. new string[] { "Carry", "TurnObjects" }
+                return [.. new string[] { "Carry", "TurnObjects", "Jetpack" }
                         .Where(s => s.StartsWith(args[0], StringComparison.OrdinalIgnoreCase))];
             }
             return null;
@@ -418,6 +418,10 @@ namespace FEZAP.Archipelago
                 case "TurnObjects":
                     ItemManager.ReceivedAbilityData.TurnObjects = !ItemManager.ReceivedAbilityData.TurnObjects;
                     FezugConsole.Print("TurnObjects -> " + ItemManager.ReceivedAbilityData.TurnObjects);
+                    return true;
+                case "Jetpack":
+                    ItemManager.ReceivedAbilityData.Jetpack = !ItemManager.ReceivedAbilityData.Jetpack;
+                    FezugConsole.Print("Jetpack -> " + ItemManager.ReceivedAbilityData.Jetpack);
                     return true;
                 default:
                     FezugConsole.Print("Unknown ability", FezugConsole.OutputType.Error);
