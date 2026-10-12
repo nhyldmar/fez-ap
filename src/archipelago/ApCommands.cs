@@ -1,5 +1,6 @@
 using Archipelago.MultiClient.Net.Enums;
 using FezEngine.Services;
+using FezEngine.Structure;
 using FezEngine.Tools;
 using FezGame.Services;
 using FezGame.Structure;
@@ -454,6 +455,37 @@ namespace FEZAP.Archipelago
             level.InactiveNPCs.ForEach(x => FezugConsole.Print($"Inactive NPC: {x}"));
             if (level.ScriptingState != null)
                 FezugConsole.Print($"Scripting State: \"{level.ScriptingState}\"");
+
+            return true;
+        }
+    }
+
+    internal class FilledConditions : IFezugCommand
+    {
+        public string Name => "filledconditions";
+
+        public string HelpText => "filledconditions";
+
+        public List<string> Autocomplete(string[] args) { return null; }
+
+        [ServiceDependency]
+        public IGameStateManager GameState { get; set; }
+
+        [ServiceDependency]
+        public ILevelManager LevelManager { get; set; }
+
+        public bool Execute(string[] args)
+        {
+            WinConditions wc = GameState.SaveData.World[LevelManager.Name].FilledConditions;
+
+            FezugConsole.Print($"LockedDoorCount: {wc.LockedDoorCount}");
+            FezugConsole.Print($"UnlockedDoorCount: {wc.UnlockedDoorCount}");
+            FezugConsole.Print($"ChestCount: {wc.ChestCount}");
+            FezugConsole.Print($"CubeShardCount: {wc.CubeShardCount}");
+            FezugConsole.Print($"OtherCollectibleCount: {wc.OtherCollectibleCount}");
+            FezugConsole.Print($"SplitUpCount: {wc.SplitUpCount}");
+            FezugConsole.Print($"ScriptIds: [{string.Join(", ", wc.ScriptIds)}]");
+            FezugConsole.Print($"SecretCount: {wc.SecretCount}");
 
             return true;
         }

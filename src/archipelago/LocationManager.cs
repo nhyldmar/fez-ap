@@ -1,4 +1,5 @@
 using FezEngine.Services;
+using FezEngine.Structure;
 using FezEngine.Tools;
 using FezGame.Services;
 using FezGame.Structure;
@@ -48,32 +49,50 @@ namespace FEZAP.Archipelago
                 case LocationType.DestroyedTriles:
                     count = levelData.DestroyedTriles.Count(x => x == location.emplacement);
                     if (count < location.count)
+                    {
                         levelData.DestroyedTriles.AddRange(Enumerable.Repeat(location.emplacement, location.count - count));
+                        AddWinConditions(levelData.FilledConditions, location.winConditions);
+                    }
                     break;
                 case LocationType.InactiveArtObjects:
                     if (!levelData.InactiveArtObjects.Contains(location.index))
+                    {
                         levelData.InactiveArtObjects.Add(location.index);
+                        AddWinConditions(levelData.FilledConditions, location.winConditions);
+                    }
                     break;
                 case LocationType.InactiveNPCs:
                     if (!levelData.InactiveNPCs.Contains(location.index))
+                    {
                         levelData.InactiveNPCs.Add(location.index);
+                        AddWinConditions(levelData.FilledConditions, location.winConditions);
+                    }
                     break;
                 case LocationType.AchievementCode:
                     GameState.SaveData.AchievementCheatCodeDone = true;
                     break;
                 case LocationType.InactiveVolumesAndCollected:
                     if (!levelData.InactiveVolumes.Contains(location.index))
+                    {
                         levelData.InactiveVolumes.Add(location.index);
+                        AddWinConditions(levelData.FilledConditions, location.winConditions);
+                    }
                     levelData.ScriptingState = null;
                     break;
                 case LocationType.InactiveArtObjectsAndCollected:
                     if (!levelData.InactiveArtObjects.Contains(location.index))
+                    {
                         levelData.InactiveArtObjects.Add(location.index);
+                        AddWinConditions(levelData.FilledConditions, location.winConditions);
+                    }
                     levelData.ScriptingState = null;
                     break;
                 case LocationType.InactiveArtObjectsAndDestroyedTriles:
                     if (!levelData.InactiveArtObjects.Contains(location.index))
+                    {
                         levelData.InactiveArtObjects.Add(location.index);
+                        AddWinConditions(levelData.FilledConditions, location.winConditions);
+                    }
                     count = levelData.DestroyedTriles.Count(x => x == location.emplacement);
                     if (count < location.count)
                         levelData.DestroyedTriles.AddRange(Enumerable.Repeat(location.emplacement, location.count - count));
@@ -161,6 +180,27 @@ namespace FEZAP.Archipelago
                 levelData.FilledConditions.SecretCount++;
             }
             levelData.ScriptingState = null;
+        }
+
+        private void AddWinConditions(WinConditions main, WinConditions additions)
+        {
+            if (main == null || additions == null)
+                return;
+            main.LockedDoorCount += additions.LockedDoorCount;
+            main.UnlockedDoorCount += additions.UnlockedDoorCount;
+            main.ChestCount += additions.ChestCount;
+            main.CubeShardCount += additions.CubeShardCount;
+            main.OtherCollectibleCount += additions.OtherCollectibleCount;
+            main.SplitUpCount += additions.SplitUpCount;
+            foreach (int scriptId in additions.ScriptIds ?? [])
+            {
+                if (!main.ScriptIds.Contains(scriptId))
+                {
+                    main.ScriptIds.Add(scriptId);
+                    main.ScriptIds.Sort();
+                }
+            }
+            main.SecretCount += additions.SecretCount;
         }
 
         public void HandleDisabledClockTower()
