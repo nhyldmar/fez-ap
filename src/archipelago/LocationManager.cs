@@ -97,14 +97,20 @@ namespace FEZAP.Archipelago
                 GameState.SaveData.World.Add("PARLOR", new LevelSaveData());
             LevelSaveData levelData = GameState.SaveData.World["PARLOR"];
             if (!levelData.InactiveVolumes.Contains(4))
+            {
                 levelData.InactiveVolumes.Add(4);
+                levelData.FilledConditions.SecretCount++;
+            }
             levelData.ScriptingState = null;
 
             if (!GameState.SaveData.World.ContainsKey("ZU_HOUSE_QR"))
                 GameState.SaveData.World.Add("ZU_HOUSE_QR", new LevelSaveData());
             levelData = GameState.SaveData.World["ZU_HOUSE_QR"];
             if (!levelData.InactiveVolumes.Contains(0))
+            {
                 levelData.InactiveVolumes.Add(0);
+                levelData.FilledConditions.SecretCount++;
+            }
             levelData.ScriptingState = null;
         }
 
@@ -115,21 +121,30 @@ namespace FEZAP.Archipelago
                 GameState.SaveData.World.Add("SEWER_QR", new LevelSaveData());
             LevelSaveData levelData = GameState.SaveData.World["SEWER_QR"];
             if (!levelData.InactiveArtObjects.Contains(0))
+            {
                 levelData.InactiveArtObjects.Add(0);
+                levelData.FilledConditions.SecretCount++;
+            }
             levelData.ScriptingState = null;
 
             if (!GameState.SaveData.World.ContainsKey("ZU_THRONE_RUINS"))
                 GameState.SaveData.World.Add("ZU_THRONE_RUINS", new LevelSaveData());
             levelData = GameState.SaveData.World["ZU_THRONE_RUINS"];
             if (!levelData.InactiveVolumes.Contains(2))
+            {
                 levelData.InactiveVolumes.Add(2);
+                levelData.FilledConditions.SecretCount++;
+            }
             levelData.ScriptingState = null;
 
             if (!GameState.SaveData.World.ContainsKey("ZU_HOUSE_EMPTY"))
                 GameState.SaveData.World.Add("ZU_HOUSE_EMPTY", new LevelSaveData());
             levelData = GameState.SaveData.World["ZU_HOUSE_EMPTY"];
             if (!levelData.InactiveVolumes.Contains(2))
+            {
                 levelData.InactiveVolumes.Add(2);
+                levelData.FilledConditions.SecretCount++;
+            }
             levelData.ScriptingState = null;
         }
 
@@ -141,7 +156,10 @@ namespace FEZAP.Archipelago
                 GameState.SaveData.World.Add("WATERTOWER_SECRET", new LevelSaveData());
             LevelSaveData levelData = GameState.SaveData.World["WATERTOWER_SECRET"];
             if (!levelData.InactiveVolumes.Contains(2))
+            {
                 levelData.InactiveVolumes.Add(2);
+                levelData.FilledConditions.SecretCount++;
+            }
             levelData.ScriptingState = null;
         }
 
@@ -157,7 +175,10 @@ namespace FEZAP.Archipelago
                 LevelSaveData levelData = GameState.SaveData.World[location.levelName];
 
                 if (!levelData.InactiveArtObjects.Contains(location.index))
+                {
                     levelData.InactiveArtObjects.Add(location.index);
+                    levelData.FilledConditions.SecretCount++;
+                }
             }
         }
 
