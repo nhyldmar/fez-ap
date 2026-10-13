@@ -66,7 +66,7 @@ namespace FEZAP.Archipelago
 
         private bool DotServiceSayDelegateHooked(Func<object, float, float, bool> original, object self, float f1, float f2)
         {
-            if (Dot.Behaviour == DotHost.BehaviourType.SpiralAroundWithCamera)
+            if (Dot.Behaviour == DotHost.BehaviourType.SpiralAroundWithCamera || Dot.Behaviour == DotHost.BehaviourType.MoveToTargetWithCamera)
                 return false;
 
             return original(self, f1, f2);

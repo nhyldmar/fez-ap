@@ -202,6 +202,7 @@ namespace FEZUG.Features.Console
                 string original = previousCommandSequence.Original;
                 if (CurrentSuggestedWord == "") return original;
                 string lastWord = previousCommandSequence.Last().Last();
+                if (lastWord.Length > CurrentSuggestedWord.Length) return original;
 
                 return original + CurrentSuggestedWord.Substring(lastWord.Length);
             }

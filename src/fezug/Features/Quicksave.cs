@@ -64,7 +64,7 @@ namespace FEZUG.Features
                 string saveFilePath = ValidateSaveFilePathOutOfArgs(args);
                 if (saveFilePath == null) return false;
 
-                var quicksaveDir = Path.Combine(Util.LocalConfigFolder, SaveDirectory);
+                var quicksaveDir = Path.Combine(Util.LocalSaveFolder, SaveDirectory);
                 if (!Directory.Exists(quicksaveDir))
                 {
                     Directory.CreateDirectory(quicksaveDir);
@@ -164,7 +164,7 @@ namespace FEZUG.Features
             {
                 if (GameState.ActiveSaveDevice == null) return null;
 
-                var quicksaveDir = Path.Combine(Util.LocalConfigFolder, SaveDirectory);
+                var quicksaveDir = Path.Combine(Util.LocalSaveFolder, SaveDirectory);
 
                 if (!Directory.Exists(quicksaveDir))
                     return null;

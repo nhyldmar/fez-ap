@@ -1,4 +1,5 @@
 using FezEngine.Services;
+using FezEngine.Structure;
 using FezEngine.Tools;
 using FezGame.Services;
 using FezGame.Structure;
@@ -48,32 +49,50 @@ namespace FEZAP.Archipelago
                 case LocationType.DestroyedTriles:
                     count = levelData.DestroyedTriles.Count(x => x == location.emplacement);
                     if (count < location.count)
+                    {
                         levelData.DestroyedTriles.AddRange(Enumerable.Repeat(location.emplacement, location.count - count));
+                        AddWinConditions(levelData.FilledConditions, location.winConditions);
+                    }
                     break;
                 case LocationType.InactiveArtObjects:
                     if (!levelData.InactiveArtObjects.Contains(location.index))
+                    {
                         levelData.InactiveArtObjects.Add(location.index);
+                        AddWinConditions(levelData.FilledConditions, location.winConditions);
+                    }
                     break;
                 case LocationType.InactiveNPCs:
                     if (!levelData.InactiveNPCs.Contains(location.index))
+                    {
                         levelData.InactiveNPCs.Add(location.index);
+                        AddWinConditions(levelData.FilledConditions, location.winConditions);
+                    }
                     break;
                 case LocationType.AchievementCode:
                     GameState.SaveData.AchievementCheatCodeDone = true;
                     break;
                 case LocationType.InactiveVolumesAndCollected:
                     if (!levelData.InactiveVolumes.Contains(location.index))
+                    {
                         levelData.InactiveVolumes.Add(location.index);
+                        AddWinConditions(levelData.FilledConditions, location.winConditions);
+                    }
                     levelData.ScriptingState = null;
                     break;
                 case LocationType.InactiveArtObjectsAndCollected:
                     if (!levelData.InactiveArtObjects.Contains(location.index))
+                    {
                         levelData.InactiveArtObjects.Add(location.index);
+                        AddWinConditions(levelData.FilledConditions, location.winConditions);
+                    }
                     levelData.ScriptingState = null;
                     break;
                 case LocationType.InactiveArtObjectsAndDestroyedTriles:
                     if (!levelData.InactiveArtObjects.Contains(location.index))
+                    {
                         levelData.InactiveArtObjects.Add(location.index);
+                        AddWinConditions(levelData.FilledConditions, location.winConditions);
+                    }
                     count = levelData.DestroyedTriles.Count(x => x == location.emplacement);
                     if (count < location.count)
                         levelData.DestroyedTriles.AddRange(Enumerable.Repeat(location.emplacement, location.count - count));
@@ -97,14 +116,20 @@ namespace FEZAP.Archipelago
                 GameState.SaveData.World.Add("PARLOR", new LevelSaveData());
             LevelSaveData levelData = GameState.SaveData.World["PARLOR"];
             if (!levelData.InactiveVolumes.Contains(4))
+            {
                 levelData.InactiveVolumes.Add(4);
+                levelData.FilledConditions.SecretCount++;
+            }
             levelData.ScriptingState = null;
 
             if (!GameState.SaveData.World.ContainsKey("ZU_HOUSE_QR"))
                 GameState.SaveData.World.Add("ZU_HOUSE_QR", new LevelSaveData());
             levelData = GameState.SaveData.World["ZU_HOUSE_QR"];
             if (!levelData.InactiveVolumes.Contains(0))
+            {
                 levelData.InactiveVolumes.Add(0);
+                levelData.FilledConditions.SecretCount++;
+            }
             levelData.ScriptingState = null;
         }
 
@@ -115,21 +140,30 @@ namespace FEZAP.Archipelago
                 GameState.SaveData.World.Add("SEWER_QR", new LevelSaveData());
             LevelSaveData levelData = GameState.SaveData.World["SEWER_QR"];
             if (!levelData.InactiveArtObjects.Contains(0))
+            {
                 levelData.InactiveArtObjects.Add(0);
+                levelData.FilledConditions.SecretCount++;
+            }
             levelData.ScriptingState = null;
 
             if (!GameState.SaveData.World.ContainsKey("ZU_THRONE_RUINS"))
                 GameState.SaveData.World.Add("ZU_THRONE_RUINS", new LevelSaveData());
             levelData = GameState.SaveData.World["ZU_THRONE_RUINS"];
             if (!levelData.InactiveVolumes.Contains(2))
+            {
                 levelData.InactiveVolumes.Add(2);
+                levelData.FilledConditions.SecretCount++;
+            }
             levelData.ScriptingState = null;
 
             if (!GameState.SaveData.World.ContainsKey("ZU_HOUSE_EMPTY"))
                 GameState.SaveData.World.Add("ZU_HOUSE_EMPTY", new LevelSaveData());
             levelData = GameState.SaveData.World["ZU_HOUSE_EMPTY"];
             if (!levelData.InactiveVolumes.Contains(2))
+            {
                 levelData.InactiveVolumes.Add(2);
+                levelData.FilledConditions.SecretCount++;
+            }
             levelData.ScriptingState = null;
         }
 
@@ -141,8 +175,32 @@ namespace FEZAP.Archipelago
                 GameState.SaveData.World.Add("WATERTOWER_SECRET", new LevelSaveData());
             LevelSaveData levelData = GameState.SaveData.World["WATERTOWER_SECRET"];
             if (!levelData.InactiveVolumes.Contains(2))
+            {
                 levelData.InactiveVolumes.Add(2);
+                levelData.FilledConditions.SecretCount++;
+            }
             levelData.ScriptingState = null;
+        }
+
+        private void AddWinConditions(WinConditions main, WinConditions additions)
+        {
+            if (main == null || additions == null)
+                return;
+            main.LockedDoorCount += additions.LockedDoorCount;
+            main.UnlockedDoorCount += additions.UnlockedDoorCount;
+            main.ChestCount += additions.ChestCount;
+            main.CubeShardCount += additions.CubeShardCount;
+            main.OtherCollectibleCount += additions.OtherCollectibleCount;
+            main.SplitUpCount += additions.SplitUpCount;
+            foreach (int scriptId in additions.ScriptIds ?? [])
+            {
+                if (!main.ScriptIds.Contains(scriptId))
+                {
+                    main.ScriptIds.Add(scriptId);
+                    main.ScriptIds.Sort();
+                }
+            }
+            main.SecretCount += additions.SecretCount;
         }
 
         public void HandleDisabledClockTower()
@@ -157,7 +215,10 @@ namespace FEZAP.Archipelago
                 LevelSaveData levelData = GameState.SaveData.World[location.levelName];
 
                 if (!levelData.InactiveArtObjects.Contains(location.index))
+                {
                     levelData.InactiveArtObjects.Add(location.index);
+                    levelData.FilledConditions.SecretCount++;
+                }
             }
         }
 

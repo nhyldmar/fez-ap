@@ -310,7 +310,9 @@ namespace FEZAP.Archipelago
         {
             if (LevelManager.Flat)
                 return;
-            List<int> rotationOptions = [-2, -1, 1, 2];
+            if (GameState.InFpsMode)
+                return;
+            List<int> rotationOptions = [-2, -1, -1, 1, 1, 2];
             int index = RandomHelper.Random.Next(rotationOptions.Count);
             CameraService.Rotate(rotationOptions[index]);
         }

@@ -167,6 +167,8 @@ namespace FEZUG.Features
 
         public List<string> Autocomplete(string[] args)
         {
+			if (args.Length != 1)
+				return null;
 			return LevelList.Where(s => s.ToLower().StartsWith($"{args[0]}")).ToList();
 		}
     }
